@@ -2,6 +2,7 @@
 
 from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from flask_bcrypt import Bcrypt
 from flask_migrate import Migrate
 from flask_login import LoginManager
 from flask_cors import CORS
@@ -11,7 +12,8 @@ from config import Config
 db = SQLAlchemy()
 migrate = Migrate()
 login_manager = LoginManager()
-login_manager.login_view = 'auth.login'
+login_manager.login_view = 'auth.login'  # Redirect to 'auth.login' when login is required
+bcrypt = Bcrypt()
 
 def create_app(config_class=Config):
     app = Flask(__name__)
@@ -21,6 +23,7 @@ def create_app(config_class=Config):
     db.init_app(app)
     migrate.init_app(app, db)
     login_manager.init_app(app)
+    bcrypt.init_app(app)
 
     # Enable CORS for the entire app
     CORS(app)
@@ -34,8 +37,7 @@ def create_app(config_class=Config):
     from app.routes.api import api as api_bp
     app.register_blueprint(api_bp, url_prefix='/api')
 
-    # Register other blueprints (e.g. - auth, main, etc.)
-    # from app.routes.auth import auth as auth_bp
-    # app.register_blueprint(auth_bp)
+    from app.routes.auth import auth_bp as auth_bp
+    app.register_blueprint(auth_bp, url_prefix='/auth')
 
     return app
