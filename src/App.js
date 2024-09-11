@@ -7,6 +7,7 @@ import About  from './pages/about';
 import Login from './pages/login';
 import Register from './pages/register';
 import Questionairre from './pages/questionairre';
+import Notfound from './pages/notfound';
 
 import Layout from './components/Layout';
 import Navbar from './components/Navbar';
@@ -25,6 +26,8 @@ function App() {
                         <Route path="/login" element={<Login />} />
                         <Route path="/register" element={<Register />} />
                         <Route path="/questionairre" element={<Questionairre />} />
+                        <Route path="*" element={<Notfound />} />
+
 
                     </Routes>
                 </div>
