@@ -9,6 +9,7 @@ const Questionairre = () => {
   const [maritalStatus, setMaritalStatus] = useState('');
   const [spouseSkilled, setSpouseSkilled] = useState('');
   const [formData, setFormData] = useState({});
+  const [preferredIndustry, setPreferredIndustry] = useState('');
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
@@ -16,6 +17,7 @@ const Questionairre = () => {
       visaType,
       maritalStatus,
       spouseSkilled,
+      preferredIndustry,
       ...formData
     });
   };
@@ -30,7 +32,7 @@ const Questionairre = () => {
   return (
     <Box maxW="600px" mx="auto" mt={8} p={6} borderWidth="1px" borderRadius="lg" boxShadow="lg">
       <form onSubmit={handleFormSubmit}>
-        
+
         {/* Visa Subclass Selection */}
         <FormControl isRequired mb={4}>
           <FormLabel>Which visa subclass are you applying for?</FormLabel>
@@ -38,6 +40,7 @@ const Questionairre = () => {
             <Stack direction="row">
               <Radio value="189">Skilled Independent Visa (Subclass 189)</Radio>
               <Radio value="190">Skilled Nominated Visa (Subclass 190)</Radio>
+              <Radio value="491">Skilled Work Regional (Subclass 491)</Radio>
             </Stack>
           </RadioGroup>
         </FormControl>
@@ -145,6 +148,68 @@ const Questionairre = () => {
           </Text>
         </FormControl>
 
+        {/* State Preferred */}
+        <FormControl isRequired mb={4}>
+          <FormLabel>State Preferred</FormLabel>
+          <Select placeholder="Select a state" onChange={(e) => updateFormData("statePreferred", e.target.value)}>
+            <option value="NSW">New South Wales</option>
+            <option value="VIC">Victoria</option>
+            <option value="QLD">Queensland</option>
+            <option value="WA">Western Australia</option>
+            <option value="SA">South Australia</option>
+            <option value="TAS">Tasmania</option>
+            <option value="ACT">Australian Capital Territory</option>
+            <option value="NT">Northern Territory</option>
+          </Select>
+        </FormControl>
+
+        {/* Preferred Industry */}
+        <FormControl isRequired mb={4}>
+          <FormLabel>Preferred Industry</FormLabel>
+          <Select placeholder="Select an industry" onChange={(e) => setPreferredIndustry(e.target.value)}>
+            <option value="business">Business (ANZCO starts with '22')</option>
+            <option value="it">IT (ANZCO starts with '26')</option>
+            <option value="education">Education (ANZCO starts with '24')</option>
+            <option value="engineering">Engineering (ANZCO starts with '312')</option>
+            <option value="healthcare">Healthcare (ANZCO starts with '25')</option>
+          </Select>
+        </FormControl>
+
+        {/* Preferred Level of Course */}
+        <FormControl isRequired mb={4}>
+          <FormLabel>Preferred Level of Course</FormLabel>
+          <Select placeholder="Select a course level" onChange={(e) => updateFormData("courseLevel", e.target.value)}>
+            <option value="masters">Masters</option>
+            <option value="bachelors">Bachelors</option>
+            <option value="diploma">Diploma</option>
+          </Select>
+        </FormControl>
+
+        {/* Preferred Course */}
+        <FormControl isRequired mb={4}>
+          <FormLabel>Preferred Course (based on industry and level)</FormLabel>
+          <Select placeholder="Select a course" onChange={(e) => updateFormData("preferredCourse", e.target.value)}>
+            {/* Dynamically load courses based on the selected industry and level */}
+            {preferredIndustry === 'business' && <option value="accounting">Accounting</option>}
+            {preferredIndustry === 'it' && <option value="softwareEngineering">Software Engineering</option>}
+            {preferredIndustry === 'education' && <option value="teaching">Teaching</option>}
+            {preferredIndustry === 'engineering' && <option value="civilEngineering">Civil Engineering</option>}
+            {preferredIndustry === 'healthcare' && <option value="nursing">Nursing</option>}
+          </Select>
+        </FormControl>
+
+        {/* Preferred Occupation */}
+        <FormControl isRequired mb={4}>
+          <FormLabel>Preferred Occupation (based on industry)</FormLabel>
+          <Select placeholder="Select an occupation" onChange={(e) => updateFormData("preferredOccupation", e.target.value)}>
+            {preferredIndustry === 'business' && <option value="businessAnalyst">Business Analyst</option>}
+            {preferredIndustry === 'it' && <option value="softwareDeveloper">Software Developer</option>}
+            {preferredIndustry === 'education' && <option value="teacher">Teacher</option>}
+            {preferredIndustry === 'engineering' && <option value="civilEngineer">Civil Engineer</option>}
+            {preferredIndustry === 'healthcare' && <option value="nurse">Nurse</option>}
+          </Select>
+        </FormControl>
+
         {/* Marital Status */}
         <FormControl isRequired mb={4}>
           <FormLabel>What is your marital status?</FormLabel>
@@ -176,4 +241,5 @@ const Questionairre = () => {
 };
 
 export default Questionairre;
+
 
