@@ -7,3 +7,6 @@ __pycache__/
 
 # Ignore Node.js modules
 node_modules/
+
+#Ignote Visual Studio elements
+.vs/
