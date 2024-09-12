@@ -10,7 +10,7 @@ function Login() {
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
-            const response = await axios.post('http://localhost:5000/login', { email, password });
+            const response = await axios.post('http://localhost:5000/auth/login', { email, password });
             if (response.data.success) { // Check if success from backend erorr throw (harrison)
                 alert('Login successful');
                 // Redirect or handle successful login

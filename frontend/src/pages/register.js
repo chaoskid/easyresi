@@ -61,8 +61,8 @@ const FormComponent = () => {
             console.log('Registration successful', formData);
 
             try {
-                const response = await axios.post('http://127.0.0.1:5000/api/register', formData);
-                console.log(response.data);  // Handle the response from backend flask (harrison)
+                const response = await axios.post('http://127.0.0.1:5000/auth/register', formData);
+                console.log(response.data);  // Handle the response from backend flask (harrison).
             } catch (error) {
                 console.error('There was an error submitting the form!', error);
             }
