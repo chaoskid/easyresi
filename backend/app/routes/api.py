@@ -1,5 +1,4 @@
 from flask import Blueprint, jsonify, request
-from app.models.questionnaire import Questionnaire
 from app import db
 
 api = Blueprint('api', __name__)

@@ -4,6 +4,8 @@ __pycache__/
 
 # Ignore .venv directory
 .venv/
+venv/
+env/
 
 # Ignore Node.js modules
 node_modules/

@@ -1,8 +1,8 @@
 # Authentication routes
 
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, session
 from app import db, bcrypt
-from app.models.user import User
+from app.models.db_models import *
 
 # Create a Blueprint for authentication routes
 auth_bp = Blueprint('auth', __name__)
@@ -14,28 +14,51 @@ def register():
     lastname = data.get('lname')
     email = data.get('email')
     password = data.get('pass')
-    print("Hello {} {} !!".format(firstname,lastname))
+    
+    # Check if the email exists in the database
+    user = db.session.query(User).filter_by(email=email).first()
+    if user:
+        return jsonify({'error': 'User already exists for this email'}), 409
+    
     # Hash the password
-    #hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
-    #new_user = User(username=username, email=email, password=hashed_password)
+    hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
     
-    # Add user to the database
-    #db.session.add(new_user)
-    #db.session.commit()
+    new_user = User(first_name=firstname, last_name=lastname, user_type="applicant", email=email, password_hash=hashed_password)
+    try:
+        db.session.add(new_user)
+        db.session.commit()
+        return jsonify({
+            'message': 'User created successfully!',
+            'user': {
+                'id': new_user.user_id,
+                'first_name': new_user.first_name,
+                'last_name': new_user.last_name,
+                'email': new_user.email
+            }
+        }), 201
     
-    return jsonify({"message": "User {} registered successfully!".format(email)}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': 'An unexpected error occurred: {}'.format(e)}), 500
+    
+    
 
 @auth_bp.route('/login', methods=['POST'])
 def login():
-    data = request.get_json()  # Get JSON data from request
+    data = request.get_json()  
     email = data.get('email')
-    password = data.get('password')
+    password = data.get('pass')
+    try:
+        # Check if user exists
+        user = db.session.query(User).filter_by(email=email).first()
 
-    # Check if user exists
-    user = User.query.filter_by(email=email).first()
-    
-    if user and bcrypt.check_password_hash(user.password, password):
-        return jsonify({"message": "Login successful!"}), 200
-    else:
-        return jsonify({"message": "Login failed!"}), 401
+        if user and bcrypt.check_password_hash(user.password_hash, password):
+            session['user_id'] = user.user_id
+            return jsonify({"message": "Login successful!"}), 200
+        else:
+            return jsonify({"message": "Invalid credentials. Please try again"}), 401
+        
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': 'An unexpected error occurred: {}'.format(e)}), 500
 
