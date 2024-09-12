@@ -1,6 +1,6 @@
 # Authentication routes
 
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, session
 from app import db, bcrypt
 from app.models.db_models import *
 
@@ -45,15 +45,20 @@ def register():
 
 @auth_bp.route('/login', methods=['POST'])
 def login():
-    data = request.get_json()  # Get JSON data from request
+    data = request.get_json()  
     email = data.get('email')
-    password = data.get('password')
+    password = data.get('pass')
+    try:
+        # Check if user exists
+        user = db.session.query(User).filter_by(email=email).first()
 
-    # Check if user exists
-    user = User.query.filter_by(email=email).first()
-    
-    if user and bcrypt.check_password_hash(user.password, password):
-        return jsonify({"message": "Login successful!"}), 200
-    else:
-        return jsonify({"message": "Login failed!"}), 401
+        if user and bcrypt.check_password_hash(user.password_hash, password):
+            session['user_id'] = user.user_id
+            return jsonify({"message": "Login successful!"}), 200
+        else:
+            return jsonify({"message": "Invalid credentials. Please try again"}), 401
+        
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': 'An unexpected error occurred: {}'.format(e)}), 500
 
