@@ -1,0 +1,12 @@
+# Ignore Python cache files
+__pycache__/
+*.py[cod]
+
+# Ignore .venv directory
+.venv/
+
+# Ignore Node.js modules
+node_modules/
+
+#Ignote Visual Studio elements
+.vs/

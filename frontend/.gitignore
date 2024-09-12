@@ -2,8 +2,5 @@
 __pycache__/
 *.py[cod]
 
-# Ignore .venv directory
-.venv/
-
 # Ignore Node.js modules
 node_modules/

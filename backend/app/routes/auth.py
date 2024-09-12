@@ -10,19 +10,20 @@ auth_bp = Blueprint('auth', __name__)
 @auth_bp.route('/register', methods=['POST'])
 def register():
     data = request.get_json()  # Get JSON data from request
-    username = data.get('username')
+    firstname = data.get("fname")
+    lastname = data.get('lname')
     email = data.get('email')
-    password = data.get('password')
-
+    password = data.get('pass')
+    print("Hello {} {} !!".format(firstname,lastname))
     # Hash the password
-    hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
-    new_user = User(username=username, email=email, password=hashed_password)
+    #hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
+    #new_user = User(username=username, email=email, password=hashed_password)
     
     # Add user to the database
-    db.session.add(new_user)
-    db.session.commit()
+    #db.session.add(new_user)
+    #db.session.commit()
     
-    return jsonify({"message": "User registered successfully!"}), 201
+    return jsonify({"message": "User {} registered successfully!".format(email)}), 200
 
 @auth_bp.route('/login', methods=['POST'])
 def login():
