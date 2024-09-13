@@ -1,5 +1,8 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, session
 from app import db
+
+from app.models.db_models import *
+from app.routes.auth import login_required
 
 api = Blueprint('api', __name__)
 
@@ -7,6 +10,13 @@ api = Blueprint('api', __name__)
 @api.route('/', methods=['GET'])
 def home():
     return jsonify({'message': 'Welcome to the Flask application!'})
+
+# Dashboard Route
+@api.route('/dashboard', methods=['GET'])
+@login_required
+def Dashboard():
+    user = db.session.query(User).filter_by(user_id=session['user_id']).first()
+    return jsonify({'message': 'Welcome to the Dashboard {}!'.format(user.first_name)})
 
 # Create a new questionnaire entry
 @api.route('/questionnaires', methods=['POST'])
