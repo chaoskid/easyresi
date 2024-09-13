@@ -9,7 +9,6 @@ import axios from '../axiosConfig';
 function Login() {
     // Constants
     // Set axios to include credentials (cookies) with every request
-    axios.defaults.withCredentials = true;
     const navigate = useNavigate();
 
     const [email, setEmail] = useState('');
@@ -23,7 +22,7 @@ function Login() {
             console.log(response); // Successful response
 
             if (response.status = 200) { 
-                navigate('/dashboard', { state: { message: 'Logged out' } });
+                navigate('/dashboard', { state: { message: 'Logged in' } });
             } else {
                 setError(response.data.message);
             }
