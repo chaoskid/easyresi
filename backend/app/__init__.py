@@ -18,6 +18,7 @@ bcrypt = Bcrypt()
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
+    app.config.update(SESSION_COOKIE_SAMESITE='None')
 
     # Initialise extensions with the app
     db.init_app(app)

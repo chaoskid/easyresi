@@ -79,7 +79,16 @@ def login():
 
 @auth_bp.route('/logout', methods=['POST'])
 def logout():
-    print("before logout", session)
-    session.pop('user_id',None)
-    print("after logout", session)
-    return jsonify({"message": "Logout successful!"}), 200
+    print('Session before logout:', session)  # Check session state
+    if 'user_id' not in session:
+        print('No user logged in during logout attempt.')
+        return jsonify({'message': 'No user logged in.'}), 400
+    print("logout plz")
+
+    session.pop('user_id', None)
+    session.clear()
+    response = jsonify({'message': 'Logged out successfully'})
+    response.set_cookie('session', '', expires=0)  # Clear the cookie
+
+    print('Session after logout:', session)
+    return jsonify({'message': 'Logged out successfully!'}), 200

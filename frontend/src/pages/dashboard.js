@@ -31,7 +31,7 @@ const Dashboard = () => {
     const handleLogout = async () => {
         try {
             // Send POST request to logout endpoint
-            const response = await axios.post('http://127.0.0.1:5000/auth/logout', {}, { withCredentials: true });
+            const response = await axios.post('http://localhost:5000/auth/logout', {});
             console.log(response.data.message); // Log success message or handle accordingly
             window.location.href = '/login'; // Adjust the path to your login page
         } catch (error) {
