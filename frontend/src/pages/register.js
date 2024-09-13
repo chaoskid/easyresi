@@ -7,10 +7,10 @@ const FormComponent = () => {
 
     // User and pass details for error checking
     const [formData, setFormData] = useState({
-        username: '',
+        fname: '',
+        lname: '',
         pass: '',
         confirmPassword: '',
-        name: '',
         email: ''
     });
 
