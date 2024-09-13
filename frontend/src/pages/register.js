@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import '../App.css';
+import axios from '../axiosConfig';
+
 
 const FormComponent = () => {
     // I suspect errors will come from not having all inputs declared here and then placed in handlechange setformdata - Alex

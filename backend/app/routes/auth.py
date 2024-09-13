@@ -9,6 +9,7 @@ from functools import wraps
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
+        print("login required", session)
         if "user_id" not in session:
             return jsonify({"error":"Unauthorized access, please log in"}),401
         return f(*args, **kwargs)
@@ -57,24 +58,28 @@ def register():
 def login():
     data = request.get_json()  
     email = data.get('email')
-    password = data.get('pass')
+    password = data.get('password')
+    print("login", session)
     try:
         # Check if user exists
         user = db.session.query(User).filter_by(email=email).first()
 
         if user and bcrypt.check_password_hash(user.password_hash, password):
             session['user_id'] = user.user_id
+            print("login", session)
             return jsonify({"message": "Login successful!"}), 200
         else:
             return jsonify({"message": "Invalid credentials. Please try again"}), 401
         
     except Exception as e:
+        print(e);
         db.session.rollback()
         return jsonify({'error': 'An unexpected error occurred: {}'.format(e)}), 500
 
 
 @auth_bp.route('/logout', methods=['POST'])
-@login_required
 def logout():
+    print("before logout", session)
     session.pop('user_id',None)
+    print("after logout", session)
     return jsonify({"message": "Logout successful!"}), 200

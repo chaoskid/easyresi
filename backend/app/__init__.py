@@ -26,7 +26,8 @@ def create_app(config_class=Config):
     bcrypt.init_app(app)
 
     # Enable CORS for the entire app
-    CORS(app)
+    CORS(app, supports_credentials=True, origins=['http://localhost:3000'])
+
 
     # Testing root route
     @app.route('/', methods=['GET'])
