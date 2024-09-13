@@ -3,8 +3,18 @@
 from flask import Blueprint, request, jsonify, session
 from app import db, bcrypt
 from app.models.db_models import *
+from functools import wraps
 
-# Create a Blueprint for authentication routes
+#Custom decorator for login manager
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if "user_id" not in session:
+            return jsonify({"error":"Unauthorized access, please log in"}),401
+        return f(*args, **kwargs)
+    return decorated_function
+
+# Create a Blueprint for authentication routess
 auth_bp = Blueprint('auth', __name__)
 
 @auth_bp.route('/register', methods=['POST'])
@@ -62,3 +72,9 @@ def login():
         db.session.rollback()
         return jsonify({'error': 'An unexpected error occurred: {}'.format(e)}), 500
 
+
+@auth_bp.route('/logout', methods=['POST'])
+@login_required
+def logout():
+    session.pop('user_id',None)
+    return jsonify({"message": "Logout successful!"}), 200
