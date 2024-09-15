@@ -15,6 +15,7 @@ def home():
 @api.route('/dashboard', methods=['GET'])
 @login_required
 def Dashboard():
+    print(session)
     user = db.session.query(User).filter_by(user_id=session['user_id']).first()
     return jsonify({'message': 'Welcome to the Dashboard {}!'.format(user.first_name)})
 

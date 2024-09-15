@@ -5,6 +5,7 @@ import About  from './pages/about';
 import Login from './pages/login';
 import Register from './pages/register';
 import Questionairre from './pages/questionairre';
+import Dashboard from './pages/dashboard';
 import Notfound from './pages/notfound';
 import Navbar from './components/Navbar';
 
@@ -22,6 +23,7 @@ function App() {
                         <Route path="/login" element={<Login />} />
                         <Route path="/register" element={<Register />} />
                         <Route path="/questionairre" element={<Questionairre />} />
+                        <Route path="/dashboard" element={<Dashboard/>} />
                         <Route path="*" element={<Notfound />} />
 
 
