@@ -1,46 +1,227 @@
 @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap');
 
-
-/* base styles */
+/* Base Styles */
 * {
     margin: 0;
     font-family: "Quicksand";
-    color: #333;
-}
+    color: #333333;
+  }
 
-.navbar {
-    padding: 20px;
+/* Basic Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: Arial, sans-serif;
+  }
+  
+  /* Navbar Container */
+  .navbar {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    max-width: 600px;
-    margin: 0 auto;
-    border-bottom: 1px solid #f2f2f2;
+    background-color: #003366;
+    padding: 0 20px;
+    height: 100px;
+    color: #333333;
+  }
+  
+  /* Navigation Links */
+  .navbar .links {
+    display: flex;
+    gap: 20px;
+  }
+  
+  .navbar h1 {
+    font-size: 3rem;
+  }
 
-}
-
-    .navbar h1 {
-        color: #f1356d;
+  .navbar .links a, .navbar h1 {
+    color: #fff;
+    text-decoration: none;
+    padding: 15px 20px;
+    border-radius: 10px;
+    transition: background-color 0.3s;
+  }
+  
+  .navbar .links a:hover {
+    background-color: #008080;
+    border-radius: 10px;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .navbar {
+      flex-direction: column;
+      align-items: flex-start;
     }
-
+  
     .navbar .links {
-        margin-left: auto;
+      flex-direction: column;
+      width: 100%;
+    }
+  
+    .navbar .links a {
+      padding: 10px 20px;
+      text-align: center;
+      width: 100%;
+    }
+  }
+
+/* Home Page */
+.home {
+    display: block;
+    margin-left: 35px;
+    margin-top: 35px;
+    height: 100vh;
+  }
+  
+  .home h1 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: #333333;
+    
+  }
+  
+  .home p {
+    font-size: 1.25rem;
+    margin-bottom: 20px;
+  }
+
+/* About Page */
+.about {
+    display: block;
+    margin-left: 35px;
+    margin-top: 35px;
+    height: 100vh;
+  }
+  
+  .about h1 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: #333333;
+    
+  }
+  
+  .about p {
+    font-size: 1.25rem;
+    margin-bottom: 20px;
+  }
+
+/* Login Page */
+.login {
+    display: block;
+    margin-left: 35px;
+    margin-top: 35px;
+    height: 100vh;
+  }
+  
+  .login h1 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: #333333;
+  }
+  
+  .login, .email, .password {
+    display: block;
+    font-size: 1.25rem;
+  }
+
+  .login-input-1 {
+    display: block;
+    margin-top: 5px;
+    margin-bottom: 20px;
+  }
+
+  .login-input-2 {
+    margin-top: 5px;
+  }
+
+  .password-container, .email-container {
+    flex-direction: column;
+    margin-bottom: 10px;
+  }
+
+  .login-button {
+    background-color: #008080;
+    color: #ffffff;
+    border: none;
+    padding: 6px 12px;
+    font-size: 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
     }
 
-    .navbar a {
-        margin-left: 16px;
-        text-decoration: none;
-        padding: 6px;
-        color: #cc8c55;
-        background-color: #FFD580;
-        border-radius: 8px;
-    }
-
-        .navbar a:hover {
-            color: #f1356d;
-        }
-
-.content {
-    max-width: 600px;
-    margin: 40px auto;
-    padding: 20px;
+.login-button:hover {
+    background-color: #003366;
+    transform: scale(1.05);
 }
+
+.login-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.6);
+}
+
+/* Register Page */
+.register {
+    display: block;
+    margin-left: 35px;
+    margin-top: 35px;
+    height: 100vh;
+  }
+  
+  .register h1 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: #333333;
+  }
+
+  .fname, .lname, .email, .password, .re-password {
+    display: block;
+    font-size: 1.25rem;
+}
+
+  .input {
+    display: block;
+    margin-top: 5px;
+  }
+
+  .register-button {
+    background-color: #008080;
+    color: #ffffff;
+    border: none;
+    margin-top: 10px;
+    padding: 6px 12px;
+    font-size: 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+.register-button:hover {
+    background-color: #003366;
+    transform: scale(1.05);
+}
+
+.register-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.6);
+}
+
+/* Questionnaire Page */
+.questionnaire {
+    display: block;
+    margin-left: 35px;
+    margin-top: 35px;
+    height: 100vh;
+  }
+  
+  .questionnaire h1 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: #333333;
+  }

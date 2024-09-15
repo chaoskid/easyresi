@@ -1,10 +1,10 @@
 // src/Login.js
 import React, { useState } from 'react';
+import axios from 'axios';
+import { Button } from '@chakra-ui/react';
 import { redirect } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
 import axios from '../axiosConfig';
-
-
 
 function Login() {
     // Constants
@@ -32,21 +32,21 @@ function Login() {
     };
 
     return (
-        <div className="login-container">
-            <h2>Login</h2>
+        <div className='login'>
+            <h1>Login</h1>
             <form onSubmit={handleSubmit}>
-                <div>
-                    <label>Email:</label>
-                    <input
+                <div className='email-container'>
+                    <label className='email'>Email:</label>
+                    <input className='login-input-1'
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
                     />
                 </div>
-                <div>
-                    <label>Password:</label>
-                    <input
+                <div className='password-container'>
+                    <label className='password'>Password:</label>
+                    <input className='login-input-2'
                         type="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
@@ -54,7 +54,7 @@ function Login() {
                     />
                 </div>
                 {error && <div className="error">{error}</div>}
-                <button type="submit">Login</button>
+                <Button type="submit" className='login-button' loadingText>Login</Button>
             </form>
         </div>
     );

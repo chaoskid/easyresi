@@ -11,8 +11,9 @@ import axios from '../axiosConfig';
 const Questionairre = () => {
 
     return (
-        <>
-        </>
+        <div className='questionnaire'>
+            <h1>Questionnaire</h1>
+        </div>
     );
 }
 
