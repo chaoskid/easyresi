@@ -1,8 +1,16 @@
 // src/Login.js
 import React, { useState } from 'react';
-import axios from 'axios';
+import { redirect } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
+import axios from '../axiosConfig';
+
+
 
 function Login() {
+    // Constants
+    // Set axios to include credentials (cookies) with every request
+    const navigate = useNavigate();
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -11,9 +19,10 @@ function Login() {
         event.preventDefault();
         try {
             const response = await axios.post('http://localhost:5000/auth/login', { email, password });
-            if (response.data.success) { // Check if success from backend erorr throw (harrison)
-                alert('Login successful');
-                // Redirect or handle successful login
+            console.log(response); // Successful response
+
+            if (response.status = 200) { 
+                navigate('/dashboard', { state: { message: 'Logged in' } });
             } else {
                 setError(response.data.message);
             }

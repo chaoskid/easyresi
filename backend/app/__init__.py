@@ -18,6 +18,7 @@ bcrypt = Bcrypt()
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
+    # app.config.update(SESSION_COOKIE_SAMESITE='None') idk what this was for but it kills the whole dashboard, use with caution -Alex
 
     # Initialise extensions with the app
     db.init_app(app)
@@ -26,7 +27,8 @@ def create_app(config_class=Config):
     bcrypt.init_app(app)
 
     # Enable CORS for the entire app
-    CORS(app)
+    CORS(app, supports_credentials=True, origins=['http://localhost:3000'])
+
 
     # Testing root route
     @app.route('/', methods=['GET'])

@@ -1,4 +1,6 @@
 import { Link } from "react-router-dom"
+import axios from '../axiosConfig';
+
 
 const Notfound = () => {
     return (

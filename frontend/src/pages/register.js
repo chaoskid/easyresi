@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import '../App.css';
+import axios from '../axiosConfig';
+//import { useNavigate } from 'react-router-dom'; // TODO NAVIGATE 
+
 
 const FormComponent = () => {
     // I suspect errors will come from not having all inputs declared here and then placed in handlechange setformdata - Alex
@@ -42,6 +44,7 @@ const FormComponent = () => {
 
     // Handle form submission
     const handleSubmit = async (e) => {
+
         e.preventDefault();
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
@@ -59,7 +62,7 @@ const FormComponent = () => {
         } else {
             setError('');
             console.log('Registration successful', formData);
-
+            //navigate('/', { state: { message: 'Registered' } }); TODO NAVIGATE
             try {
                 const response = await axios.post('http://127.0.0.1:5000/auth/register', formData);
                 console.log(response.data);  // Handle the response from backend flask (harrison).

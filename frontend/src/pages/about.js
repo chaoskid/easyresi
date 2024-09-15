@@ -1,5 +1,6 @@
 import React from "react";
 import Navbar from '../components/Navbar';
+import axios from '../axiosConfig';
 
 const About = () => {
     return (
