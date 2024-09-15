@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import '../App.css';
 
 const FormComponent = () => {
     // I suspect errors will come from not having all inputs declared here and then placed in handlechange setformdata - Alex
@@ -17,7 +16,7 @@ const FormComponent = () => {
     const [error, setError] = useState('');
     const submitbutton = document.getElementById('submit');
 
-    // Handle form input changes
+    // Handle form input className='input' changes
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
@@ -70,10 +69,11 @@ const FormComponent = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <label>
+        <form className='register' onSubmit={handleSubmit}>
+            <h1>Register</h1>
+            <label className='fname'>
                 First Name:
-                <input
+                <input className='input'
                     type="text"
                     name="fname"
                     value={formData.fname}
@@ -82,9 +82,9 @@ const FormComponent = () => {
                 />
             </label>
             <br />
-            <label>
+            <label className='lname'>
                 Last Name:
-                <input
+                <input className='input'
                     type="text"
                     name="lname"
                     value={formData.lname}
@@ -93,9 +93,9 @@ const FormComponent = () => {
                 />
             </label>
             <br />
-            <label>
+            <label className='email'>
                 Email:
-                <input
+                <input className='input'
                     type="email"
                     name="email"
                     value={formData.email}
@@ -104,9 +104,9 @@ const FormComponent = () => {
                 />
             </label>
             <br />
-            <label>
+            <label className='password'>
                 Password:
-                <input
+                <input className='input'
                     type="text"
                     name="pass"
                     value={formData.pass}
@@ -115,9 +115,9 @@ const FormComponent = () => {
                 />
             </label>
             <br />
-            <label>
-                Re-enter Password:
-                <input
+            <label className='re-password'>
+                Re-Enter Password:
+                <input className='input'
                     type="text"
                     name="repass"
                     value={formData.repass}
@@ -126,10 +126,7 @@ const FormComponent = () => {
                 />
             </label>
             {error && <p className="error-message">{error}</p>}
-
-            < br />
-            < br />
-            <button type="submit">Submit</button>
+            <button className='register-button' type="submit">Submit</button>
         </form>
     );
 };

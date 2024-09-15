@@ -1,15 +1,11 @@
-import logo from './logo.svg';
-import './App.css';
+import './index.css';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-
 import Index  from './pages/index';
 import About  from './pages/about';
 import Login from './pages/login';
 import Register from './pages/register';
 import Questionairre from './pages/questionairre';
 import Notfound from './pages/notfound';
-
-import Layout from './components/Layout';
 import Navbar from './components/Navbar';
 
 
