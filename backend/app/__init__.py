@@ -21,10 +21,10 @@ def create_app(config_class=Config):
     # app.config.update(SESSION_COOKIE_SAMESITE='None') idk what this was for but it kills the whole dashboard, use with caution -Alex
 
     # Initialise extensions with the app
-    db.init_app(app)
-    migrate.init_app(app, db)
-    login_manager.init_app(app)
-    bcrypt.init_app(app)
+    #db.init_app(app)
+    #migrate.init_app(app, db)
+    #login_manager.init_app(app)
+    #bcrypt.init_app(app)
 
     # Enable CORS for the entire app
     CORS(app, supports_credentials=True, origins=['http://localhost:3000'])
