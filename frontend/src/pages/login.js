@@ -1,6 +1,5 @@
 // src/Login.js
 import React, { useState } from 'react';
-import axios from 'axios';
 import { Button } from '@chakra-ui/react';
 import { redirect } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
