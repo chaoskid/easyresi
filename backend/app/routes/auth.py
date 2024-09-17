@@ -1,7 +1,7 @@
 # Authentication routes
 
 from flask import Blueprint, request, jsonify, session
-from app import db, bcrypt
+from create_app import db, bcrypt
 from app.models.db_models import *
 from functools import wraps
 
