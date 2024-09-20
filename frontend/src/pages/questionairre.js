@@ -18,7 +18,7 @@ const Questionairre = () => {
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('/api/questionnaire', formData);  // API call using axios
+      const response = await axios.post('http://127.0.0.1:5000/api/questionnaire', formData);  // API call using axios
       console.log('Success:', response.data);
     } catch (error) {
       console.error('Error:', error);
