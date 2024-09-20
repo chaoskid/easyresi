@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request, session
-from app import db
+from create_app import db
 
 from app.models.db_models import *
 from app.routes.auth import login_required
@@ -20,7 +20,7 @@ def Dashboard():
     return jsonify({'message': 'Welcome to the Dashboard {}!'.format(user.first_name)})
 
 # Create a new questionnaire entry
-@api.route('/questionnaires', methods=['POST'])
+@api.route('/questionnaire', methods=['POST'])
 def create_questionnaire():
     if request.method == 'POST':
         data = request.get_json()  # Receive JSON data from the front-end

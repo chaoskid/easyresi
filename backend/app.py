@@ -1,10 +1,10 @@
 # Any entry point to run the Flask app
 
-from app import create_app
+from create_app import createApp
 from app.models.database import create_database, create_tables
 
 
-app = create_app()
+app = createApp()
 
 if __name__ == '__main__':
     create_database()  # Create the database if it doesn't exist
