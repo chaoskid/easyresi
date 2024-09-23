@@ -22,83 +22,86 @@ def Dashboard():
 # Create a new questionnaire entry
 @api.route('/questionnaire', methods=['POST'])
 def create_questionnaire():
-    if request.method == 'POST':
-        data = request.get_json()  # Receive JSON data from the front-end
-        print("Received POST request")
-        return(data)
-
+    data = request.get_json()  # Receive JSON data from the front-end
+    print(data)
     # Extract and validate data
-    age = data.get('age')
-    english_proficiency = data.get('english_proficiency')
-    skilled_work_experience_overseas = data.get('skilled_work_experience_overseas')
-    skilled_work_experience_aus = data.get('skilled_work_experience_aus')
-    educational_qualification = data.get('educational_qualification')
-    professional_year_in_aus = data.get('professional_year_in_aus')
-    credentialled_community_language = data.get('credentialled_community_language')
-    study_in_regional_aus = data.get('study_in_regional_aus')
-    marital_status = data.get('marital_status')
-    spouse_skills = data.get('spouse_skills')
-    area_of_work_occupation = data.get('area_of_work_occupation')
-    course_preferences = data.get('course_preferences')
-    preferred_location = data.get('preferred_location')
-    intended_budget = data.get('intended_budget')
-    skills_work_experience_details = data.get('skills_work_experience_details')
-
+    visa_type = data.get('visaType')
+    age_group = data.get('age')
+    english_proficiency = data.get('englishProficiency')
+    overseas_experience = data.get('overseasExperience')
+    australian_experience = data.get('australiaExperience')
+    qualification = data.get('education')
+    australian_education = data.get('australianStudy')
+    specialist_education = data.get('specialistEducation')
+    community_lang = str(data.get('communityLanguage')[0])
+    professional_year = data.get('professionalYear')
+    regional_area = str(data.get('regionalStudy')[0])
+    marital_status = data.get('maritalStatus')
+    nomination = '0' #data.get('nomination')
+    preferred_location = data.get('statePreferred')
+    preferred_industry = data.get('preferredIndustry')
+    preferred_qualifications = data.get('courseLevel')
+    preferred_course = data.get('preferredCourse')
+    preferred_occupation = data.get('preferredOccupation')
+    print("User input ",[visa_type, age_group, english_proficiency, overseas_experience, australian_experience,qualification, australian_education, specialist_education, community_lang, professional_year, regional_area, marital_status, nomination, preferred_location, preferred_industry, preferred_qualifications, preferred_course, preferred_occupation])
     # Validate required fields
-    required_fields = [age, english_proficiency, skilled_work_experience_overseas, skilled_work_experience_aus,
-                       educational_qualification, professional_year_in_aus, study_in_regional_aus, marital_status,
-                       area_of_work_occupation, course_preferences, preferred_location, intended_budget,
-                       skills_work_experience_details]
+    required_fields = [age_group, english_proficiency, overseas_experience, australian_experience,qualification, australian_education, specialist_education, community_lang, professional_year, regional_area, marital_status, nomination, preferred_location, preferred_industry, preferred_qualifications, preferred_course, preferred_occupation]
     
     if not all(required_fields):
         return jsonify({'error': 'Missing data'}), 400
     
     # Create a new Questionnaire entry
-    new_entry = Questionnaire(
-        age=age,
+    new_entry = UserProfile(
+        user_id=1,
+        visa_type = visa_type,
+        age_group=age_group,
         english_proficiency=english_proficiency,
-        skilled_work_experience_overseas=skilled_work_experience_overseas,
-        skilled_work_experience_aus=skilled_work_experience_aus,
-        educational_qualification=educational_qualification,
-        professional_year_in_aus=professional_year_in_aus,
-        credentialled_community_language=credentialled_community_language,
-        study_in_regional_aus=study_in_regional_aus,
+        overseas_experience=overseas_experience,
+        australian_experience=australian_experience,
+        qualification=qualification,
+        australian_education=australian_education,
+        specialist_education=specialist_education,
+        community_lang=community_lang,
+        professional_year=professional_year,
+        regional_area=regional_area,
         marital_status=marital_status,
-        spouse_skills=spouse_skills,
-        area_of_work_occupation=area_of_work_occupation,
-        course_preferences=course_preferences,
+        nomination=nomination,
         preferred_location=preferred_location,
-        intended_budget=intended_budget,
-        skills_work_experience_details=skills_work_experience_details
+        preferred_industry=preferred_industry,
+        preferred_qualifications=preferred_qualifications,
+        preferred_course=preferred_course,
+        preferred_occupation=preferred_occupation
     )
 
     # Add to the database
     db.session.add(new_entry)
     db.session.commit()
 
-    return jsonify({'message': 'Questionnaire submitted successfully!', 'id': new_entry.id}), 201
+    return jsonify({'message': 'Questionnaire submitted successfully!', 'id': new_entry.user_id}), 201
 
 # Retrieve a specific questionnaire by ID
-@api.route('/questionnaires/<int:id>', methods=['GET'])
-def get_questionnaire(id):
-    entry = Questionnaire.query.get_or_404(id)
+@api.route('/userprofile/<int:user_id>', methods=['GET'])
+def userprofile(user_id):
+    entry = UserProfile.query.get_or_404(user_id)
     return jsonify({
-        "id": entry.id,
-        "age": entry.age,
+        "user_id": entry.user_id,
+        "age": entry.age_group,
         "english_proficiency": entry.english_proficiency,
-        "skilled_work_experience_overseas": entry.skilled_work_experience_overseas,
-        "skilled_work_experience_aus": entry.skilled_work_experience_aus,
-        "educational_qualification": entry.educational_qualification,
-        "professional_year_in_aus": entry.professional_year_in_aus,
-        "credentialled_community_language": entry.credentialled_community_language,
-        "study_in_regional_aus": entry.study_in_regional_aus,
+        "overseas_experience": entry.overseas_experience,
+        "australian_experience": entry.australian_experience,
+        "qualification": entry.qualification,
+        "australian_education": entry.australian_education,
+        "specialist_education": entry.specialist_education,
+        "community_lang": entry.community_lang,
+        "professional_year": entry.professional_year,
+        "regional_area": entry.regional_area,
         "marital_status": entry.marital_status,
-        "spouse_skills": entry.spouse_skills,
-        "area_of_work_occupation": entry.area_of_work_occupation,
-        "course_preferences": entry.course_preferences,
+        "nomination": entry.nomination,
         "preferred_location": entry.preferred_location,
-        "intended_budget": entry.intended_budget,
-        "skills_work_experience_details": entry.skills_work_experience_details
+        "preferred_industry": entry.preferred_industry,
+        "preferred_qualifications": entry.preferred_qualifications,
+        "preferred_course": entry.preferred_course,
+        "preferred_occupation": entry.preferred_occupation
     })
 
 # Retrieve all questionnaires

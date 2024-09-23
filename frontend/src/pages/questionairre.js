@@ -9,8 +9,8 @@ import {
 const Questionairre = () => {
   // Form states
   const [visaType, setVisaType] = useState('');
-  const [maritalStatus, setMaritalStatus] = useState('');
-  const [spouseSkilled, setSpouseSkilled] = useState('');
+  //const [maritalStatus, setMaritalStatus] = useState('');
+  //const [spouseSkilled, setSpouseSkilled] = useState('');
   const [formData, setFormData] = useState({});
   const [preferredIndustry, setPreferredIndustry] = useState('');
 
@@ -26,11 +26,7 @@ const Questionairre = () => {
 
     // Debugging output to the console
     console.log({
-      visaType,
-      maritalStatus,
-      spouseSkilled,
-      preferredIndustry,
-      ...formData,
+      formData,
     });
   };
 
@@ -51,7 +47,13 @@ const Questionairre = () => {
           {/* Visa Subclass Selection */}
           <FormControl isRequired mb={4}>
             <FormLabel>Which visa subclass are you applying for?</FormLabel>
-            <RadioGroup onChange={setVisaType} value={visaType}>
+            <RadioGroup
+              onChange={(value) => {
+                setVisaType(value);         // Update visaType state
+                updateFormData("visaType", value); // Update form data
+                }}
+              value={visaType}
+            >
               <Stack direction="row">
                 <Radio value="189">Skilled Independent Visa (Subclass 189)</Radio>
                 <Radio value="190">Skilled Nominated Visa (Subclass 190)</Radio>
@@ -108,8 +110,8 @@ const Questionairre = () => {
           <FormControl isRequired mb={4}>
             <FormLabel>What is your highest level of educational qualification?</FormLabel>
             <Select placeholder="Select your highest qualification" onChange={(e) => updateFormData("education", e.target.value)}>
-              <option value="phd">Doctorate (PhD)</option>
-              <option value="bachelor">Bachelor’s Degree</option>
+              <option value="phd">Doctorate (PhD or a Masters Degree by Research)</option>
+              <option value="bachelor">Masters Degree by Coursework or a Bachelor’s Degree</option>
               <option value="diploma">Diploma/Trade Qualification</option>
               <option value="qualification">Qualification for Nominated Skilled Occupation</option>
             </Select>
@@ -147,20 +149,21 @@ const Questionairre = () => {
             <FormLabel>Do you hold a recognised qualification in a credentialled community language?</FormLabel>
             <CheckboxGroup onChange={(value) => updateFormData("communityLanguage", value)}>
               <Stack direction="row">
-                <Checkbox value="bilingual">Bilingual</Checkbox>
-                <Checkbox value="trilingual">Trilingual</Checkbox>
+                <Checkbox value="yes">Yes</Checkbox>
+                <Checkbox value="no">No</Checkbox>
               </Stack>
             </CheckboxGroup>
           </FormControl>
 
           {/* Study in Regional Australia */}
           <FormControl mb={4}>
-            <Checkbox onChange={(e) => updateFormData("regionalStudy", e.target.checked)}>
-              Have you studied in a regional area of Australia and met the Australian study requirement?
-            </Checkbox>
-            <Text fontSize="sm" color="red.500">
-              *You must have lived and studied in a designated regional area to claim these points.
-            </Text>
+            <FormLabel>Have you studied in a regional area of Australia and met the Australian study requirement?</FormLabel>
+            <CheckboxGroup onChange={(value) => updateFormData("regionalStudy", value)}>
+              <Stack direction="row">
+                <Checkbox value="yes">Yes</Checkbox>
+                <Checkbox value="no">No</Checkbox>
+              </Stack>
+            </CheckboxGroup>
           </FormControl>
 
           {/* State Preferred */}
@@ -181,7 +184,12 @@ const Questionairre = () => {
           {/* Preferred Industry */}
           <FormControl isRequired mb={4}>
             <FormLabel>Preferred Industry</FormLabel>
-            <Select placeholder="Select an industry" onChange={(e) => setPreferredIndustry(e.target.value)}>
+            <Select placeholder="Select an industry" 
+              onChange={(e) => {
+              setPreferredIndustry(e.target.value) ;
+              updateFormData("preferredIndustry", e.target.value)
+              }}
+            >
               <option value="business">Business (ANZCO starts with '22')</option>
               <option value="it">IT (ANZCO starts with '26')</option>
               <option value="education">Education (ANZCO starts with '24')</option>
@@ -227,23 +235,12 @@ const Questionairre = () => {
           {/* Marital Status */}
           <FormControl isRequired mb={4}>
             <FormLabel>What is your marital status?</FormLabel>
-            <Select onChange={(e) => setMaritalStatus(e.target.value)} placeholder="Select your marital status">
-              <option value="single">Single</option>
-              <option value="married">Married/De facto partner</option>
+            <Select onChange={(e) => updateFormData("maritalStatus", e.target.value)} placeholder="Select your marital status">
+              <option value="single">Single or partner is an Australian citizen/ permanent resident</option>
+              <option value="married_skilled">Married and partner meets age, english and skill criteria</option>
+              <option value="married_unskilled">Married and partner has competent english</option>
             </Select>
           </FormControl>
-
-          {/* Partner Skills */}
-          {maritalStatus === 'married' && (
-            <FormControl isRequired mb={4}>
-              <FormLabel>If married or de facto, does your partner meet the age, English language, and skilled employment criteria?</FormLabel>
-              <Select onChange={(e) => updateFormData("spouseSkills", e.target.value)} placeholder="Select partner's skills status">
-                <option value="yes">Yes</option>
-                <option value="no">No</option>
-                <option value="english">Partner has Competent English only</option>
-              </Select>
-            </FormControl>
-          )}
 
           {/* Submit Button */}
           <Button mt={6} colorScheme="teal" type="submit">

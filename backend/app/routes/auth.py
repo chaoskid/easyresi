@@ -72,7 +72,7 @@ def login():
             return jsonify({"message": "Invalid credentials. Please try again"}), 401
         
     except Exception as e:
-        print(e);
+        print(e)
         db.session.rollback()
         return jsonify({'error': 'An unexpected error occurred: {}'.format(e)}), 500
 
