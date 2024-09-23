@@ -20,64 +20,68 @@ def Dashboard():
     return jsonify({'message': 'Welcome to the Dashboard {}!'.format(user.first_name)})
 
 # Create a new questionnaire entry
-@api.route('/questionnaire', methods=['POST'])
+@api.route('/questionnaire', methods=['POST','GET'])
+@login_required
 def create_questionnaire():
-    data = request.get_json()  # Receive JSON data from the front-end
-    print(data)
-    # Extract and validate data
-    visa_type = data.get('visaType')
-    age_group = data.get('age')
-    english_proficiency = data.get('englishProficiency')
-    overseas_experience = data.get('overseasExperience')
-    australian_experience = data.get('australiaExperience')
-    qualification = data.get('education')
-    australian_education = data.get('australianStudy')
-    specialist_education = data.get('specialistEducation')
-    community_lang = str(data.get('communityLanguage')[0])
-    professional_year = data.get('professionalYear')
-    regional_area = str(data.get('regionalStudy')[0])
-    marital_status = data.get('maritalStatus')
-    nomination = '0' #data.get('nomination')
-    preferred_location = data.get('statePreferred')
-    preferred_industry = data.get('preferredIndustry')
-    preferred_qualifications = data.get('courseLevel')
-    preferred_course = data.get('preferredCourse')
-    preferred_occupation = data.get('preferredOccupation')
-    print("User input ",[visa_type, age_group, english_proficiency, overseas_experience, australian_experience,qualification, australian_education, specialist_education, community_lang, professional_year, regional_area, marital_status, nomination, preferred_location, preferred_industry, preferred_qualifications, preferred_course, preferred_occupation])
-    # Validate required fields
-    required_fields = [age_group, english_proficiency, overseas_experience, australian_experience,qualification, australian_education, specialist_education, community_lang, professional_year, regional_area, marital_status, nomination, preferred_location, preferred_industry, preferred_qualifications, preferred_course, preferred_occupation]
-    
-    if not all(required_fields):
-        return jsonify({'error': 'Missing data'}), 400
-    
-    # Create a new Questionnaire entry
-    new_entry = UserProfile(
-        user_id=1,
-        visa_type = visa_type,
-        age_group=age_group,
-        english_proficiency=english_proficiency,
-        overseas_experience=overseas_experience,
-        australian_experience=australian_experience,
-        qualification=qualification,
-        australian_education=australian_education,
-        specialist_education=specialist_education,
-        community_lang=community_lang,
-        professional_year=professional_year,
-        regional_area=regional_area,
-        marital_status=marital_status,
-        nomination=nomination,
-        preferred_location=preferred_location,
-        preferred_industry=preferred_industry,
-        preferred_qualifications=preferred_qualifications,
-        preferred_course=preferred_course,
-        preferred_occupation=preferred_occupation
-    )
+    if request.method == 'POST':
+        data = request.get_json()  # Receive JSON data from the front-end
+        print(session)
+        # Extract and validate data
+        visa_type = data.get('visaType')
+        age_group = data.get('age')
+        english_proficiency = data.get('englishProficiency')
+        overseas_experience = data.get('overseasExperience')
+        australian_experience = data.get('australiaExperience')
+        qualification = data.get('education')
+        australian_education = data.get('australianStudy')
+        specialist_education = data.get('specialistEducation')
+        community_lang = str(data.get('communityLanguage')[0])
+        professional_year = data.get('professionalYear')
+        regional_area = str(data.get('regionalStudy')[0])
+        marital_status = data.get('maritalStatus')
+        nomination = '0' #data.get('nomination')
+        preferred_location = data.get('statePreferred')
+        preferred_industry = data.get('preferredIndustry')
+        preferred_qualifications = data.get('courseLevel')
+        preferred_course = data.get('preferredCourse')
+        preferred_occupation = data.get('preferredOccupation')
+        # Validate required fields
+        required_fields = [age_group, english_proficiency, overseas_experience, australian_experience,qualification, australian_education, specialist_education, community_lang, professional_year, regional_area, marital_status, nomination, preferred_location, preferred_industry, preferred_qualifications, preferred_course, preferred_occupation]
+        print(required_fields)
+        if not all(required_fields):
+            return jsonify({'error': 'Missing data'}), 400
 
-    # Add to the database
-    db.session.add(new_entry)
-    db.session.commit()
+        # Create a new Questionnaire entry
+        new_entry = UserProfile(
+            user_id=session['user_id'],
+            visa_type = visa_type,
+            age_group=age_group,
+            english_proficiency=english_proficiency,
+            overseas_experience=overseas_experience,
+            australian_experience=australian_experience,
+            qualification=qualification,
+            australian_education=australian_education,
+            specialist_education=specialist_education,
+            community_lang=community_lang,
+            professional_year=professional_year,
+            regional_area=regional_area,
+            marital_status=marital_status,
+            nomination=nomination,
+            preferred_location=preferred_location,
+            preferred_industry=preferred_industry,
+            preferred_qualifications=preferred_qualifications,
+            preferred_course=preferred_course,
+            preferred_occupation=preferred_occupation
+        )
 
-    return jsonify({'message': 'Questionnaire submitted successfully!', 'id': new_entry.user_id}), 201
+        # Add to the database
+        db.session.add(new_entry)
+        db.session.commit()
+
+        return jsonify({'message': 'Questionnaire submitted successfully!', 'id': new_entry.user_id}), 201
+    loggedin_user = session['user_id']
+    user = db.session.query(User).filter_by(user_id=loggedin_user).first()
+    return jsonify({'message': 'user is logged in', 'user_id': user.user_id, 'user_fname':user.first_name}), 201
 
 # Retrieve a specific questionnaire by ID
 @api.route('/userprofile/<int:user_id>', methods=['GET'])
