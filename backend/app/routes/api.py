@@ -39,7 +39,7 @@ def create_questionnaire():
         professional_year = data.get('professionalYear')
         regional_area = str(data.get('regionalStudy')[0])
         marital_status = data.get('maritalStatus')
-        nomination = '0' #data.get('nomination')
+        nomination = str(data.get('nomination')[0])
         preferred_location = data.get('statePreferred')
         preferred_industry = data.get('preferredIndustry')
         preferred_qualifications = data.get('courseLevel')
