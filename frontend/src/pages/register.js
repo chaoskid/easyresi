@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import '../App.js';
 import axios from '../axiosConfig';
+import {
+    Box, FormControl, FormLabel, Select, RadioGroup, Radio, Checkbox,
+    Button, Stack, CheckboxGroup, Text, Input
+} from '@chakra-ui/react';
 //import { useNavigate } from 'react-router-dom'; // TODO NAVIGATE
 
 const FormComponent = () => {
@@ -16,7 +20,7 @@ const FormComponent = () => {
     });
 
     const [error, setError] = useState('');
-    const submitbutton = document.getElementById('submit');
+    //const submitbutton = document.getElementById('submit');
 
     // Handle form input className='input' changes
     const handleChange = (e) => {
@@ -52,7 +56,7 @@ const FormComponent = () => {
 
         // Real-time validation
         if (name === 'repass' || name === 'pass') {
-            if (value == '') {
+            if (value === '') {
                 setError('password cannot be empty')
             }
         }
@@ -77,65 +81,71 @@ const FormComponent = () => {
     };
 
     return (
-        <form className='register' onSubmit={handleSubmit}>
+        <div className='register'>
             <h1>Register</h1>
-            <label className='fname'>
-                First Name:
-                <input className='input'
-                    type="text"
-                    name="fname"
-                    value={formData.fname}
-                    onChange={handleChange}
-                    required
-                />
-            </label>
-            <br />
-            <label className='lname'>
-                Last Name:
-                <input className='input'
-                    type="text"
-                    name="lname"
-                    value={formData.lname}
-                    onChange={handleChange}
-                    required
-                />
-            </label>
-            <br />
-            <label className='email'>
-                Email:
-                <input className='input'
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                />
-            </label>
-            <br />
-            <label className='password'>
-                Password:
-                <input className='input'
-                    type="text"
-                    name="pass"
-                    value={formData.pass}
-                    onChange={handleChange}
-                    required
-                />
-            </label>
-            <br />
-            <label className='re-password'>
-                Re-Enter Password:
-                <input className='input'
-                    type="text"
-                    name="repass"
-                    value={formData.repass}
-                    onChange={handleChange}
-                    required
-                />
-            </label>
-            {error && <p className="error-message">{error}</p>}
-            <button className='register-button' type="submit">Submit</button>
-        </form>
+            <Box maxW="800px" mx="auto" mt={8} p={6} borderWidth="1px" borderRadius="lg" boxShadow="lg" bg="white">
+                <form onSubmit={handleSubmit}>
+                    <div className='firstname-container'>
+                        <label className='fname'>
+                            First Name:
+                        </label>
+                        <input className='input'
+                            type="text"
+                            name="fname"
+                            value={formData.fname}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+                    <br />
+                    <label className='lname'>
+                        Last Name:
+                        <input className='input'
+                            type="text"
+                            name="lname"
+                            value={formData.lname}
+                            onChange={handleChange}
+                            required
+                        />
+                    </label>
+                    <br />
+                    <label className='email'>
+                        Email:
+                        <input className='input'
+                            type="email"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            required
+                        />
+                    </label>
+                    <br />
+                    <label className='password'>
+                        Password:
+                        <input className='input'
+                            type="text"
+                            name="pass"
+                            value={formData.pass}
+                            onChange={handleChange}
+                            required
+                        />
+                    </label>
+                    <br />
+                    <label className='re-password'>
+                        Re-Enter Password:
+                        <input className='input'
+                            type="text"
+                            name="repass"
+                            value={formData.repass}
+                            onChange={handleChange}
+                            required
+                        />
+                    </label>
+                    {error && <p className="error-message">{error}</p>}
+                    <button className='register-button' type="submit">Submit</button>
+                </form>
+            </Box>
+        </div>
     );
 };
 
