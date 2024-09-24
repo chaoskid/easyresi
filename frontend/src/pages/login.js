@@ -29,7 +29,7 @@ function Login() {
                 setError(response.data.message);
             }
         } catch (error) {
-            setError('An error occurred');
+            setError('An error occurred, please try again');
         }
     };
 
