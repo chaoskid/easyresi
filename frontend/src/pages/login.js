@@ -1,9 +1,12 @@
 // src/Login.js
 import React, { useState } from 'react';
-import { Button } from '@chakra-ui/react';
 import { redirect } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
 import axios from '../axiosConfig';
+import {
+    Box, FormControl, FormLabel, Select, RadioGroup, Radio, Checkbox,
+    Button, Stack, CheckboxGroup, Text, Input
+} from '@chakra-ui/react';
 
 function Login() {
     // Constants
@@ -33,10 +36,11 @@ function Login() {
     return (
         <div className='login'>
             <h1>Login</h1>
+            <Box maxW="800px" mx="auto" mt={8} p={6} borderWidth="1px" borderRadius="lg" boxShadow="lg" bg="white">
             <form onSubmit={handleSubmit}>
                 <div className='email-container'>
                     <label className='email'>Email:</label>
-                    <input className='login-input-1'
+                    <Input className='login-input-1'
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
@@ -45,16 +49,18 @@ function Login() {
                 </div>
                 <div className='password-container'>
                     <label className='password'>Password:</label>
-                    <input className='login-input-2'
+                    <Input className='login-input-2'
                         type="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
                     />
-                </div>
+                    </div>
+
                 {error && <div className="error">{error}</div>}
                 <Button type="submit" className='login-button' loadingText>Login</Button>
-            </form>
+                </form>
+                </Box>
         </div>
     );
 }

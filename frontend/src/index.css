@@ -5,21 +5,21 @@
     margin: 0;
     font-family: "Quicksand";
     color: #333333;
-  }
+}
 
 /* Basic Reset */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-  }
-  
-  body {
+}
+
+body {
     font-family: Arial, sans-serif;
-  }
-  
-  /* Navbar Container */
-  .navbar {
+}
+
+/* Navbar Container */
+.navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -27,69 +27,107 @@
     padding: 0 20px;
     height: 100px;
     color: #333333;
-  }
-  
-  /* Navigation Links */
-  .navbar .links {
-    display: flex;
-    gap: 20px;
-  }
-  
-  .navbar h1 {
-    font-size: 3rem;
-  }
+}
 
-  .navbar .links a, .navbar h1 {
-    color: #fff;
-    text-decoration: none;
-    padding: 15px 20px;
-    border-radius: 10px;
-    transition: background-color 0.3s;
-  }
-  
-  .navbar .links a:hover {
-    background-color: #008080;
-    border-radius: 10px;
-  }
-  
-  /* Responsive Design */
-  @media (max-width: 768px) {
-    .navbar {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-  
+    /* Navigation Links */
     .navbar .links {
-      flex-direction: column;
-      width: 100%;
+        display: flex;
+        gap: 20px;
     }
-  
-    .navbar .links a {
-      padding: 10px 20px;
-      text-align: center;
-      width: 100%;
+
+    .navbar h1 {
+        font-size: 3rem;
     }
-  }
+
+    .navbar .links a, .navbar h1 {
+        color: #fff;
+        text-decoration: none;
+        padding: 15px 20px;
+        border-radius: 10px;
+        transition: background-color 0.3s;
+    }
+
+        .navbar .links a:hover {
+            background-color: #008080;
+            border-radius: 10px;
+        }
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+        .navbar .links {
+            flex-direction: column;
+            width: 100%;
+        }
+
+            .navbar .links a {
+                padding: 10px 20px;
+                text-align: center;
+                width: 100%;
+            }
+}
 
 /* Home Page */
 .home {
     display: block;
-    margin-left: 35px;
-    margin-top: 35px;
-    height: 100vh;
-  }
-  
-  .home h1 {
-    font-size: 2.5rem;
-    margin-bottom: 20px;
-    color: #333333;
-    
-  }
-  
-  .home p {
-    font-size: 1.25rem;
-    margin-bottom: 20px;
-  }
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10vh;
+    margin-left: auto;
+    margin-right: auto;
+    gap: 4px;
+    height: 40vh;
+}
+
+    .home h1 {
+        /*margin-top: 50vh;*/
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+        color: #333333;
+        text-align: center;
+    }
+
+    .home h2 {
+        font-size: 2.0rem;
+        margin-bottom: 20px;
+        color: #333333;
+    }
+
+    .home p {
+        font-size: 1.25rem;
+        text-align: center;
+    }
+
+.index-buttons-container {
+    display: flex;
+    justify-content: center;
+    margin-left: auto;
+    margin-right: auto;
+    width: 40%;
+    height: 5%;
+    background: #eeeeee;
+    border-radius: 50px;
+    font-size: 0.80rem;
+    padding: 1%;
+}
+
+.index-login-button, .index-register-button {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2%;
+    margin-left: 15px;
+    margin-right: 15px;
+    /*background: #ccc;*/
+}
+
+
 
 /* About Page */
 .about {
@@ -97,55 +135,62 @@
     margin-left: 35px;
     margin-top: 35px;
     height: 100vh;
-  }
-  
-  .about h1 {
-    font-size: 2.5rem;
-    margin-bottom: 20px;
-    color: #333333;
-    
-  }
-  
-  .about p {
-    font-size: 1.25rem;
-    margin-bottom: 20px;
-  }
+}
+
+    .about h1 {
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+        color: #333333;
+    }
+
+    .about p {
+        font-size: 1.25rem;
+        margin-bottom: 20px;
+    }
 
 /* Login Page */
 .login {
     display: block;
-    margin-left: 35px;
-    margin-top: 35px;
-    height: 100vh;
-  }
-  
-  .login h1 {
-    font-size: 2.5rem;
-    margin-bottom: 20px;
-    color: #333333;
-  }
-  
-  .login, .email, .password {
-    display: block;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: auto;
+    margin-left: auto;
+    margin-right: auto;
+    gap: 4px;
+    height: 50vh;
+}
+
+    .login h1 {
+        margin-top: 5vh;
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+        color: #333333;
+        text-align: center;
+    }
+
+   
+
+.login, .email, .password {
     font-size: 1.25rem;
-  }
+}
 
-  .login-input-1 {
+/*.login-input-1 {
     display: block;
     margin-top: 5px;
     margin-bottom: 20px;
-  }
-
-  .login-input-2 {
+}
+*/
+.login-input-2 {
     margin-top: 5px;
-  }
+}
 
-  .password-container, .email-container {
+.password-container, .email-container {
     flex-direction: column;
     margin-bottom: 10px;
-  }
+}
 
-  .login-button {
+.login-button {
     background-color: #008080;
     color: #ffffff;
     border: none;
@@ -154,43 +199,52 @@
     border-radius: 8px;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+    .login-button:hover {
+        background-color: #003366;
+        transform: scale(1.05);
     }
 
-.login-button:hover {
-    background-color: #003366;
-    transform: scale(1.05);
-}
-
-.login-button:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.6);
-}
+    .login-button:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.6);
+    }
 
 /* Register Page */
 .register {
     display: block;
-    margin-left: 35px;
-    margin-top: 35px;
-    height: 100vh;
-  }
-  
-  .register h1 {
-    font-size: 2.5rem;
-    margin-bottom: 20px;
-    color: #333333;
-  }
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: auto;
+    margin-left: auto;
+    margin-right: auto;
+    gap: 4px;
+    height: 50vh;
+}
 
-  .fname, .lname, .email, .password, .re-password {
+
+    .register h1 {
+        margin-top: 5vh;
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+        color: #333333;
+        text-align: center;
+    }
+
+
+.fname, .lname, .email, .password, .re-password {
     display: block;
     font-size: 1.25rem;
 }
 
-  .input {
+.input {
     display: block;
     margin-top: 5px;
-  }
+}
 
-  .register-button {
+.register-button {
     background-color: #008080;
     color: #ffffff;
     border: none;
@@ -200,17 +254,17 @@
     border-radius: 8px;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+    .register-button:hover {
+        background-color: #003366;
+        transform: scale(1.05);
     }
 
-.register-button:hover {
-    background-color: #003366;
-    transform: scale(1.05);
-}
-
-.register-button:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.6);
-}
+    .register-button:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.6);
+    }
 
 /* Questionnaire Page */
 .questionnaire {
@@ -218,10 +272,10 @@
     margin-left: 35px;
     margin-top: 35px;
     height: 100vh;
-  }
-  
-  .questionnaire h1 {
-    font-size: 2.5rem;
-    margin-bottom: 20px;
-    color: #333333;
-  }
+}
+
+    .questionnaire h1 {
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+        color: #333333;
+    }
