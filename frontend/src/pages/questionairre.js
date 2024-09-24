@@ -242,6 +242,17 @@ const Questionairre = () => {
             </Select>
           </FormControl>
 
+          {/* Nomination */}
+          <FormControl mb={4}>
+            <FormLabel>Have you been invited to apply for a Skilled Nominated visa (subclass 190) and the nominating State or Territory government agency has not withdrawn the nomination?</FormLabel>
+            <CheckboxGroup onChange={(value) => updateFormData("nomination", value)}>
+              <Stack direction="row">
+                <Checkbox value="yes">Yes</Checkbox>
+                <Checkbox value="no">No</Checkbox>
+              </Stack>
+            </CheckboxGroup>
+          </FormControl>
+
           {/* Submit Button */}
           <Button mt={6} colorScheme="teal" type="submit">
             Submit Questionnaire

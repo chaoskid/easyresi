@@ -63,8 +63,13 @@ const FormComponent = () => {
             console.log('Registration successful', formData);
             //navigate('/', { state: { message: 'Registered' } }); TODO NAVIGATE
             try {
-                const response = await axios.post('http://127.0.0.1:5000/auth/register', formData);
+                const response = await axios.post('http://localhost:5000/auth/register', formData);
                 console.log(response.data);  // Handle the response from backend flask (harrison).
+                if (response.status = 200) { 
+                    window.location.href = '/login';
+                } else {
+                    setError(response.data.message);
+                }
             } catch (error) {
                 console.error('There was an error submitting the form!', error);
             }
