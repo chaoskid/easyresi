@@ -4,44 +4,149 @@
 * {
     margin: 0;
     font-family: "Quicksand";
+<<<<<<< HEAD
   }
+=======
+    color: #333333;
+}
+>>>>>>> origin/main
 
 /* Basic Reset */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-  }
-  
-  body {
+}
+
+.error {
+    color: red;
+}
+
+body {
     font-family: Arial, sans-serif;
+<<<<<<< HEAD
     background-color: #f5f5f5 !important;
   }
+=======
+}
+
+/* Navbar Container */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #003366;
+    padding: 0 20px;
+    height: 100px;
+    color: #333333;
+}
+
+    /* Navigation Links */
+    .navbar .links {
+        display: flex;
+        gap: 20px;
+    }
+
+    .navbar h1 {
+        font-size: 3rem;
+    }
+
+    .navbar .links a, .navbar h1 {
+        color: #fff;
+        text-decoration: none;
+        padding: 15px 20px;
+        border-radius: 10px;
+        transition: background-color 0.3s;
+    }
+
+        .navbar .links a:hover {
+            background-color: #008080;
+            border-radius: 10px;
+        }
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+        .navbar .links {
+            flex-direction: column;
+            width: 100%;
+        }
+
+            .navbar .links a {
+                padding: 10px 20px;
+                text-align: center;
+                width: 100%;
+            }
+}
+>>>>>>> origin/main
 
 /* Home Page */
 .home {
     display: block;
-    margin-left: 35px;
-    margin-top: 35px;
-    height: 100vh;
-  }
-  
-  .home h1 {
-    font-size: 2.5rem;
-    margin-bottom: 20px;
-    color: #333333;
-    
-  }
-  
-  .home p {
-    font-size: 1.25rem;
-    margin-bottom: 20px;
-  }
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10vh;
+    margin-left: auto;
+    margin-right: auto;
+    gap: 4px;
+    height: 40vh;
+}
+
+    .home h1 {
+        /*margin-top: 50vh;*/
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+        color: #333333;
+        text-align: center;
+    }
+
+    .home h2 {
+        font-size: 2.0rem;
+        margin-bottom: 20px;
+        color: #333333;
+    }
+
+    .home p {
+        font-size: 1.25rem;
+        text-align: center;
+    }
+
+.index-buttons-container {
+    display: flex;
+    justify-content: center;
+    margin-left: auto;
+    margin-right: auto;
+    width: 40%;
+    height: 5%;
+    background: #eeeeee;
+    border-radius: 50px;
+    font-size: 0.80rem;
+    padding: 1%;
+}
+
+.index-login-button, .index-register-button {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2%;
+    margin-left: 15px;
+    margin-right: 15px;
+    /*background: #ccc;*/
+}
+
+
 
 /* About Page */
 .about {
     margin: 35px;
     display: block;
+<<<<<<< HEAD
   }
   
   .about h1 {
@@ -104,11 +209,29 @@
   .tool {
     margin-bottom: 50px;
   }
+=======
+    margin-left: 35px;
+    margin-top: 35px;
+    height: 100vh;
+}
+
+    .about h1 {
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+        color: #333333;
+    }
+
+    .about p {
+        font-size: 1.25rem;
+        margin-bottom: 20px;
+    }
+>>>>>>> origin/main
 
 /* Login Page */
 .login {
     display: block;
     flex-direction: column;
+<<<<<<< HEAD
     width: 25%;
     margin: auto;
     margin-top: 100px;
@@ -133,13 +256,36 @@
   
   .login, .email, .password {
     display: block;
-    font-size: 1.25rem;
-  }
+=======
+    justify-content: center;
+    align-items: center;
+    margin-top: auto;
+    margin-left: auto;
+    margin-right: auto;
+    gap: 4px;
+    height: 50vh;
+}
 
-  .login-input-1 {
+    .login h1 {
+        margin-top: 5vh;
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+        color: #333333;
+        text-align: center;
+    }
+
+   
+
+.login, .email, .password {
+>>>>>>> origin/main
+    font-size: 1.25rem;
+}
+
+/*.login-input-1 {
     display: block;
     margin-top: 5px;
     margin-bottom: 20px;
+<<<<<<< HEAD
     border: 1px solid #333333;
     outline: none;
     box-sizing: border-box;
@@ -157,11 +303,18 @@
     border-radius: 4px;
     padding: 2px;
   }
+=======
+}
+*/
+.login-input-2 {
+    margin-top: 5px;
+}
+>>>>>>> origin/main
 
-  .password-container, .email-container {
+.password-container, .email-container {
     flex-direction: column;
     margin-bottom: 10px;
-  }
+}
 
 .login-button {
     background-color: #008080;
@@ -172,23 +325,27 @@
     border-radius: 8px;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease;
+<<<<<<< HEAD
     margin-right: 10px;
+=======
+}
+
+    .login-button:hover {
+        background-color: #003366;
+        transform: scale(1.05);
+>>>>>>> origin/main
     }
 
-.login-button:hover {
-    background-color: #003366;
-    transform: scale(1.05);
-}
-
-.login-button:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.6);
-}
+    .login-button:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.6);
+    }
 
 /* Register Page */
 .register {
     display: block;
     flex-direction: column;
+<<<<<<< HEAD
     width: 25%;
     margin: auto;
     margin-top: 10px;
@@ -213,13 +370,36 @@
   }
 
   .fname, .lname, .email, .password, .re-password {
+=======
+    justify-content: center;
+    align-items: center;
+    margin-top: auto;
+    margin-left: auto;
+    margin-right: auto;
+    gap: 4px;
+    height: 50vh;
+}
+
+
+    .register h1 {
+        margin-top: 5vh;
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+        color: #333333;
+        text-align: center;
+    }
+
+
+.fname, .lname, .email, .password, .re-password {
+>>>>>>> origin/main
     display: block;
     font-size: 1.25rem;
 }
 
-  .input {
+.input {
     display: block;
     margin-top: 5px;
+<<<<<<< HEAD
     border: 1px solid #333333;
     outline: none;
     box-sizing: border-box;
@@ -227,8 +407,11 @@
     border-radius: 4px;
     padding: 2px;
   }
+=======
+}
+>>>>>>> origin/main
 
-  .register-button {
+.register-button {
     background-color: #008080;
     color: #ffffff;
     border: none;
@@ -238,18 +421,21 @@
     border-radius: 8px;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease;
+<<<<<<< HEAD
     margin-right: 10px;
+=======
+}
+
+    .register-button:hover {
+        background-color: #003366;
+        transform: scale(1.05);
+>>>>>>> origin/main
     }
 
-.register-button:hover {
-    background-color: #003366;
-    transform: scale(1.05);
-}
-
-.register-button:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.6);
-}
+    .register-button:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.6);
+    }
 
 /* Questionnaire Page */
 .questionnaire {
@@ -257,6 +443,7 @@
     margin-left: 35px;
     margin-top: 35px;
     height: 100vh;
+<<<<<<< HEAD
   }
   
   .questionnaire h1 {
@@ -304,3 +491,12 @@
     outline: none;
     box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.6);
 }
+=======
+}
+
+    .questionnaire h1 {
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+        color: #333333;
+    }
+>>>>>>> origin/main

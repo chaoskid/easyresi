@@ -1,6 +1,14 @@
 import React, { useState } from 'react';
+<<<<<<< HEAD
+=======
+import { redirect } from "react-router-dom";
+>>>>>>> origin/main
 import { useNavigate } from 'react-router-dom';
 import axios from '../axiosConfig';
+import {
+    Box, FormControl, FormLabel, Select, RadioGroup, Radio, Checkbox,
+    Button, Stack, CheckboxGroup, Text, Input
+} from '@chakra-ui/react';
 
 function Login() {
     // Constants
@@ -25,12 +33,13 @@ function Login() {
                 setError(response.data.message);
             }
         } catch (error) {
-            setError('An error occurred');
+            setError('An error occurred, please try again');
         }
     };
 
     return (
         <div className='login'>
+<<<<<<< HEAD
             <h1><strong>Easy Resi</strong></h1>
             <p>The easy way to find your best pathway to permanent residency in Australia.</p>
             <div className='login-container'>
@@ -67,6 +76,34 @@ function Login() {
                     </button>
                 </form>
             </div>
+=======
+            <h1>Login</h1>
+            <Box maxW="800px" mx="auto" mt={8} p={6} borderWidth="1px" borderRadius="lg" boxShadow="lg" bg="white">
+            <form onSubmit={handleSubmit}>
+                <div className='email-container'>
+                    <label className='email'>Email:</label>
+                    <Input className='login-input-1'
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                    />
+                </div>
+                <div className='password-container'>
+                    <label className='password'>Password:</label>
+                    <Input className='login-input-2'
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                    />
+                    </div>
+
+                {error && <div className="error">{error}</div>}
+                <Button type="submit" className='login-button' loadingText>Login</Button>
+                </form>
+                </Box>
+>>>>>>> origin/main
         </div>
     );
 }
