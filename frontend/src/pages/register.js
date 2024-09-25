@@ -1,82 +1,69 @@
 import React, { useState } from 'react';
 import '../App.js';
 import axios from '../axiosConfig';
-//import { useNavigate } from 'react-router-dom'; // TODO NAVIGATE
+import { useNavigate } from 'react-router-dom';
 
 const FormComponent = () => {
-    // I suspect errors will come from not having all inputs declared here and then placed in handlechange setformdata - Alex
-
-    // User and pass details for error checking
+    // State to store user input and errors
     const [formData, setFormData] = useState({
         fname: '',
         lname: '',
+        email: '',
         pass: '',
-        confirmPassword: '',
-        email: ''
+        repass: '',
     });
-
     const [error, setError] = useState('');
-    const submitbutton = document.getElementById('submit');
+    const navigate = useNavigate();
 
-    // Handle form input className='input' changes
+    // Handle form input changes
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
 
-        // Real-time validation
-        if (name === 'repass') {
-            if (value !== formData.pass) {
+        // Real-time validation for passwords
+        if (name === 'repass' || name === 'pass') {
+            if (value !== formData.pass && name === 'repass') {
                 setError('Passwords do not match');
+            } else if (value === '') {
+                setError('Password cannot be empty');
             } else {
                 setError('');
             }
         }
-        if (name === 'pass') {
-            if (value !== formData.repass) {
-                setError('Passwords do not match');
-            } else {
-                setError('');
-            }
-        }
-
     };
 
     // Handle form submission
     const handleSubmit = async (e) => {
-
         e.preventDefault();
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
 
-
-
-        // Real-time validation
-        if (name === 'repass' || name === 'pass') {
-            if (value == '') {
-                setError('password cannot be empty')
-            }
-        }
-        if ((formData.repass !== formData.pass) || (formData.pass !== formData.repass)) {
+        // Check password match
+        if (formData.repass !== formData.pass) {
             setError('Passwords do not match');
+            return;
         } else {
             setError('');
-            console.log('Registration successful', formData);
-            //navigate('/', { state: { message: 'Registered' } }); TODO NAVIGATE
-            try {
-                const response = await axios.post('http://127.0.0.1:5000/auth/register', formData);
-                console.log(response.data);  // Handle the response from backend flask (harrison).
-            } catch (error) {
-                console.error('There was an error submitting the form!', error);
-            }
+        }
+
+        try {
+            const response = await axios.post('http://localhost:5000/auth/register', formData);
+            console.log(response.data); // Handle response from backend
+            navigate('/', { state: { message: 'Registered' } }); // Navigate after successful registration
+        } catch (error) {
+            console.error('There was an error submitting the form!', error);
+            setError('An error occurred while registering. Please try again.'); // Set error message on catch
         }
     };
 
     return (
         <form className='register' onSubmit={handleSubmit}>
-            <h1>Register</h1>
+            <h1><strong>Easy Resi</strong></h1>
+            <p>The easy way to find your best pathway to permanent residency in Australia.</p>
+            <h2>Register</h2>
+            
             <label className='fname'>
                 First Name:
-                <input className='input'
+                <input
+                    className='input'
                     type="text"
                     name="fname"
                     value={formData.fname}
@@ -87,7 +74,8 @@ const FormComponent = () => {
             <br />
             <label className='lname'>
                 Last Name:
-                <input className='input'
+                <input
+                    className='input'
                     type="text"
                     name="lname"
                     value={formData.lname}
@@ -98,7 +86,8 @@ const FormComponent = () => {
             <br />
             <label className='email'>
                 Email:
-                <input className='input'
+                <input
+                    className='input'
                     type="email"
                     name="email"
                     value={formData.email}
@@ -109,8 +98,9 @@ const FormComponent = () => {
             <br />
             <label className='password'>
                 Password:
-                <input className='input'
-                    type="text"
+                <input
+                    className='input'
+                    type="password"
                     name="pass"
                     value={formData.pass}
                     onChange={handleChange}
@@ -120,16 +110,20 @@ const FormComponent = () => {
             <br />
             <label className='re-password'>
                 Re-Enter Password:
-                <input className='input'
-                    type="text"
+                <input
+                    className='input'
+                    type="password"
                     name="repass"
                     value={formData.repass}
                     onChange={handleChange}
                     required
                 />
             </label>
+
             {error && <p className="error-message">{error}</p>}
+
             <button className='register-button' type="submit">Submit</button>
+            <button className='login-button' type="button" onClick={() => navigate('/login')}>Login</button>
         </form>
     );
 };
