@@ -1,6 +1,13 @@
 import React from "react";
 import '../index.css';
 import Navbar from '../components/Navbar';
+<<<<<<< HEAD
+
+// // Import axios if you plan to use it in the future
+// import axios from '../axiosConfig';
+
+// Home component - currently serves as a placeholder - don't think we actually need it
+=======
 import axios from '../axiosConfig';
 import { useNavigate } from "react-router-dom"
 import {
@@ -10,6 +17,7 @@ import {
 
 
 
+>>>>>>> origin/main
 const Home = () => {
 
     // Navigation from buttons using functions
@@ -27,7 +35,11 @@ const Home = () => {
 
     return (
         <>
+            <Navbar />
             <div className="home">
+<<<<<<< HEAD
+                <h1>Welcome to Easy Resi</h1>
+=======
                 <h1><strong>Welcome to Easy Resi</strong></h1>
                 <p>Residency Probability and Information Made Easy!</p>
             </div>
@@ -46,9 +58,14 @@ const Home = () => {
                         loadingText>Register</Button>
                 </div>
 
+>>>>>>> origin/main
             </div>
         </>
     );
 }
 
+<<<<<<< HEAD
 export default Home;
+=======
+export default Home;
+>>>>>>> origin/main

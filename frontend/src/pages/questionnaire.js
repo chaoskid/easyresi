@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import '../App.js';  // Assuming you have global styles or logic here
+import '../index.css';
 import axios from '../axiosConfig';  // Assuming axios is configured for API requests
 import {
   Box, FormControl, FormLabel, Select, RadioGroup, Radio, Checkbox,
-  Button, Stack, CheckboxGroup, Text
-} from '@chakra-ui/react';
+  Button, Stack, CheckboxGroup } from '@chakra-ui/react';
+import Navbar from '../components/Navbar';
 
-const Questionairre = () => {
+const Questionnaire = () => {
   // Form states
   const [visaType, setVisaType] = useState('');
   //const [maritalStatus, setMaritalStatus] = useState('');
@@ -40,6 +40,7 @@ const Questionairre = () => {
 
   return (
     <>
+    <Navbar />
       {/* Form Container */}
       <Box maxW="800px" mx="auto" mt={8} p={6} borderWidth="1px" borderRadius="lg" boxShadow="lg" bg="white">
         <form onSubmit={handleFormSubmit}>
@@ -263,6 +264,4 @@ const Questionairre = () => {
   );
 };
 
-export default Questionairre;
-
-
+export default Questionnaire;
