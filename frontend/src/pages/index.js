@@ -15,7 +15,7 @@ const Home = () => {
         <>
             <Navbar />
             <div className="home">
-                <h1>Welcome to Easy Resi</h1>
+                <h1>Welcome to Easy Resi.</h1>
                 <p>Please log in or register to get started.</p>
                 <button className="login-button" onClick={() => navigate('/login')}>Login</button><br />
                 <button className="register-button" onClick={() => navigate('/register')}>Register</button>

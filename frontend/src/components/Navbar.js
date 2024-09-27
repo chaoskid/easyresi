@@ -1,3 +1,4 @@
+//Navigation bar after log in
 import { Link } from "react-router-dom";
 import { Box, Flex, Heading, Text, Menu, MenuButton, MenuList, MenuItem } from '@chakra-ui/react';
 

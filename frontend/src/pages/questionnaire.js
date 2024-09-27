@@ -65,7 +65,7 @@ const Questionnaire = () => {
 
           {/* Age Selection */}
           <FormControl isRequired mb={4}>
-            <FormLabel>Please select your age range at the time of invitation:</FormLabel>
+            <FormLabel>Please select your age range at the time of invitation.</FormLabel>
             <Select placeholder="Select your age range" onChange={(e) => updateFormData("age", e.target.value)}>
               <option value="18-25">At least 18 but less than 25 years</option>
               <option value="25-33">At least 25 but less than 33 years</option>

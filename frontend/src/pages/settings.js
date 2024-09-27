@@ -1,7 +1,7 @@
 import React from "react";
 import '../index.css';
 import Navbar from "../components/Navbar";
-
+//Settings page
 const Settings = () => {
     return (
         <>

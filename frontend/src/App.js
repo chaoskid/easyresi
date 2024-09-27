@@ -8,7 +8,7 @@ import Login from './pages/login';
 import Register from './pages/register';
 import Questionnaire from './pages/questionnaire'; // Fixed typo from 'questionairre' to 'questionnaire'
 import Dashboard from './pages/dashboard';
-import Notfound from './pages/notFound';
+import Notfound from './pages/notfound';
 import Statistics from './pages/statistics';
 import Account from './pages/account';
 import Settings from './pages/settings';

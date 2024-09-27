@@ -32,7 +32,7 @@ function Login() {
     return (
         <div className='login'>
             <h1><strong>Easy Resi</strong></h1>
-            <p>The easy way to find your best pathway to permanent residency in Australia.</p>
+            <p>The easiest way to find your best pathway to permanent residency in Australia.</p>
             <div className='login-container'>
                 <h2>Login</h2>
                 <form onSubmit={handleSubmit}>

@@ -4,7 +4,7 @@ import axios from '../axiosConfig';
 import { useNavigate } from 'react-router-dom';
 
 const FormComponent = () => {
-    // State to store user input and errors
+    // State to store user input and errors.
     const [formData, setFormData] = useState({
         fname: '',
         lname: '',
