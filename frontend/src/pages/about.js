@@ -11,7 +11,7 @@ const About = () => {
                     <h1>About Easy Resi</h1>
                     <p>
                         Easy Resi is a user-friendly web-based platform designed to assist skilled migrants in navigating 
-                        the complex process of obtaining permanent residence (PR) in Australia. By leveraging up-to-date 
+                        the complex process of obtaining permanent residency (PR) in Australia. By leveraging up-to-date 
                         immigration data and a personalised recommendation algorithm, Easy Resi provides users with 
                         tailored pathways that align with their unique skills, experience, and preferences.
                     </p>
