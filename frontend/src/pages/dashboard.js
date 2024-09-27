@@ -11,7 +11,7 @@ const Dashboard = () => {
     // Function to fetch the welcome message from the backend
     const fetchDashboardData = async () => {
         try {
-            const response = await axios.get('http://localhost:5000/api/dashboard'); // Adjust the URL if needed
+            const response = await axios.get('http://localhost:5002/api/dashboard'); // Adjust the URL if needed
             console.log(response);
             setWelcomeMessage(response.data.message);
         } catch (err) {
@@ -29,7 +29,7 @@ const Dashboard = () => {
     // Handle user logout
     const handleLogout = async () => {
         try {
-            const response = await axios.post('http://localhost:5000/auth/logout', {});
+            const response = await axios.post('/auth/logout', {});
             console.log(response.data.message); // Log success message or handle accordingly
             window.location.href = '/login'; // Redirect to login page
         } catch (error) {

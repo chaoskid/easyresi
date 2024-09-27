@@ -15,12 +15,12 @@ function Login() {
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
-            const response = await axios.post('http://localhost:5000/auth/login', { email, password });
+            const response = await axios.post('/auth/login', { email, password });
             console.log(response); // Successful response
 
             // Check if the response status is 200
             if (response.status === 200) { 
-                navigate('/', { state: { message: 'Logged in' } });
+                navigate('/dashboard', { state: { message: 'Logged in' } });
             } else {
                 setError(response.data.message);
             }

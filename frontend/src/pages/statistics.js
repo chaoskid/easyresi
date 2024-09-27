@@ -13,7 +13,7 @@ const Statistics = () => {
     // Fetch statistics data from the backend
     const fetchStatistics = async () => {
         try {
-            const response = await axios.get('http://localhost:5000/api/statistics'); // API call using axios
+            const response = await axios.get('/api/statistics'); // API call using axios
             setData(response.data);
         } catch (error) {
             console.error('Error fetching statistics:', error);
