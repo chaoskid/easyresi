@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import '../index.css';
+import '../App.js';  // Assuming you have global styles or logic here
 import axios from '../axiosConfig';  // Assuming axios is configured for API requests
 import {
   Box, FormControl, FormLabel, Select, RadioGroup, Radio, Checkbox,
-  Button, Stack, CheckboxGroup } from '@chakra-ui/react';
-import Navbar from '../components/Navbar';
+  Button, Stack, CheckboxGroup, Text
+} from '@chakra-ui/react';
 
-const Questionnaire = () => {
+const Questionairre = () => {
   // Form states
   const [visaType, setVisaType] = useState('');
   //const [maritalStatus, setMaritalStatus] = useState('');
@@ -40,7 +40,6 @@ const Questionnaire = () => {
 
   return (
     <>
-    <Navbar />
       {/* Form Container */}
       <Box maxW="800px" mx="auto" mt={8} p={6} borderWidth="1px" borderRadius="lg" boxShadow="lg" bg="white">
         <form onSubmit={handleFormSubmit}>
@@ -243,6 +242,17 @@ const Questionnaire = () => {
             </Select>
           </FormControl>
 
+          {/* Nomination */}
+          <FormControl mb={4}>
+            <FormLabel>Have you been invited to apply for a Skilled Nominated visa (subclass 190) and the nominating State or Territory government agency has not withdrawn the nomination?</FormLabel>
+            <CheckboxGroup onChange={(value) => updateFormData("nomination", value)}>
+              <Stack direction="row">
+                <Checkbox value="yes">Yes</Checkbox>
+                <Checkbox value="no">No</Checkbox>
+              </Stack>
+            </CheckboxGroup>
+          </FormControl>
+
           {/* Submit Button */}
           <Button mt={6} colorScheme="teal" type="submit">
             Submit Questionnaire
@@ -253,4 +263,6 @@ const Questionnaire = () => {
   );
 };
 
-export default Questionnaire;
+export default Questionairre;
+
+

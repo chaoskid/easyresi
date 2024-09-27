@@ -3,17 +3,12 @@ import '../index.css';
 import Navbar from '../components/Navbar';
 import { useNavigate } from 'react-router-dom';
 
-// // Import axios if you plan to use it in the future
-// import axios from '../axiosConfig';
-
-// Home component - currently serves as a placeholder - don't think we actually need it
 const Home = () => {
     // Define navigate function
     const navigate = useNavigate();
 
     return (
         <>
-            <Navbar />
             <div className="home">
                 <h1>Welcome to Easy Resi</h1>
                 <p>Please log in or register to get started.</p>
