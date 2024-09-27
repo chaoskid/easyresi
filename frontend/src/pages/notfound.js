@@ -1,14 +1,14 @@
-import { Link } from "react-router-dom"
-import axios from '../axiosConfig';
-
+import { Link } from "react-router-dom";
+import '../index.css';
 
 const Notfound = () => {
     return (
         <div className="not-found">
-            <h2>Sorry</h2>
-            <p>That page cannot be found</p>
-            <Link to="/">Back to the homepage</Link>
+            <h1><strong>Sorry!</strong></h1>
+            <p>That page cannot be found.</p>
+            <Link className="home-button" to="/">Back to Home Page</Link>
         </div>
     );
 }
+
 export default Notfound;
