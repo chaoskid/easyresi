@@ -4,6 +4,8 @@ from create_app import db
 from app.models.db_models import *
 from app.routes.auth import login_required
 
+from app.routes.utils import points_table
+
 api = Blueprint('api', __name__)
 
 # Testing root route
@@ -39,7 +41,7 @@ def create_questionnaire():
         professional_year = data.get('professionalYear')
         regional_area = str(data.get('regionalStudy')[0])
         marital_status = data.get('maritalStatus')
-        nomination = str(data.get('nomination')[0])
+        nomination = data.get('nomination')
         preferred_location = data.get('statePreferred')
         preferred_industry = data.get('preferredIndustry')
         preferred_qualifications = data.get('courseLevel')
@@ -86,7 +88,7 @@ def create_questionnaire():
 # Retrieve a specific questionnaire by ID
 @api.route('/userprofile/<int:user_id>', methods=['GET'])
 def userprofile(user_id):
-    entry = UserProfile.query.get_or_404(user_id)
+    entry = db.session.query(UserProfile).filter_by(user_id=user_id).first()
     return jsonify({
         "user_id": entry.user_id,
         "age": entry.age_group,
@@ -106,8 +108,80 @@ def userprofile(user_id):
         "preferred_qualifications": entry.preferred_qualifications,
         "preferred_course": entry.preferred_course,
         "preferred_occupation": entry.preferred_occupation
-    })
+    }), 200
 
+
+@api.route('/update_points/<int:input_user_id>', methods=['GET'])
+def update_points(input_user_id):
+
+    profile = db.session.query(UserProfile).filter_by(user_id=input_user_id).first()
+    age_group_score = points_table["age"][profile.age_group]
+    english_proficiency_score = points_table["english_proficiency"][profile.english_proficiency]
+    overseas_experience_score = points_table["overseas_experience"][profile.overseas_experience]
+    australian_experience_score = points_table["australian_experience"][profile.australian_experience]
+    qualification_score = points_table["qualification"][profile.qualification]
+    australian_education_score = points_table["australian_education"][profile.australian_education]
+    specialist_education_score = points_table["specialist_education"][profile.specialist_education]
+    community_lang_score = points_table["community_lang"][profile.community_lang]
+    regional_area_score = points_table["regional_area"][profile.regional_area]
+    marital_status_score = points_table["marital_status"][profile.marital_status]
+    professional_year_score = points_table["professional_year"][profile.professional_year]
+    nomination_score = points_table["nomination"][profile.nomination]
+
+    job = db.session.query(JobsShortage).filter_by(anzsco=profile.preferred_occupation).first()
+
+    preferred_state_value = getattr(job, str(profile.preferred_location).lower() + "_shortage")
+
+    industry_score=preferred_state_value
+    #sol = db.session.query(SolList).filter_by(anzsco=prfile.preferred_occupation).first()
+    #sol_score = sol.sol_score
+    sol_score = 5
+    total_score = age_group_score + english_proficiency_score + overseas_experience_score + australian_experience_score + qualification_score +\
+        australian_education_score + specialist_education_score + community_lang_score + regional_area_score + marital_status_score +\
+        professional_year_score + nomination_score + industry_score + sol_score
+
+    new_entry = UserScore(
+        user_id=profile.user_id,
+        profile_id=profile.profile_id,
+        age_group_score=age_group_score,
+        english_proficiency_score=english_proficiency_score,
+        overseas_experience_score=overseas_experience_score,
+        australian_experience_score=australian_experience_score,
+        qualification_score=qualification_score,
+        australian_education_score=australian_education_score,
+        specialist_education_score=specialist_education_score,
+        community_lang_score=community_lang_score,
+        regional_area_score=regional_area_score,
+        marital_status_score=marital_status_score,
+        professional_year_score=professional_year_score,
+        nomination_score=nomination_score,
+        industry_score=industry_score,
+        sol_score=sol_score,
+        total_score=total_score
+    )
+
+    db.session.add(new_entry)
+    db.session.commit()
+
+    return jsonify({"age_group_score":age_group_score,
+    "english_proficiency_score":english_proficiency_score,
+    "overseas_experience_score: ":overseas_experience_score,
+    "australian_experience_score: ":australian_experience_score,
+    "qualification_score: ":qualification_score,
+    "australian_education_score: ":australian_education_score,
+    "specialist_education_score: ":specialist_education_score,
+    "community_lang_score: ":community_lang_score,
+    "regional_area_score: ":regional_area_score,
+    "marital_status_score: ":marital_status_score,
+    "professional_year_score: ":professional_year_score,
+    "nomination_score: ":nomination_score,
+    "industry_score: ":industry_score,
+    "sol_score: ":sol_score,
+    "total_score: ":total_score}), 200
+
+
+
+'''
 # Retrieve all questionnaires
 @api.route('/questionnaires', methods=['GET'])
 def get_all_questionnaires():
@@ -165,3 +239,4 @@ def delete_questionnaire(id):
     db.session.delete(entry)
     db.session.commit()
     return jsonify({'message': 'Questionnaire deleted successfully!'})
+'''

@@ -2,7 +2,10 @@ import React, { useEffect, useState } from 'react';
 import axios from '../axiosConfig';
 import Navbar from '../components/Navbar';
 
+import { useNavigate } from 'react-router-dom';
+
 const Dashboard = () => {
+    const navigate = useNavigate();
     // State variables for welcome message, loading status, and error handling
     const [welcomeMessage, setWelcomeMessage] = useState('');
     const [loading, setLoading] = useState(true);
@@ -11,10 +14,11 @@ const Dashboard = () => {
     // Function to fetch the welcome message from the backend
     const fetchDashboardData = async () => {
         try {
-            const response = await axios.get('http://localhost:5002/api/dashboard'); // Adjust the URL if needed
+            const response = await axios.get('/api/dashboard'); // Adjust the URL if needed
             console.log(response);
             setWelcomeMessage(response.data.message);
         } catch (err) {
+            navigate('/login', { state: { message: "Please log in" } });
             setError('Failed to load dashboard data. Please try again later.');
         } finally {
             setLoading(false);

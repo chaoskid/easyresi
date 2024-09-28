@@ -20,7 +20,7 @@ def createApp(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
     # app.config.update(SESSION_COOKIE_SAMESITE='None') idk what this was for but it kills the whole dashboard, use with caution -Alex
-    logging.basicConfig(filename='app.log', level=logging.DEBUG)
+    #logging.basicConfig(filename='app.log', level=logging.DEBUG)
     # Initialise extensions with the app
     db.init_app(app)
     migrate.init_app(app, db)
