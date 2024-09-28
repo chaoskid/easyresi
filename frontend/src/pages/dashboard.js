@@ -2,7 +2,10 @@ import React, { useEffect, useState } from 'react';
 import axios from '../axiosConfig';
 import Navbar from '../components/Navbar';
 
+import { useNavigate } from 'react-router-dom';
+
 const Dashboard = () => {
+    const navigate = useNavigate();
     // State variables for welcome message, loading status, and error handling
     const [welcomeMessage, setWelcomeMessage] = useState('');
     const [loading, setLoading] = useState(true);
@@ -15,6 +18,7 @@ const Dashboard = () => {
             console.log(response);
             setWelcomeMessage(response.data.message);
         } catch (err) {
+            navigate('/login', { state: { message: "Please log in" } });
             setError('Failed to load dashboard data. Please try again later.');
         } finally {
             setLoading(false);

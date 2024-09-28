@@ -73,3 +73,19 @@ class UserScore(Base):
     industry_score = Column(Integer, default=0)
     sol_score = Column(Integer, default=0)
     total_score = Column(Integer, nullable=False)
+
+
+class JobsShortage(Base):
+    __tablename__ = 'occupation_shortage'
+
+    anzsco=Column(Integer, primary_key=True)
+    occupation=Column(String(255), nullable=False)
+    nsw_shortage=Column(Integer, nullable=False)
+    vic_shortage=Column(Integer, nullable=False)
+    qld_shortage=Column(Integer, nullable=False)
+    sa_shortage=Column(Integer, nullable=False)
+    wa_shortage=Column(Integer, nullable=False)
+    tas_shortage=Column(Integer, nullable=False)
+    nt_shortage=Column(Integer, nullable=False)
+    act_shortage=Column(Integer, nullable=False)
+    sector=Column(String(20), nullable=False)

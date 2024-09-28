@@ -225,11 +225,11 @@ const Questionnaire = () => {
           <FormControl isRequired mb={4}>
             <FormLabel>Preferred Occupation (based on industry)</FormLabel>
             <Select placeholder="Select an occupation" onChange={(e) => updateFormData("preferredOccupation", e.target.value)}>
-              {preferredIndustry === 'business' && <option value="businessAnalyst">Business Analyst</option>}
-              {preferredIndustry === 'it' && <option value="softwareDeveloper">Software Developer</option>}
-              {preferredIndustry === 'education' && <option value="teacher">Teacher</option>}
-              {preferredIndustry === 'engineering' && <option value="civilEngineer">Civil Engineer</option>}
-              {preferredIndustry === 'healthcare' && <option value="nurse">Nurse</option>}
+              {preferredIndustry === 'business' && <option value="224411">Business Analyst</option>}
+              {preferredIndustry === 'it' && <option value="224411">Software Developer</option>}
+              {preferredIndustry === 'education' && <option value="224411">Teacher</option>}
+              {preferredIndustry === 'engineering' && <option value="224411">Civil Engineer</option>}
+              {preferredIndustry === 'healthcare' && <option value="224411">Nurse</option>}
             </Select>
           </FormControl>
 
@@ -246,10 +246,9 @@ const Questionnaire = () => {
           {/* Nomination */}
           <FormControl isRequired mb={4}>
             <FormLabel>Have you been invited to apply for a Skilled Nominated visa (subclass 190) and the nominating State or Territory government agency has not withdrawn the nomination?</FormLabel>
-            <Select onChange={(e) => updateFormData("nomination", e.target.value)} placeholder="Select your marital status">
-              <option value="single">Single or partner is an Australian citizen/ permanent resident</option>
-              <option value="married_skilled">Married and partner meets age, english and skill criteria</option>
-              <option value="married_unskilled">Married and partner has competent english</option>
+            <Select onChange={(e) => updateFormData("nomination", e.target.value)} placeholder="Select your nomination status">
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
             </Select>
           </FormControl>
 
