@@ -11,7 +11,7 @@ const Dashboard = () => {
     // Function to fetch the welcome message from the backend
     const fetchDashboardData = async () => {
         try {
-            const response = await axios.get('http://localhost:5002/api/dashboard'); // Adjust the URL if needed
+            const response = await axios.get('/api/dashboard'); // Adjust the URL if needed
             console.log(response);
             setWelcomeMessage(response.data.message);
         } catch (err) {

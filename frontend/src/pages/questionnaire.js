@@ -243,6 +243,16 @@ const Questionnaire = () => {
             </Select>
           </FormControl>
 
+          {/* Nomination */}
+          <FormControl isRequired mb={4}>
+            <FormLabel>Have you been invited to apply for a Skilled Nominated visa (subclass 190) and the nominating State or Territory government agency has not withdrawn the nomination?</FormLabel>
+            <Select onChange={(e) => updateFormData("nomination", e.target.value)} placeholder="Select your marital status">
+              <option value="single">Single or partner is an Australian citizen/ permanent resident</option>
+              <option value="married_skilled">Married and partner meets age, english and skill criteria</option>
+              <option value="married_unskilled">Married and partner has competent english</option>
+            </Select>
+          </FormControl>
+
           {/* Submit Button */}
           <Button mt={6} colorScheme="teal" type="submit">
             Submit Questionnaire
