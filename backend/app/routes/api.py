@@ -108,7 +108,7 @@ def userprofile(user_id):
         "preferred_qualifications": entry.preferred_qualifications,
         "preferred_course": entry.preferred_course,
         "preferred_occupation": entry.preferred_occupation
-    })
+    }), 200
 
 
 @api.route('/update_points/<int:input_user_id>', methods=['GET'])
@@ -177,7 +177,7 @@ def update_points(input_user_id):
     "nomination_score: ":nomination_score,
     "industry_score: ":industry_score,
     "sol_score: ":sol_score,
-    "total_score: ":total_score})
+    "total_score: ":total_score}), 200
 
 
 
