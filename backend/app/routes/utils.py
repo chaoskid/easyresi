@@ -60,59 +60,27 @@ points_table = {
     "nomination" : {
         "yes":5,
         "no":0
+    },
+    "state": {
+        "nsw": 1,
+        "vic": 2,
+        "qld":3,
+        "sa":4,
+        "wa":5,
+        "tas":6,
+        "nt":7,
+        "act":8
     }
 }
 
-'''
-
-def calculate_points(input_user_id):
-
-    #get user inputs from database
-    profile = db.session.query(UserProfile).filter_by(user_id=input_user_id).first()
-    age_group_score = points_table["age"][profile.age_group]
-    english_proficiency_score = points_table["english_proficiency"][profile.english_proficiency]
-    overseas_experience_score = points_table["overseas_experience"][profile.overseas_experience]
-    australian_experience_score = points_table["australian_experience"][profile.australian_experience]
-    qualification_score = points_table["qualification"][profile.qualification]
-    australian_education_score = points_table["australian_education"][profile.australian_education]
-    specialist_education_score = points_table["specialist_education"][profile.specialist_education]
-    community_lang_score = points_table["community_lang"][profile.community_lang]
-    regional_area_score = points_table["regional_area"][profile.regional_area]
-    marital_status_score = points_table["marital_status"][profile.marital_status]
-    professional_year_score = points_table["professional_year"][profile.professional_year]
-    nomination_score = points_table["nomination"][profile.nomination]
-
-    #setting industry value
-    job=db.session.query(JobsShortage).filter_by(anzsco=prfile.preferred_occupation).first()
-    preferred_state = getattr(JobsShortage, profile.preferred_location)
-    industry_score=job.preferred_state
-    sol = db.session.query(SolList).filter_by(anzsco=prfile.preferred_occupation).first()
-    sol_score = sol.sol_score
-    total_score = age_group_score + english_proficiency_score + overseas_experience_score + australian_experience_score + qualification_score \
-        australian_education_score + specialist_education_score + community_lang_score + regional_area_score + marital_status_score + \
-        professional_year_score + nomination_score + industry_score + sol_score
-    
-    new_entry = UserScore(
-        age_group_score=age_group_score,
-        english_proficiency_score=english_proficiency_score,
-        overseas_experience_score=overseas_experience_score,
-        australian_experience_score=australian_experience_score,
-        qualification_score=qualification_score,
-        australian_education_score=australian_education_score,
-        specialist_education_score=specialist_education_score,
-        community_lang_score=community_lang_score,
-        regional_area_score=regional_area_score,
-        marital_status_score=marital_status_score,
-        professional_year_score=professional_year_score,
-        nomination_score=nomination_score,
-        industry_score=industry_score,
-        sol_score=sol_score,
-        total_score=total_score
-    )
-
-    db.session.add(new_entry)
-    db.session.commit()
-
-    return "User profile updated successfully"
-
-'''
+def get_pr_prob_for_states(model,df):
+    prob_for_states = {}
+    states = {1:"NSW",2:"VIC",3:"QLD",4:"SA",5:"WA",6:"TAS",7:"NT",8:"ACT"}
+    for state in points_table["state"].values():
+        df['state'] = state
+        #print(df)
+        y_proba=model.predict_proba(df)
+        prob_class_1 = round(float(y_proba[:, 1][0]*100),3)
+        print("Probability of PR in {}:".format(states[state]),prob_class_1)
+        prob_for_states[states[state]] = prob_class_1
+    return prob_for_states
