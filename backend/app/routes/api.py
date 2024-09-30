@@ -3,9 +3,7 @@ from create_app import db
 import pickle
 from app.models.db_models import *
 from app.routes.auth import login_required
-import numpy as np
-import pandas as pd
-from app.routes.utils import points_table,get_pr_prob_for_states
+from app.routes.utils import points_table,get_pr_prob_for_states,get_pr_prob,generate_model_input,get_pr_prob_for_jobs
 
 api = Blueprint('api', __name__)
 
@@ -186,58 +184,16 @@ def recommendations(input_user_id):
 
     profile = db.session.query(UserProfile).filter_by(user_id=input_user_id).first()
     scores = db.session.query(UserScore).filter_by(user_id=input_user_id).first()
-    input_data = {
-        "age_group_score": scores.age_group_score,
-        "english_proficiency_score": scores.english_proficiency_score,
-        "overseas_experience_score": scores.overseas_experience_score,
-        "australian_experience_score": scores.australian_experience_score,
-        "qualification_score": scores.qualification_score,
-        "specialist_education_score": scores.specialist_education_score,
-        "australian_education_score": scores.australian_education_score,
-        "professional_year_score": scores.professional_year_score,
-        "community_lang_score": scores.community_lang_score,
-        "regional_area_score": scores.regional_area_score,
-        "marital_status_score": scores.marital_status_score,
-        "nomination_score": scores.nomination_score,
-        "industry_score": scores.industry_score,
-        "state": points_table["state"][str(profile.preferred_location).lower()],
-        "sol_score": scores.sol_score,
-        "total_score": scores.total_score,
-        "anzco": int(profile.preferred_occupation)
-    }
-    print(input_data)
-    print("after pandas:")
-    model_inputdf = pd.DataFrame([input_data], columns=[
-    'age_group_score',
-    'english_proficiency_score',
-    'overseas_experience_score',
-    'australian_experience_score',
-    'qualification_score',
-    'specialist_education_score',
-    'australian_education_score',
-    'professional_year_score',
-    'community_lang_score',
-    'regional_area_score',
-    'marital_status_score',
-    'nomination_score',
-    'industry_score',
-    'state',
-    'sol_score',
-    'total_score',
-    'anzco'
-])
-    
     with open('app/models/resipro', 'rb') as f:
         model = pickle.load(f)
-    
-    y_proba=model.predict_proba(model_inputdf)
-    print(y_proba)
-    prob_class_1 = round(float(y_proba[:, 1][0]*100),3)
-    print("\nProbability of getting a PR grant: {}%".format(prob_class_1))
+    model_inputdf=generate_model_input(profile,scores)
+    pr_prob = get_pr_prob(model,model_inputdf)
     prob_for_other_states=get_pr_prob_for_states(model,model_inputdf)
+    prob_for_other_occupations = get_pr_prob_for_jobs(model,model_inputdf,db,profile)
     return {
-                'probability_of_permanent_residency': prob_class_1,
-                'probability_of_other_states':prob_for_other_states
+                'probability_of_permanent_residency': pr_prob,
+                'probability_of_other_states':prob_for_other_states,
+                'probability_of_other_jobs':prob_for_other_occupations
             }
     
 
