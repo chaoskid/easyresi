@@ -1,5 +1,6 @@
 from create_app import db
 from app.models.db_models import *
+import pandas as pd
 
 points_table = {
     'age': {
@@ -60,59 +61,89 @@ points_table = {
     "nomination" : {
         "yes":5,
         "no":0
+    },
+    "state": {
+        "nsw": 1,
+        "vic": 2,
+        "qld":3,
+        "sa":4,
+        "wa":5,
+        "tas":6,
+        "nt":7,
+        "act":8
     }
 }
 
-'''
+def generate_model_input(profile,scores):
+    input_data = {
+        "age_group_score": scores.age_group_score,
+        "english_proficiency_score": scores.english_proficiency_score,
+        "overseas_experience_score": scores.overseas_experience_score,
+        "australian_experience_score": scores.australian_experience_score,
+        "qualification_score": scores.qualification_score,
+        "specialist_education_score": scores.specialist_education_score,
+        "australian_education_score": scores.australian_education_score,
+        "professional_year_score": scores.professional_year_score,
+        "community_lang_score": scores.community_lang_score,
+        "regional_area_score": scores.regional_area_score,
+        "marital_status_score": scores.marital_status_score,
+        "nomination_score": scores.nomination_score,
+        "industry_score": scores.industry_score,
+        "state": points_table["state"][str(profile.preferred_location).lower()],
+        "sol_score": scores.sol_score,
+        "total_score": scores.total_score,
+        "anzco": int(profile.preferred_occupation)
+    }
+    model_inputdf = pd.DataFrame([input_data], columns=[
+    'age_group_score',
+    'english_proficiency_score',
+    'overseas_experience_score',
+    'australian_experience_score',
+    'qualification_score',
+    'specialist_education_score',
+    'australian_education_score',
+    'professional_year_score',
+    'community_lang_score',
+    'regional_area_score',
+    'marital_status_score',
+    'nomination_score',
+    'industry_score',
+    'state',
+    'sol_score',
+    'total_score',
+    'anzco'
+    ])
 
-def calculate_points(input_user_id):
+    return model_inputdf
 
-    #get user inputs from database
-    profile = db.session.query(UserProfile).filter_by(user_id=input_user_id).first()
-    age_group_score = points_table["age"][profile.age_group]
-    english_proficiency_score = points_table["english_proficiency"][profile.english_proficiency]
-    overseas_experience_score = points_table["overseas_experience"][profile.overseas_experience]
-    australian_experience_score = points_table["australian_experience"][profile.australian_experience]
-    qualification_score = points_table["qualification"][profile.qualification]
-    australian_education_score = points_table["australian_education"][profile.australian_education]
-    specialist_education_score = points_table["specialist_education"][profile.specialist_education]
-    community_lang_score = points_table["community_lang"][profile.community_lang]
-    regional_area_score = points_table["regional_area"][profile.regional_area]
-    marital_status_score = points_table["marital_status"][profile.marital_status]
-    professional_year_score = points_table["professional_year"][profile.professional_year]
-    nomination_score = points_table["nomination"][profile.nomination]
+def get_pr_prob(model,df):
+    y_proba=model.predict_proba(df)
+    pr_prob = round(float(y_proba[:, 1][0]*100),3)
+    return pr_prob
 
-    #setting industry value
-    job=db.session.query(JobsShortage).filter_by(anzsco=prfile.preferred_occupation).first()
-    preferred_state = getattr(JobsShortage, profile.preferred_location)
-    industry_score=job.preferred_state
-    sol = db.session.query(SolList).filter_by(anzsco=prfile.preferred_occupation).first()
-    sol_score = sol.sol_score
-    total_score = age_group_score + english_proficiency_score + overseas_experience_score + australian_experience_score + qualification_score \
-        australian_education_score + specialist_education_score + community_lang_score + regional_area_score + marital_status_score + \
-        professional_year_score + nomination_score + industry_score + sol_score
+def get_pr_prob_for_states(model,df):
+    prob_for_states = {}
+    states = {1:"NSW",2:"VIC",3:"QLD",4:"SA",5:"WA",6:"TAS",7:"NT",8:"ACT"}
+    for state in points_table["state"].values():
+        df['state'] = state
+        y_proba=model.predict_proba(df)
+        prob_class_1 = round(float(y_proba[:, 1][0]*100),3)
+        prob_for_states[states[state]] = prob_class_1
+    return prob_for_states
+
+def get_pr_prob_for_jobs(model,df,db,profile):
+    prob_for_jobs={}
+
+    industry=db.session.query(JobsShortage.sector).filter_by(anzsco=int(df['anzco'][0])).first()
+
+    column_to_select = getattr(JobsShortage, str(profile.preferred_location).lower() + "_shortage")
+    jobs = db.session.query(JobsShortage.anzsco).filter_by(sector=industry[0]).order_by(column_to_select).limit(5).all()
+
+    for job in jobs:
+        df['anzco']=job[0]
+        y_proba=model.predict_proba(df)
+        prob_class_1 = round(float(y_proba[:, 1][0]*100),3)
+        prob_for_jobs[job[0]] = prob_class_1
     
-    new_entry = UserScore(
-        age_group_score=age_group_score,
-        english_proficiency_score=english_proficiency_score,
-        overseas_experience_score=overseas_experience_score,
-        australian_experience_score=australian_experience_score,
-        qualification_score=qualification_score,
-        australian_education_score=australian_education_score,
-        specialist_education_score=specialist_education_score,
-        community_lang_score=community_lang_score,
-        regional_area_score=regional_area_score,
-        marital_status_score=marital_status_score,
-        professional_year_score=professional_year_score,
-        nomination_score=nomination_score,
-        industry_score=industry_score,
-        sol_score=sol_score,
-        total_score=total_score
-    )
+    return prob_for_jobs
 
-    db.session.add(new_entry)
-    db.session.commit()
-
-    return "User profile updated successfully"
-
-'''

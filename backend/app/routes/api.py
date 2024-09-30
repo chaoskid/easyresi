@@ -1,10 +1,9 @@
 from flask import Blueprint, jsonify, request, session
 from create_app import db
-
+import pickle
 from app.models.db_models import *
 from app.routes.auth import login_required
-
-from app.routes.utils import points_table
+from app.routes.utils import points_table,get_pr_prob_for_states,get_pr_prob,generate_model_input,get_pr_prob_for_jobs
 
 api = Blueprint('api', __name__)
 
@@ -180,6 +179,23 @@ def update_points(input_user_id):
     "total_score: ":total_score}), 200
 
 
+@api.route('/recommendations/<int:input_user_id>', methods=['GET'])
+def recommendations(input_user_id):
+
+    profile = db.session.query(UserProfile).filter_by(user_id=input_user_id).first()
+    scores = db.session.query(UserScore).filter_by(user_id=input_user_id).first()
+    with open('app/models/resipro', 'rb') as f:
+        model = pickle.load(f)
+    model_inputdf=generate_model_input(profile,scores)
+    pr_prob = get_pr_prob(model,model_inputdf)
+    prob_for_other_states=get_pr_prob_for_states(model,model_inputdf)
+    prob_for_other_occupations = get_pr_prob_for_jobs(model,model_inputdf,db,profile)
+    return {
+                'probability_of_permanent_residency': pr_prob,
+                'probability_of_other_states':prob_for_other_states,
+                'probability_of_other_jobs':prob_for_other_occupations
+            }
+    
 
 '''
 # Retrieve all questionnaires
