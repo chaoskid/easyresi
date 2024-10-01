@@ -185,6 +185,18 @@
     box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.6);
 }
 
+.logout-button {
+    background-color: #008080;
+    color: #ffffff;
+    border: none;
+    padding: 6px 12px;
+    font-size: 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-right: 10px;
+}
+
 /* Register Page */
 .register {
     display: block;
@@ -304,3 +316,32 @@
     outline: none;
     box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.6);
 }
+
+
+/* Dashboard Page */
+.dashboard {
+    display: block;
+    flex-direction: column;
+    width: 75%;
+    margin: auto;
+    margin-top: 20px;
+    text-align: center;
+}
+
+    .dashboard p {
+        margin-bottom: 20px;
+    }
+
+    .dashboard h1 {
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+        color: #333333;
+    }
+
+    .dashboard h2 {
+        font-size: 1.75rem;
+        margin-bottom: 20px;
+        margin-top: 20px;
+        color: #333333;
+    }
+  

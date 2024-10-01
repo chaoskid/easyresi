@@ -1,7 +1,18 @@
 import { Link } from "react-router-dom";
 import { Box, Flex, Heading, Text, Menu, MenuButton, MenuList, MenuItem } from '@chakra-ui/react';
+import axios from '../axiosConfig';
+
 
 const Navbar = () => {
+    const handleLogout = async () => {
+        try {
+            const response = await axios.post('/auth/logout', {});
+            console.log(response.data.message); // Log success message or handle accordingly
+            window.location.href = '/login'; // Redirect to login page
+        } catch (error) {
+            console.error('Logout failed:', error);
+        }
+    };
     return (
         <Box 
             className="navbar" 
@@ -86,7 +97,8 @@ const Navbar = () => {
 
                         {/* To Do: "Are you sure you want to log out?" button and session/local storage clean */}
                         <MenuItem>
-                            <Link to="/login" style={{ color: '#333333', textDecoration: 'none' }}>Log Out</Link>
+                            {/*<Link to="/login" style={{ color: '#333333', textDecoration: 'none' }}>Log Out</Link>*/}
+                            <button style={{ color: '#333333', textDecoration: 'none' }} onClick={handleLogout}>Log Out</button>
                         </MenuItem>
                     </MenuList>
                 </Menu>

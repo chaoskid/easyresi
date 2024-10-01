@@ -19,7 +19,9 @@ function Login() {
             console.log(response); // Successful response
 
             // Check if the response status is 200
-            if (response.status === 200) { 
+            if (response.status === 200) {
+                sessionStorage.setItem('user_id', response.data.user_id);
+                console.log(sessionStorage.getItem('user_id'));
                 navigate('/dashboard', { state: { message: 'Logged in' } });
             } else {
                 setError(response.data.message);
