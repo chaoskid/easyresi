@@ -28,23 +28,32 @@ def create_questionnaire():
         data = request.get_json()  # Receive JSON data from the front-end
         print(session)
         input_json = get_input_json(data)
-        profile_entry = get_profile_entry(input_json,session['user_id'])
+        profile_entry = get_or_update_profile_entry(input_json,db)
         try:
-            db.session.add(profile_entry)
-            db.session.commit()
-            user_score_entry = get_points(profile_entry,db)
-            db.session.add(user_score_entry)
-            db.session.commit()
+            existing_profile_entry = db.session.query(UserProfile).filter_by(user_id=session['user_id']).first()
+            if existing_profile_entry:
+                get_or_update_profile_entry(input_json,db,existing_profile_entry)
+            else:
+                db.session.add(profile_entry)
+                db.session.commit()
+            existing_score_entry = db.session.query(UserScore).filter_by(user_id=session['user_id']).first()
+            if existing_score_entry:
+                get_or_update_points(profile_entry,db,existing_score_entry)
+            else:
+                user_score_entry = get_or_update_points(profile_entry,db)
+                db.session.add(user_score_entry)
+                db.session.commit()
             return jsonify({'type':'success','message': 'Questionnaire and points submitted and successfully!'}), 201
         except Exception as e:
             print(e)
             return jsonify({'type':'error','message': 'An internal error occured.\n {}'.format(e)}), 500
 
 # Retrieve a specific questionnaire by ID
-@api.route('/userprofile/<int:user_id>', methods=['GET'])
+@api.route('/userprofile', methods=['GET'])
 @login_required
-def userprofile(user_id):
+def userprofile():
     try:
+        user_id=session['user_id']
         entry = db.session.query(UserProfile).filter_by(user_id=user_id).first()
         return jsonify({
             'type':'success',
@@ -73,14 +82,14 @@ def userprofile(user_id):
         return jsonify({'type':'error','message': 'An internal error occured.\n {}'.format(e)}), 500
 
 # preview results
-@api.route('/preview_results/<int:input_user_id>', methods=['POST','GET'])
+@api.route('/preview_results', methods=['POST','GET'])
 @login_required
-def preview_results(input_user_id):
+def preview_results():
     if request.method == 'POST':
-        data = request.get_json()  # Receive JSON data from the front-end
+        data = request.get_json()
         print(session)
         input_json = get_input_json(data)
-        profile_entry = get_profile_entry(input_json,input_user_id)
+        profile_entry = get_profile_entry(input_json)
         try:
             with open('app/models/resipro', 'rb') as f:
                 model = pickle.load(f)
@@ -107,6 +116,7 @@ def preview_results(input_user_id):
             return jsonify({'type':'error','message': 'An internal error occured.\n {}'.format(e)}), 500
 
 @api.route('/recommendations/<int:input_user_id>', methods=['GET'])
+@login_required
 def recommendations(input_user_id):
     try:
         profile = db.session.query(UserProfile).filter_by(user_id=input_user_id).first()
