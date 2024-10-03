@@ -74,6 +74,100 @@ points_table = {
     }
 }
 
+def get_points(profile,db):
+    age_group_score = points_table["age"][profile.age_group]
+    english_proficiency_score = points_table["english_proficiency"][profile.english_proficiency]
+    overseas_experience_score = points_table["overseas_experience"][profile.overseas_experience]
+    australian_experience_score = points_table["australian_experience"][profile.australian_experience]
+    qualification_score = points_table["qualification"][profile.qualification]
+    australian_education_score = points_table["australian_education"][profile.australian_education]
+    specialist_education_score = points_table["specialist_education"][profile.specialist_education]
+    community_lang_score = points_table["community_lang"][profile.community_lang]
+    regional_area_score = points_table["regional_area"][profile.regional_area]
+    marital_status_score = points_table["marital_status"][profile.marital_status]
+    professional_year_score = points_table["professional_year"][profile.professional_year]
+    nomination_score = points_table["nomination"][profile.nomination]
+
+    job = db.session.query(JobsShortage).filter_by(anzsco=profile.preferred_occupation).first()
+
+    preferred_state_value = getattr(job, str(profile.preferred_location).lower() + "_shortage")
+    industry_score=preferred_state_value
+    #sol = db.session.query(SolList).filter_by(anzsco=prfile.preferred_occupation).first()
+    #sol_score = sol.sol_score
+    sol_score = 5
+    total_score = age_group_score + english_proficiency_score + overseas_experience_score + australian_experience_score + qualification_score +\
+        australian_education_score + specialist_education_score + community_lang_score + regional_area_score + marital_status_score +\
+        professional_year_score + nomination_score + industry_score + sol_score
+    new_entry = UserScore(
+        user_id=profile.user_id,
+        age_group_score=age_group_score,
+        english_proficiency_score=english_proficiency_score,
+        overseas_experience_score=overseas_experience_score,
+        australian_experience_score=australian_experience_score,
+        qualification_score=qualification_score,
+        australian_education_score=australian_education_score,
+        specialist_education_score=specialist_education_score,
+        community_lang_score=community_lang_score,
+        regional_area_score=regional_area_score,
+        marital_status_score=marital_status_score,
+        professional_year_score=professional_year_score,
+        nomination_score=nomination_score,
+        industry_score=industry_score,
+        sol_score=sol_score,
+        total_score=total_score
+    )
+    return new_entry
+
+def get_input_json(data):
+    input_json = {
+            'visa_type' : data.get('visaType'),
+            'age_group' : data.get('age'),
+            'english_proficiency' : data.get('englishProficiency'),
+            'overseas_experience' : data.get('overseasExperience'),
+            'australian_experience' : data.get('australiaExperience'),
+            'qualification' : data.get('education'),
+            'australian_education' : data.get('australianStudy'),
+            'specialist_education' : data.get('specialistEducation'),
+            'community_lang' : str(data.get('communityLanguage')[0]),
+            'professional_year' : data.get('professionalYear'),
+            'regional_area' : str(data.get('regionalStudy')[0]),
+            'marital_status' : data.get('maritalStatus'),
+            'nomination' : data.get('nomination'),
+            'preferred_location' : data.get('statePreferred'),
+            'preferred_industry' : data.get('preferredIndustry'),
+            'preferred_qualifications' : data.get('courseLevel'),
+            'preferred_course' : data.get('preferredCourse'),
+            'preferred_occupation' : data.get('preferredOccupation')
+        }
+    return input_json
+
+def get_profile_entry(input_json,input_user_id):
+    # Create a new Questionnaire entry
+    profile_entry = UserProfile(
+        #user_id=session['user_id'],
+        user_id=input_user_id,
+        visa_type = input_json['visa_type'],
+        age_group=input_json['age_group'],
+        english_proficiency=input_json['english_proficiency'],
+        overseas_experience=input_json['overseas_experience'],
+        australian_experience=input_json['australian_experience'],
+        qualification=input_json['qualification'],
+        australian_education=input_json['australian_education'],
+        specialist_education=input_json['specialist_education'],
+        community_lang=input_json['community_lang'],
+        professional_year=input_json['professional_year'],
+        regional_area=input_json['regional_area'],
+        marital_status=input_json['marital_status'],
+        nomination=input_json['nomination'],
+        preferred_location=input_json['preferred_location'],
+        preferred_industry=input_json['preferred_industry'],
+        preferred_qualifications=input_json['preferred_qualifications'],
+        preferred_course=input_json['preferred_course'],
+        preferred_occupation=input_json['preferred_occupation']
+    )
+    return profile_entry
+
+
 def generate_model_input(profile,scores):
     input_data = {
         "age_group_score": scores.age_group_score,
