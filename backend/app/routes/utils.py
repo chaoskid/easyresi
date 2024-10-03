@@ -163,13 +163,18 @@ def recommend_uni(db,profile):
 
     df.loc[:, 'yearly_fee'] = df['fee'] / df['duration']
 
-    sorted_df = df.sort_values(by='yearly_fee').head(5)
-
+    sorted_by_fee_df = df.sort_values(by='yearly_fee').head(5)
+    sorted_by_rank_df = df.sort_values(by='uni_rank').head(5)
     #cost_of_living = cf[cf['state'] == state][['Min Cost', 'Max Cost']].values[0]
 
     #result = sorted_df[['University', 'Degree', 'Yearly Fee', 'Duration']].copy()
     #result['Total Min Cost (Tuition + Min Cost)'] = result['Yearly Fee'] + cost_of_living[0]
     #result['Total Max Cost (Tuition + Max Cost)'] = result['Yearly Fee'] + cost_of_living[1]
-    
-    print(sorted_df)
-    return sorted_df.to_dict(orient='records')
+    print("sorted_by_fee_df")
+    print(sorted_by_fee_df)
+    print("\n\nsorted_by_rank_df")
+    print(sorted_by_rank_df)
+    return {
+                "by_fee":sorted_by_fee_df.to_dict(orient='records'),
+                "by_rank":sorted_by_rank_df.to_dict(orient='records'),
+            }

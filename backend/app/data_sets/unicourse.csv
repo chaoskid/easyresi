@@ -1,4 +1,4 @@
-﻿Degree,Sector,University,State,Type,Duration,Fee Total,Uni Rank
+course,sector,uni,state,course_type,duration,fee,uni_rank
 Bachelor of Accounting,Business,La Trobe,VIC,Undergraduate,3,117000,17
 Bachelor of Business,Business,La Trobe,VIC,Undergraduate,3,117600,17
 Bachelor of Commerce,Business,La Trobe,VIC,Undergraduate,3,126000,17
@@ -86,33 +86,33 @@ Bachelor of Primary Education,Education,University of Canberra,ACT,Undergraduate
 Bachelor of Secondary Education (science),Education,University of Canberra,ACT,Undergraduate,4,128800,35
 Master of Primary Teaching,Education,University of Canberra,ACT,Postgraduate,2,64400,35
 Master of Secondary Teaching,Education,University of Canberra,ACT,Postgraduate,2,64400,35
-Bachelor of Accounting And Finance,Business,Australian Catholic University,"VIC, NSW, QLD",Undergraduate,3,91224,28
-Bachelor of Commerce,Business,Australian Catholic University,"VIC, NSW, QLD",Undergraduate,3,91224,28
-Bachelor of Business Administration,Business,Australian Catholic University,"VIC, NSW, QLD",Undergraduate,3,91224,28
-Master of Business Administration,Business,Australian Catholic University,"VIC, NSW",Postgraduate,2,66256,28
-Master of Professional Accounting,Business,Australian Catholic University,"VIC, NSW",Postgraduate,2,66256,28
+Bachelor of Accounting And Finance,Business,Australian Catholic University,VIC,Undergraduate,3,91224,28
+Bachelor of Commerce,Business,Australian Catholic University,VIC,Undergraduate,3,91224,28
+Bachelor of Business Administration,Business,Australian Catholic University,VIC,Undergraduate,3,91224,28
+Master of Business Administration,Business,Australian Catholic University,NSW,Postgraduate,2,66256,28
+Master of Professional Accounting,Business,Australian Catholic University,NSW,Postgraduate,2,66256,28
 Bachelor of Information Technology,IT,Australian Catholic University,NSW,Undergraduate,3,91224,28
 Master of Information Technology,IT,Australian Catholic University,NSW,Postgraduate,2,66256,28
-Bachelor of Biomedical Science,Health,Australian Catholic University,"VIC, NSW, QLD",Undergraduate,3,80976,28
-Bachelor of Nursing,Health,Australian Catholic University,"VIC, NSW, QLD, ACT",Undergraduate,3,98208,28
-Bachelor of Nutrition Science,Health,Australian Catholic University,"VIC, NSW",Undergraduate,3,80976,28
-Bachelor of Social Work,Health,Australian Catholic University,"NSW, ACT",Undergraduate,4,107968,28
-Bachelor of Early Childhood Education (birth To Five Years),Education,Australian Catholic University,"VIC, NSW, QLD",Undergraduate,4,114912,28
-Bachelor of Education,Education,Australian Catholic University,"VIC, NSW",Undergraduate,4,114912,28
-Master of Teaching,Education,Australian Catholic University,"VIC, NSW",Postgraduate,2,57456,28
-Bachelor of Business Administration,Business,University of Notre Dame,"NSW, WA",Undergraduate,3,93150,41
-Bachelor of Commerce,Business,University of Notre Dame,"NSW, WA",Undergraduate,3,93150,41
-Bachelor of Marketing And Public Relations,Business,University of Notre Dame,"NSW, WA",Undergraduate,3,93150,41
-Master of Business Administration,Business,University of Notre Dame,"NSW, WA",Postgraduate,2,66260,41
+Bachelor of Biomedical Science,Health,Australian Catholic University,VIC,Undergraduate,3,80976,28
+Bachelor of Nursing,Health,Australian Catholic University,VIC,Undergraduate,3,98208,28
+Bachelor of Nutrition Science,Health,Australian Catholic University,NSW,Undergraduate,3,80976,28
+Bachelor of Social Work,Health,Australian Catholic University,NSW,Undergraduate,4,107968,28
+Bachelor of Early Childhood Education (birth To Five Years),Education,Australian Catholic University,VIC,Undergraduate,4,114912,28
+Bachelor of Education,Education,Australian Catholic University,NSW,Undergraduate,4,114912,28
+Master of Teaching,Education,Australian Catholic University,NSW,Postgraduate,2,57456,28
+Bachelor of Business Administration,Business,University of Notre Dame,NSW,Undergraduate,3,93150,41
+Bachelor of Commerce,Business,University of Notre Dame,NSW,Undergraduate,3,93150,41
+Bachelor of Marketing And Public Relations,Business,University of Notre Dame,NSW,Undergraduate,3,93150,41
+Master of Business Administration,Business,University of Notre Dame,NSW,Postgraduate,2,66260,41
 Bachelor of Education,Education,University of Notre Dame,WA,Undergraduate,4,130400,41
 Bachelor of Health & Physical Education,Education,University of Notre Dame,WA,Undergraduate,4,130400,41
 Bachelor of Primary Education,Education,University of Notre Dame,NSW,Undergraduate,4,130400,41
 Bachelor of Secondary Education,Education,University of Notre Dame,NSW,Undergraduate,4,130400,41
 Master of Teaching,Education,University of Notre Dame,NSW,Postgraduate,2,70204,41
-Bachelor of Biomedical Science,Health,University of Notre Dame,"NSW, WA",Undergraduate,3,106665,41
-Bachelor of Nursing,Health,University of Notre Dame,"NSW, WA",Undergraduate,3,106665,41
-Bachelor of Computer Science,IT,University of Notre Dame,"NSW, WA",Undergraduate,3,119829,41
-Master of Computer Science,IT,University of Notre Dame,"NSW, WA",Postgraduate,2,88762,41
+Bachelor of Biomedical Science,Health,University of Notre Dame,NSW,Undergraduate,3,106665,41
+Bachelor of Nursing,Health,University of Notre Dame,NSW,Undergraduate,3,106665,41
+Bachelor of Computer Science,IT,University of Notre Dame,NSW,Undergraduate,3,119829,41
+Master of Computer Science,IT,University of Notre Dame,NSW,Postgraduate,2,88762,41
 Bachelor of Accounting,Business,Charles Sturt University,NSW,Undergraduate,3,89040,30
 Bachelor of Business,Business,Charles Sturt University,NSW,Undergraduate,3,92160,30
 Master of Applied Business,Business,Charles Sturt University,NSW,Postgraduate,2,66880,30
@@ -325,18 +325,18 @@ Master of Business Data Analytics,Business,Bond University,QLD,Postgraduate,1.5,
 Master of Actuarial Science,Business,Bond University,QLD,Postgraduate,1.5,73520,40
 Bachelor of Biomedical Science,Health,Bond University,QLD,Undergraduate,2,137520,40
 Bachelor of Health Science,Health,Bond University,QLD,Undergraduate,2,137520,40
-Bachelor of Accounting,Business,CQUniversity,QLD,Undergraduate,3,105120,
-Bachelor of Business,Business,CQUniversity,QLD,Undergraduate,3,105120,
-Master of Professional Accounting,Business,CQUniversity,QLD,Postgraduate,2,70080,
-Master of Business Management,Business,CQUniversity,QLD,Postgraduate,2,68880,
-Bachelor of Education,Business,CQUniversity,QLD,Undergraduate,4,123840,
-Bachelor of Engineering (honours),Engineering,CQUniversity,QLD,Undergraduate,4,156480,
-Master of Engineering,Engineering,CQUniversity,QLD,Postgraduate,2,76320,
-Bachelor of Information Technology,IT,CQUniversity,QLD,Undergraduate,3,105120,
-Master of Information Technology,IT,CQUniversity,QLD,Postgraduate,2,71040,
-Bachelor of Nursing,Health,CQUniversity,QLD,Undergraduate,3,110610,
-Master of Public Health,Health,CQUniversity,QLD,Postgraduate,2,68160,
-Bachelor of Education,Education,CQUniversity,QLD,Undergraduate,4,123840,
+Bachelor of Accounting,Business,CQUniversity,QLD,Undergraduate,3,105120,42
+Bachelor of Business,Business,CQUniversity,QLD,Undergraduate,3,105120,42
+Master of Professional Accounting,Business,CQUniversity,QLD,Postgraduate,2,70080,42
+Master of Business Management,Business,CQUniversity,QLD,Postgraduate,2,68880,42
+Bachelor of Education,Business,CQUniversity,QLD,Undergraduate,4,123840,42
+Bachelor of Engineering (honours),Engineering,CQUniversity,QLD,Undergraduate,4,156480,42
+Master of Engineering,Engineering,CQUniversity,QLD,Postgraduate,2,76320,42
+Bachelor of Information Technology,IT,CQUniversity,QLD,Undergraduate,3,105120,42
+Master of Information Technology,IT,CQUniversity,QLD,Postgraduate,2,71040,42
+Bachelor of Nursing,Health,CQUniversity,QLD,Undergraduate,3,110610,42
+Master of Public Health,Health,CQUniversity,QLD,Postgraduate,2,68160,42
+Bachelor of Education,Education,CQUniversity,QLD,Undergraduate,4,123840,42
 Bachelor of Business,Business,Griffith University,QLD,Undergraduate,3,100500,12
 Master of Business,Business,Griffith University,QLD,Postgraduate,2,75000,12
 Master of Professional Accounting,Business,Griffith University,QLD,Undergraduate,2,74000,12
@@ -563,30 +563,30 @@ Master of Cybersecurity,IT,Monash University,VIC,Postgraduate,2,77800,4
 Master of Data Science,IT,Monash University,VIC,Postgraduate,2,77800,4
 Master of Information Technology,IT,Monash University,VIC,Postgraduate,2,77800,4
 Master of Public Health,Health,Monash University,VIC,Postgraduate,2,66000,4
-Bachelor of Accounting,Business,RMIT University,VIC,Undergraduate,3,126720,
-Bachelor of Business,Business,RMIT University,VIC,Undergraduate,3,126720,
-Master of Accounting,Business,RMIT University,VIC,Postgraduate,2,92160,
-Bachelor of Commerce,Business,RMIT University,VIC,Undergraduate,3,126720,
-Master of Commerce,Business,RMIT University,VIC,Postgraduate,2,92160,
-Master of Business Administration,Business,RMIT University,VIC,Postgraduate,2,97920,
-Master of Finance,Business,RMIT University,VIC,Postgraduate,2,92160,
-Bachelor of Biomedical Science,Health,RMIT University,VIC,Undergraduate,3,132480,
-Bachelor of Pharmaceutical Sciences,Health,RMIT University,VIC,Undergraduate,3,132480,
-Bachelor of Pharmacy (honours),Health,RMIT University,VIC,Undergraduate,4,184320,
-Master of Laboratory Medicine,Health,RMIT University,VIC,Postgraduate,2,92160,
-Master of Education,Education,RMIT University,VIC,Postgraduate,2,65280,
-Bachelor of Education,Education,RMIT University,VIC,Undergraduate,4,134400,
-Master of Teaching Practice,Education,RMIT University,VIC,Postgraduate,2,69120,
-Bachelor of Engineering,Engineering,RMIT University,VIC,Undergraduate,4,180480,
-Bachelor of Nursing,Health,RMIT University,VIC,Undergraduate,3,120960,
-Bachelor of Social Work (honours),Health,RMIT University,VIC,Undergraduate,4,142080,
-Master of Social Work,Health,RMIT University,VIC,Postgraduate,2,74880,
-Bachelor of Computer Science,IT,RMIT University,VIC,Undergraduate,3,120960,
-Bachelor of Data Science,IT,RMIT University,VIC,Undergraduate,3,120960,
-Master of Data Science,IT,RMIT University,VIC,Postgraduate,2,82560,
-Bachelor of Information Technology,IT,RMIT University,VIC,Undergraduate,3,120960,
-Master of Artificial Intelligence,IT,RMIT University,VIC,Postgraduate,2,82560,
-Master of Information Technology,IT,RMIT University,VIC,Postgraduate,2,82560,
+Bachelor of Accounting,Business,RMIT University,VIC,Undergraduate,3,126720,13
+Bachelor of Business,Business,RMIT University,VIC,Undergraduate,3,126720,13
+Master of Accounting,Business,RMIT University,VIC,Postgraduate,2,92160,13
+Bachelor of Commerce,Business,RMIT University,VIC,Undergraduate,3,126720,13
+Master of Commerce,Business,RMIT University,VIC,Postgraduate,2,92160,13
+Master of Business Administration,Business,RMIT University,VIC,Postgraduate,2,97920,13
+Master of Finance,Business,RMIT University,VIC,Postgraduate,2,92160,13
+Bachelor of Biomedical Science,Health,RMIT University,VIC,Undergraduate,3,132480,13
+Bachelor of Pharmaceutical Sciences,Health,RMIT University,VIC,Undergraduate,3,132480,13
+Bachelor of Pharmacy (honours),Health,RMIT University,VIC,Undergraduate,4,184320,13
+Master of Laboratory Medicine,Health,RMIT University,VIC,Postgraduate,2,92160,13
+Master of Education,Education,RMIT University,VIC,Postgraduate,2,65280,13
+Bachelor of Education,Education,RMIT University,VIC,Undergraduate,4,134400,13
+Master of Teaching Practice,Education,RMIT University,VIC,Postgraduate,2,69120,13
+Bachelor of Engineering,Engineering,RMIT University,VIC,Undergraduate,4,180480,13
+Bachelor of Nursing,Health,RMIT University,VIC,Undergraduate,3,120960,13
+Bachelor of Social Work (honours),Health,RMIT University,VIC,Undergraduate,4,142080,13
+Master of Social Work,Health,RMIT University,VIC,Postgraduate,2,74880,13
+Bachelor of Computer Science,IT,RMIT University,VIC,Undergraduate,3,120960,13
+Bachelor of Data Science,IT,RMIT University,VIC,Undergraduate,3,120960,13
+Master of Data Science,IT,RMIT University,VIC,Postgraduate,2,82560,13
+Bachelor of Information Technology,IT,RMIT University,VIC,Undergraduate,3,120960,13
+Master of Artificial Intelligence,IT,RMIT University,VIC,Postgraduate,2,82560,13
+Master of Information Technology,IT,RMIT University,VIC,Postgraduate,2,82560,13
 Bachelor of Accounting,Business,Swinburne University of Technology,VIC,Undergraduate,3,119820,20
 Bachelor of Business,Business,Swinburne University of Technology,VIC,Undergraduate,3,119820,20
 Master of Professional Accounting,Business,Swinburne University of Technology,VIC,Postgraduate,2,88680,20
@@ -695,3 +695,30 @@ Bachelor of Social Work (honours),Health,The University of Western Australia,WA,
 Master of Biomedical Science,Health,The University of Western Australia,WA,Postgraduate,2,98000,7
 Master of Public Health,Health,The University of Western Australia,WA,Postgraduate,1.5,64350,7
 Master of Social Work,Health,The University of Western Australia,WA,Postgraduate,2,74400,7
+Bachelor of Social Work,Health,Australian Catholic University,ACT,Undergraduate,4,107968,28
+Bachelor of Business Administration,Business,University of Notre Dame,WA,Undergraduate,3,93150,41
+Bachelor of Commerce,Business,University of Notre Dame,WA,Undergraduate,3,93150,41
+Bachelor of Marketing And Public Relations,Business,University of Notre Dame,WA,Undergraduate,3,93150,41
+Master of Business Administration,Business,University of Notre Dame,WA,Postgraduate,2,66260,41
+Bachelor of Biomedical Science,Health,University of Notre Dame,WA,Undergraduate,3,106665,41
+Bachelor of Nursing,Health,University of Notre Dame,WA,Undergraduate,3,106665,41
+Bachelor of Computer Science,IT,University of Notre Dame,WA,Undergraduate,3,119829,41
+Master of Computer Science,IT,University of Notre Dame,WA,Postgraduate,2,88762,41
+Master of Business Administration,Business,Australian Catholic University,VIC,Postgraduate,2,66256,28
+Master of Professional Accounting,Business,Australian Catholic University,VIC,Postgraduate,2,66256,28
+Bachelor of Nutrition Science,Health,Australian Catholic University,VIC,Undergraduate,3,80976,28
+Bachelor of Education,Education,Australian Catholic University,VIC,Undergraduate,4,114912,28
+Master of Teaching,Education,Australian Catholic University,VIC,Postgraduate,2,57456,28
+Bachelor of Accounting And Finance,Business,Australian Catholic University,NSW,Undergraduate,3,91224,28
+Bachelor of Commerce,Business,Australian Catholic University,NSW,Undergraduate,3,91224,28
+Bachelor of Business Administration,Business,Australian Catholic University,NSW,Undergraduate,3,91224,28
+Bachelor of Biomedical Science,Health,Australian Catholic University,NSW,Undergraduate,3,80976,28
+Bachelor of Early Childhood Education (birth To Five Years),Education,Australian Catholic University,NSW,Undergraduate,4,114912,28
+Bachelor of Accounting And Finance,Business,Australian Catholic University,QLD,Undergraduate,3,91224,28
+Bachelor of Commerce,Business,Australian Catholic University,QLD,Undergraduate,3,91224,28
+Bachelor of Business Administration,Business,Australian Catholic University,QLD,Undergraduate,3,91224,28
+Bachelor of Biomedical Science,Health,Australian Catholic University,QLD,Undergraduate,3,80976,28
+Bachelor of Early Childhood Education (birth To Five Years),Education,Australian Catholic University,QLD,Undergraduate,4,114912,28
+Bachelor of Nursing,Health,Australian Catholic University,NSW,Undergraduate,3,98208,28
+Bachelor of Nursing,Health,Australian Catholic University,QLD,Undergraduate,3,98208,28
+Bachelor of Nursing,Health,Australian Catholic University,ACT,Undergraduate,3,98208,28
