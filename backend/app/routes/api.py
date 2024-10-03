@@ -3,7 +3,7 @@ from create_app import db
 import pickle
 from app.models.db_models import *
 from app.routes.auth import login_required
-from app.routes.utils import points_table,get_pr_prob_for_states,get_pr_prob,generate_model_input,get_pr_prob_for_jobs
+from app.routes.utils import points_table,get_pr_prob_for_states,get_pr_prob,generate_model_input,get_pr_prob_for_jobs, recommend_uni
 
 api = Blueprint('api', __name__)
 
@@ -190,10 +190,12 @@ def recommendations(input_user_id):
     pr_prob = get_pr_prob(model,model_inputdf)
     prob_for_other_states=get_pr_prob_for_states(model,model_inputdf)
     prob_for_other_occupations = get_pr_prob_for_jobs(model,model_inputdf,db,profile)
+    uni_recommendations=recommend_uni(db,profile)
     return {
                 'probability_of_permanent_residency': pr_prob,
                 'probability_of_other_states':prob_for_other_states,
-                'probability_of_other_jobs':prob_for_other_occupations
+                'probability_of_other_jobs':prob_for_other_occupations,
+                'uni_recommendations':uni_recommendations
             }
     
 

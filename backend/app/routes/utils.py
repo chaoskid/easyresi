@@ -147,3 +147,29 @@ def get_pr_prob_for_jobs(model,df,db,profile):
     
     return prob_for_jobs
 
+def recommend_uni(db,profile):
+    state = profile.preferred_location
+    degree = profile.preferred_qualifications
+    industry = profile.preferred_industry
+    # Define the SQL query
+    query = "SELECT * FROM unicourse WHERE lower(state) = lower('{}') AND lower(course_type) = lower('{}') AND lower(sector) = lower('{}')".format(state,degree,industry)
+
+    # Use the db engine to connect and fetch data into a pandas DataFrame
+    df = pd.read_sql(query, db.engine)
+
+    print(df)
+    
+    #filtered_df = df[(df['State'] == state) & (df['Type'] == degree) & (df['Sector'] == industry)].copy()
+
+    df.loc[:, 'yearly_fee'] = df['fee'] / df['duration']
+
+    sorted_df = df.sort_values(by='yearly_fee').head(5)
+
+    #cost_of_living = cf[cf['state'] == state][['Min Cost', 'Max Cost']].values[0]
+
+    #result = sorted_df[['University', 'Degree', 'Yearly Fee', 'Duration']].copy()
+    #result['Total Min Cost (Tuition + Min Cost)'] = result['Yearly Fee'] + cost_of_living[0]
+    #result['Total Max Cost (Tuition + Max Cost)'] = result['Yearly Fee'] + cost_of_living[1]
+    
+    print(sorted_df)
+    return sorted_df.to_dict(orient='records')
