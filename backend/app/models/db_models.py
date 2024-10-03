@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, Integer, String, Boolean, ForeignKey, DateTime
+from sqlalchemy import create_engine, Column, Integer, String, Boolean, ForeignKey, DateTime,Float
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 from datetime import datetime
@@ -25,8 +25,8 @@ class User(Base):
 class UserProfile(Base):
     __tablename__ = 'userprofiles'
     
-    profile_id = Column(Integer, primary_key=True, autoincrement=True)
-    user_id = Column(Integer, ForeignKey('users.user_id'), nullable=False)
+    #profile_id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(Integer, ForeignKey('users.user_id'),primary_key=True, nullable=False)
     
     visa_type = Column(String(100), nullable=False)
     age_group = Column(String(10), nullable=False)
@@ -49,15 +49,11 @@ class UserProfile(Base):
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
 
-    scores = relationship('UserScore', backref='profile')
-
 # UserScore table
 class UserScore(Base):
     __tablename__ = 'userscore'
 
     user_id = Column(Integer, ForeignKey('users.user_id'), primary_key=True, nullable=False)
-    profile_id = Column(Integer, ForeignKey('userprofiles.profile_id'), primary_key=True, nullable=False)
-
     age_group_score = Column(Integer, nullable=False)
     english_proficiency_score = Column(Integer, nullable=False)
     overseas_experience_score = Column(Integer, nullable=False)
@@ -89,3 +85,23 @@ class JobsShortage(Base):
     nt_shortage=Column(Integer, nullable=False)
     act_shortage=Column(Integer, nullable=False)
     sector=Column(String(20), nullable=False)
+
+class UniCourse(Base):
+    __tablename__ = 'unicourse'
+    course_id=Column(Integer, primary_key=True, nullable=False, autoincrement=True)
+    course=Column(String(100), nullable=False)
+    sector=Column(String(20), nullable=False)
+    uni=Column(String(50), nullable=False)
+    state=Column(String(20),nullable=False)
+    course_type=Column(String(20), nullable=False)
+    duration=Column(Float, nullable=False)
+    fee=Column(Integer, nullable=False)
+    uni_rank=Column(Integer, nullable=False)
+
+class CostOfLiving(Base):
+    __tablename__='cost_of_living'
+    city_id=Column(Integer, primary_key=True, nullable=False, autoincrement=True)
+    city_name=Column(String(20), nullable=False)
+    state=Column(String(20), nullable=False)
+    min_cost=Column(Integer, nullable=False)
+    max_cost=Column(Integer, nullable=False)

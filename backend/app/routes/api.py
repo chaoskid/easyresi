@@ -141,7 +141,6 @@ def update_points(input_user_id):
 
     new_entry = UserScore(
         user_id=profile.user_id,
-        profile_id=profile.profile_id,
         age_group_score=age_group_score,
         english_proficiency_score=english_proficiency_score,
         overseas_experience_score=overseas_experience_score,
