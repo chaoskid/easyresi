@@ -1,6 +1,7 @@
 from create_app import db
 from app.models.db_models import *
 import pandas as pd
+from flask import session
 
 points_table = {
     'age': {
@@ -74,7 +75,7 @@ points_table = {
     }
 }
 
-def get_points(profile,db):
+def get_or_update_points(profile,db,existing_entry=False):
     age_group_score = points_table["age"][profile.age_group]
     english_proficiency_score = points_table["english_proficiency"][profile.english_proficiency]
     overseas_experience_score = points_table["overseas_experience"][profile.overseas_experience]
@@ -98,25 +99,45 @@ def get_points(profile,db):
     total_score = age_group_score + english_proficiency_score + overseas_experience_score + australian_experience_score + qualification_score +\
         australian_education_score + specialist_education_score + community_lang_score + regional_area_score + marital_status_score +\
         professional_year_score + nomination_score + industry_score + sol_score
-    new_entry = UserScore(
-        user_id=profile.user_id,
-        age_group_score=age_group_score,
-        english_proficiency_score=english_proficiency_score,
-        overseas_experience_score=overseas_experience_score,
-        australian_experience_score=australian_experience_score,
-        qualification_score=qualification_score,
-        australian_education_score=australian_education_score,
-        specialist_education_score=specialist_education_score,
-        community_lang_score=community_lang_score,
-        regional_area_score=regional_area_score,
-        marital_status_score=marital_status_score,
-        professional_year_score=professional_year_score,
-        nomination_score=nomination_score,
-        industry_score=industry_score,
-        sol_score=sol_score,
-        total_score=total_score
-    )
-    return new_entry
+    if existing_entry:
+        existing_entry.user_id=profile.user_id,
+        existing_entry.age_group_score=age_group_score,
+        existing_entry.english_proficiency_score=english_proficiency_score,
+        existing_entry.overseas_experience_score=overseas_experience_score,
+        existing_entry.australian_experience_score=australian_experience_score,
+        existing_entry.qualification_score=qualification_score,
+        existing_entry.australian_education_score=australian_education_score,
+        existing_entry.specialist_education_score=specialist_education_score,
+        existing_entry.community_lang_score=community_lang_score,
+        existing_entry.regional_area_score=regional_area_score,
+        existing_entry.marital_status_score=marital_status_score,
+        existing_entry.professional_year_score=professional_year_score,
+        existing_entry.nomination_score=nomination_score,
+        existing_entry.industry_score=industry_score,
+        existing_entry.sol_score=sol_score,
+        existing_entry.total_score=total_score
+        db.session.commit()
+        return None
+    else:
+        new_entry = UserScore(
+            user_id=profile.user_id,
+            age_group_score=age_group_score,
+            english_proficiency_score=english_proficiency_score,
+            overseas_experience_score=overseas_experience_score,
+            australian_experience_score=australian_experience_score,
+            qualification_score=qualification_score,
+            australian_education_score=australian_education_score,
+            specialist_education_score=specialist_education_score,
+            community_lang_score=community_lang_score,
+            regional_area_score=regional_area_score,
+            marital_status_score=marital_status_score,
+            professional_year_score=professional_year_score,
+            nomination_score=nomination_score,
+            industry_score=industry_score,
+            sol_score=sol_score,
+            total_score=total_score
+        )
+        return new_entry
 
 def get_input_json(data):
     input_json = {
@@ -141,32 +162,54 @@ def get_input_json(data):
         }
     return input_json
 
-def get_profile_entry(input_json,input_user_id):
+def get_or_update_profile_entry(input_json,db,existing_profile=False):
     # Create a new Questionnaire entry
-    profile_entry = UserProfile(
-        #user_id=session['user_id'],
-        user_id=input_user_id,
-        visa_type = input_json['visa_type'],
-        age_group=input_json['age_group'],
-        english_proficiency=input_json['english_proficiency'],
-        overseas_experience=input_json['overseas_experience'],
-        australian_experience=input_json['australian_experience'],
-        qualification=input_json['qualification'],
-        australian_education=input_json['australian_education'],
-        specialist_education=input_json['specialist_education'],
-        community_lang=input_json['community_lang'],
-        professional_year=input_json['professional_year'],
-        regional_area=input_json['regional_area'],
-        marital_status=input_json['marital_status'],
-        nomination=input_json['nomination'],
-        preferred_location=input_json['preferred_location'],
-        preferred_industry=input_json['preferred_industry'],
-        preferred_qualifications=input_json['preferred_qualifications'],
-        preferred_course=input_json['preferred_course'],
-        preferred_occupation=input_json['preferred_occupation']
-    )
-    return profile_entry
+    if existing_profile:
+        existing_profile.user_id=session['user_id'],
+        existing_profile.visa_type = input_json['visa_type'],
+        existing_profile.age_group=input_json['age_group'],
+        existing_profile.english_proficiency=input_json['english_proficiency'],
+        existing_profile.overseas_experience=input_json['overseas_experience'],
+        existing_profile.australian_experience=input_json['australian_experience'],
+        existing_profile.qualification=input_json['qualification'],
+        existing_profile.australian_education=input_json['australian_education'],
+        existing_profile.specialist_education=input_json['specialist_education'],
+        existing_profile.community_lang=input_json['community_lang'],
+        existing_profile.professional_year=input_json['professional_year'],
+        existing_profile.regional_area=input_json['regional_area'],
+        existing_profile.marital_status=input_json['marital_status'],
+        existing_profile.nomination=input_json['nomination'],
+        existing_profile.preferred_location=input_json['preferred_location'],
+        existing_profile.preferred_industry=input_json['preferred_industry'],
+        existing_profile.preferred_qualifications=input_json['preferred_qualifications'],
+        existing_profile.preferred_course=input_json['preferred_course'],
+        existing_profile.preferred_occupation=input_json['preferred_occupation']
 
+        db.session.commit()
+        return None
+    else:
+        profile_entry = UserProfile(
+            user_id=session['user_id'],
+            visa_type = input_json['visa_type'],
+            age_group=input_json['age_group'],
+            english_proficiency=input_json['english_proficiency'],
+            overseas_experience=input_json['overseas_experience'],
+            australian_experience=input_json['australian_experience'],
+            qualification=input_json['qualification'],
+            australian_education=input_json['australian_education'],
+            specialist_education=input_json['specialist_education'],
+            community_lang=input_json['community_lang'],
+            professional_year=input_json['professional_year'],
+            regional_area=input_json['regional_area'],
+            marital_status=input_json['marital_status'],
+            nomination=input_json['nomination'],
+            preferred_location=input_json['preferred_location'],
+            preferred_industry=input_json['preferred_industry'],
+            preferred_qualifications=input_json['preferred_qualifications'],
+            preferred_course=input_json['preferred_course'],
+            preferred_occupation=input_json['preferred_occupation']
+        )
+        return profile_entry
 
 def generate_model_input(profile,scores):
     input_data = {
@@ -250,8 +293,6 @@ def recommend_uni(db,profile):
 
     # Use the db engine to connect and fetch data into a pandas DataFrame
     df = pd.read_sql(query, db.engine)
-
-    print(df)
     
     #filtered_df = df[(df['State'] == state) & (df['Type'] == degree) & (df['Sector'] == industry)].copy()
 
@@ -264,10 +305,6 @@ def recommend_uni(db,profile):
     #result = sorted_df[['University', 'Degree', 'Yearly Fee', 'Duration']].copy()
     #result['Total Min Cost (Tuition + Min Cost)'] = result['Yearly Fee'] + cost_of_living[0]
     #result['Total Max Cost (Tuition + Max Cost)'] = result['Yearly Fee'] + cost_of_living[1]
-    print("sorted_by_fee_df")
-    print(sorted_by_fee_df)
-    print("\n\nsorted_by_rank_df")
-    print(sorted_by_rank_df)
     return {
                 "by_fee":sorted_by_fee_df.to_dict(orient='records'),
                 "by_rank":sorted_by_rank_df.to_dict(orient='records'),
