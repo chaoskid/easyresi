@@ -52,7 +52,39 @@ def register():
     except Exception as e:
         db.session.rollback()
         return jsonify({'type':'error','message': 'An unexpected error occurred: {}'.format(e)}), 500
+
+@auth_bp.route('/update_profile', methods=['POST'])
+@login_required
+def update_profile():
+    data = request.get_json()  # Get JSON data from request
+    firstname = data.get("fname")
+    lastname = data.get('lname')
+    email = data.get('email')
+    password = data.get('pass')
+
+    try:
+        user = db.session.query(User).filter_by(email=email).first()
+        hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
+        user.first_name = firstname
+        user.last_name = lastname
+        user.user_type = "applicant"
+        user.email=email
+        user.password_hash=hashed_password
+        db.session.commit()
+        return jsonify({
+            'type' : 'success',
+            'message': 'Profile updated successfully!',
+            'data': {
+                'id': user.user_id,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'email': user.email
+            }
+        }), 201
     
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'type':'error','message': 'An unexpected error occurred: {}'.format(e)}), 500
     
 
 @auth_bp.route('/login', methods=['POST','GET'])
