@@ -258,29 +258,36 @@ def get_pr_prob(model,df):
     pr_prob = round(float(y_proba[:, 1][0]*100),3)
     return pr_prob
 
-def get_pr_prob_for_states(model,df):
+def get_pr_prob_for_states(profile,input_df,model):
     prob_for_states = {}
+    df = input_df.copy()
     states = {1:"NSW",2:"VIC",3:"QLD",4:"SA",5:"WA",6:"TAS",7:"NT",8:"ACT"}
+    job = db.session.query(JobsShortage).filter_by(anzsco=profile.preferred_occupation).first()
+    original_score = df['total_score']+ (df['industry_score'] * -1)
     for state in points_table["state"].values():
         df['state'] = state
+        df['industry_score']  = getattr(job, states[state].lower() + "_shortage")
+        df['total_score'] = original_score+df['industry_score']
         y_proba=model.predict_proba(df)
         prob_class_1 = round(float(y_proba[:, 1][0]*100),3)
         prob_for_states[states[state]] = prob_class_1
+    
     return prob_for_states
 
-def get_pr_prob_for_jobs(model,df,db,profile):
+def get_pr_prob_for_jobs(model,input_df,db,profile):
     prob_for_jobs={}
-
+    df = input_df.copy()
     industry=db.session.query(JobsShortage.sector).filter_by(anzsco=int(df['anzco'][0])).first()
-
     column_to_select = getattr(JobsShortage, str(profile.preferred_location).lower() + "_shortage")
-    jobs = db.session.query(JobsShortage.anzsco).filter_by(sector=industry[0]).order_by(column_to_select).limit(5).all()
-
+    jobs = db.session.query(JobsShortage).filter_by(sector=industry[0]).order_by(column_to_select).limit(5).all()
+    original_score = df['total_score']+ (df['industry_score'] * -1)
     for job in jobs:
-        df['anzco']=job[0]
+        df['anzco']=job.anzsco
+        df['industry_score'] = getattr(job, column_to_select.key)
+        df['total_score'] = original_score + df['industry_score']
         y_proba=model.predict_proba(df)
         prob_class_1 = round(float(y_proba[:, 1][0]*100),3)
-        prob_for_jobs[job[0]] = prob_class_1
+        prob_for_jobs[job.anzsco] = prob_class_1
     
     return prob_for_jobs
 

@@ -223,11 +223,11 @@ const Questionnaire = () => {
           <FormControl isRequired mb={4}>
             <FormLabel>Preferred Occupation (based on industry)</FormLabel>
             <Select placeholder="Select an occupation" onChange={(e) => updateFormData("preferredOccupation", e.target.value)}>
-              {preferredIndustry === 'business' && <option value="224411">Business Analyst</option>}
-              {preferredIndustry === 'it' && <option value="224411">Software Developer</option>}
-              {preferredIndustry === 'education' && <option value="224411">Teacher</option>}
-              {preferredIndustry === 'engineering' && <option value="224411">Civil Engineer</option>}
-              {preferredIndustry === 'healthcare' && <option value="224411">Nurse</option>}
+              {preferredIndustry === 'business' && <option value="263112">Business Analyst</option>}
+              {preferredIndustry === 'it' && <option value="263112">Software Developer</option>}
+              {preferredIndustry === 'education' && <option value="263112">Teacher</option>}
+              {preferredIndustry === 'engineering' && <option value="263112">Civil Engineer</option>}
+              {preferredIndustry === 'healthcare' && <option value="263112">Nurse</option>}
             </Select>
           </FormControl>
 
