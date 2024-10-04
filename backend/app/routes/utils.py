@@ -1,7 +1,7 @@
 from create_app import db
 from app.models.db_models import *
 import pandas as pd
-from flask import session
+from flask import session, jsonify
 
 points_table = {
     'age': {
@@ -309,3 +309,21 @@ def recommend_uni(db,profile):
                 "by_fee":sorted_by_fee_df.to_dict(orient='records'),
                 "by_rank":sorted_by_rank_df.to_dict(orient='records'),
             }
+
+def get_ques_data(db):
+    
+    occupation_by_industry = {}
+    #SQL query
+    query = "SELECT anzsco, occupation, sector FROM occupation_shortage"
+    
+    # Use the db engine to connect and fetch data into a pandas DataFrame
+    df = pd.read_sql(query, db.engine)
+
+    industries = ['IT', 'Business', 'Health', 'Education', 'Engineering']
+
+    for industry in industries:
+        filtered_df = df[df['sector'] == industry]
+        occupation_list = filtered_df[['anzsco','occupation']].to_dict(orient='records')
+        occupation_by_industry[industry] = occupation_list
+    
+    return occupation_by_industry
