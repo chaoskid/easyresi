@@ -27,7 +27,16 @@ def create_questionnaire():
     if request.method == 'GET':
         try:
             ques_data = get_ques_data(db)
-            return jsonify({'type':'success','message': 'occupations fetched successfully!', 'data':ques_data}), 201
+            existing_profile_entry = db.session.query(UserProfile).filter_by(user_id=session['user_id']).first()
+            if existing_profile_entry:
+                prefill_data=prefill_ques(existing_profile_entry)
+            else:
+                prefill_data = None
+
+            return jsonify({
+                            'type':'success',
+                            'message': 'occupations fetched successfully!', 
+                            'data':{'occupations':ques_data, 'prefill_data':prefill_data}}), 201
         except Exception as e:
                 print(e)
                 return jsonify({'type':'error','message': 'An internal error occured.\n {}'.format(e)}), 500
