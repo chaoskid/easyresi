@@ -24,12 +24,13 @@ def Dashboard():
 @api.route('/questionnaire', methods=['POST','GET'])
 @login_required
 def create_questionnaire():
-    try:
-        ques_data = get_ques_data(db)
-        return jsonify({'type':'success','message': 'occupations fetched successfully!', 'data':ques_data}), 201
-    except Exception as e:
-            print(e)
-            return jsonify({'type':'error','message': 'An internal error occured.\n {}'.format(e)}), 500
+    if request.method == 'GET':
+        try:
+            ques_data = get_ques_data(db)
+            return jsonify({'type':'success','message': 'occupations fetched successfully!', 'data':ques_data}), 201
+        except Exception as e:
+                print(e)
+                return jsonify({'type':'error','message': 'An internal error occured.\n {}'.format(e)}), 500
     
     if request.method == 'POST':
         data = request.get_json()  # Receive JSON data from the front-end

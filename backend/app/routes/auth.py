@@ -11,7 +11,7 @@ def login_required(f):
     def decorated_function(*args, **kwargs):
         print("login required", session)
         if "user_id" not in session:
-            return jsonify({"error":"Unauthorized access, please log in"}),401
+            return jsonify({'type':'error',"message":"Unauthorized access, please log in"}),401
         return f(*args, **kwargs)
     return decorated_function
 
@@ -29,7 +29,7 @@ def register():
     # Check if the email exists in the database
     user = db.session.query(User).filter_by(email=email).first()
     if user:
-        return jsonify({'error': 'User already exists for this email'}), 409
+        return jsonify({'type':'error','message': 'User already exists for this email, please log in.'}), 409
     
     # Hash the password
     hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
@@ -39,8 +39,9 @@ def register():
         db.session.add(new_user)
         db.session.commit()
         return jsonify({
+            'type' : 'success',
             'message': 'User created successfully!',
-            'user': {
+            'data': {
                 'id': new_user.user_id,
                 'first_name': new_user.first_name,
                 'last_name': new_user.last_name,
@@ -50,31 +51,56 @@ def register():
     
     except Exception as e:
         db.session.rollback()
-        return jsonify({'error': 'An unexpected error occurred: {}'.format(e)}), 500
+        return jsonify({'type':'error','message': 'An unexpected error occurred: {}'.format(e)}), 500
     
     
 
-@auth_bp.route('/login', methods=['POST'])
+@auth_bp.route('/login', methods=['POST','GET'])
 def login():
-    data = request.get_json()  
-    email = data.get('email')
-    password = data.get('password')
-    print("login", session)
-    try:
-        # Check if user exists
-        user = db.session.query(User).filter_by(email=email).first()
+    if request.method == 'POST':
+        if 'user_id' in session:
+            return(jsonify({
+                    'type':'error', 
+                    'message':f"User ID {session['user_id']} is already in the session",
+                    'data' : {'user_id': session['user_id']}
+                    })), 409
+        data = request.get_json()  
+        email = data.get('email')
+        password = data.get('password')
+        print("login", session)
+        try:
+            # Check if user exists
+            user = db.session.query(User).filter_by(email=email).first()
 
-        if user and bcrypt.check_password_hash(user.password_hash, password):
-            session['user_id'] = user.user_id
-            print("login", session)
-            return jsonify({"message": "Login successful!", "user_id":user.user_id}), 200
+            if user and bcrypt.check_password_hash(user.password_hash, password):
+                session['user_id'] = user.user_id
+                print("login", session)
+                return(jsonify({
+                    'type':'success', 
+                    'message':"Log in successfull",
+                    'data' : {'user_id': session['user_id']}
+                    })), 200
+            else:
+                return jsonify({'type':'error','message': 'Invalid credentials. Please try again'}), 401
+
+        except Exception as e:
+            print(e)
+            db.session.rollback()
+            return jsonify({'type':'error','message': 'An internal error occured.\n {}'.format(e)}), 500
+    
+    if request.method == 'GET':
+        if 'user_id' in session:
+            return(jsonify({
+                    'type':'success', 
+                    'message':f"User ID {session['user_id']} is in the session",
+                    'data' : {'user_id': session['user_id']}
+                    })), 200
         else:
-            return jsonify({"message": "Invalid credentials. Please try again"}), 401
-        
-    except Exception as e:
-        print(e)
-        db.session.rollback()
-        return jsonify({'error': 'An unexpected error occurred: {}'.format(e)}), 500
+            return(jsonify({
+                    'type':'error', 
+                    'message':"No user is logged",
+                    'data' : {'user_id': None}
+                    })), 200
 
 
 @auth_bp.route('/logout', methods=['POST'])
@@ -82,8 +108,8 @@ def logout():
     print('Session before logout:', session)  # Check session state
     if 'user_id' not in session:
         print('No user logged in during logout attempt.')
-        return jsonify({'message': 'No user logged in.'}), 400
+        return jsonify({'type':'error','message': 'No user logged in.'}), 400
     session.pop('user_id', None)
     session.clear()
     print('Session after logout:', session)
-    return jsonify({'message': 'Logged out successfully!'}), 200
+    return jsonify({'type':'success','message': 'Logged out successfully!'}), 200
