@@ -16,7 +16,6 @@ def home():
 @api.route('/dashboard', methods=['GET'])
 @login_required
 def Dashboard():
-    print(session)
     user = db.session.query(User).filter_by(user_id=session['user_id']).first()
     return jsonify({'message': 'Welcome to the Dashboard {}!'.format(user.first_name)})
 
@@ -43,7 +42,6 @@ def create_questionnaire():
     
     if request.method == 'POST':
         data = request.get_json()  # Receive JSON data from the front-end
-        print(session)
         input_json = get_input_json(data)
         profile_entry = get_or_update_profile_entry(input_json,db)
         try:
@@ -104,16 +102,15 @@ def userprofile():
 def preview_results():
     if request.method == 'POST':
         data = request.get_json()
-        print(session)
         input_json = get_input_json(data)
-        profile_entry = get_profile_entry(input_json)
+        profile_entry = get_or_update_profile_entry(input_json,db)
         try:
             with open('app/models/resipro', 'rb') as f:
                 model = pickle.load(f)
-            user_score_entry = get_points(profile_entry,db)
+            user_score_entry = get_or_update_points(profile_entry,db)
             model_inputdf=generate_model_input(profile_entry,user_score_entry)
             pr_prob = get_pr_prob(model,model_inputdf)
-            prob_for_other_states=get_pr_prob_for_states(model,model_inputdf)
+            prob_for_other_states=get_pr_prob_for_states(profile_entry,model_inputdf,model)
             prob_for_other_occupations = get_pr_prob_for_jobs(model,model_inputdf,db,profile_entry)
             uni_recommendations=recommend_uni(db,profile_entry)
             return jsonify({
@@ -142,8 +139,8 @@ def recommendations(input_user_id):
             model = pickle.load(f)
         model_inputdf=generate_model_input(profile,scores)
         pr_prob = get_pr_prob(model,model_inputdf)
-        prob_for_other_states=get_pr_prob_for_states(model,model_inputdf)
         prob_for_other_occupations = get_pr_prob_for_jobs(model,model_inputdf,db,profile)
+        prob_for_other_states=get_pr_prob_for_states(profile,model_inputdf,model)
         uni_recommendations=recommend_uni(db,profile)
         return jsonify({
                 'type' : 'success',
