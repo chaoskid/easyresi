@@ -327,3 +327,27 @@ def get_ques_data(db):
         occupation_by_industry[industry] = occupation_list
     
     return occupation_by_industry
+
+def prefill_ques(profile):
+
+    user_input = {
+            'visaType' : profile.visa_type,
+            'age' : profile.age_group,
+            'englishProficiency' : profile.english_proficiency,
+            'overseasExperience' : profile.overseas_experience,
+            'australiaExperience' : profile.australian_experience,
+            'education' : profile.qualification,
+            'australianStudy' : profile.australian_education,
+            'specialistEducation' : profile.specialist_education,
+            'communityLanguage' : profile.community_lang,
+            'professionalYear' : profile.professional_year,
+            'regionalStudy' : profile.regional_area,
+            'maritalStatus' : profile.marital_status,
+            'nomination' : profile.nomination,
+            'statePreferred' : profile.preferred_location,
+            'preferredIndustry' : profile.preferred_industry,
+            'courseLevel' : profile.preferred_qualifications,
+            'preferredCourse' : profile.preferred_course,
+            'preferredOccupation' : profile.preferred_occupation
+        }
+    return user_input
