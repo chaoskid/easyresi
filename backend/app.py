@@ -9,4 +9,4 @@ app = createApp()
 if __name__ == '__main__':
     create_database()  # Create the database if it doesn't exist
     create_tables()  # Create the necessary tables
-    app.run(debug=True)
+    app.run(port=5002,debug=True)
