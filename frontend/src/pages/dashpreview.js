@@ -139,8 +139,9 @@ const Dashpreview = () => {
                             </CircularProgress>
                         )}
                     </Box>
-                    <button colorScheme="teal" className="general-button" onClick={handleAccept}>Accept Changes</button>
-                    <button colorScheme="teal" className="general-button" onClick={handleRevert}>Revert</button>
+                    <br /><br />
+                    <Button colorScheme="teal" onClick={handleAccept}>Accept Changes</Button><br /><br />
+                    <Button colorScheme="teal" onClick={handleRevert}>Revert</Button>
                 </ChakraProvider>
 
 
