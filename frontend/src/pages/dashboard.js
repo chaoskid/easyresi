@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from '../axiosConfig';
 import Navbar from '../components/Navbar';
-import { CircularProgress, CircularProgressLabel } from '@chakra-ui/react'
+import { ChakraProvider, Button, Box, CircularProgress, CircularProgressLabel } from '@chakra-ui/react';
+
 
 
 import { useNavigate } from 'react-router-dom';
@@ -18,6 +19,14 @@ const Dashboard = () => {
     const loggedInUser = sessionStorage.getItem('user_id');
 
     const [value, setValue] = useState(0); // integer state
+
+    const [progressState, setProgressState] = useState({
+        percentage: null,
+        isIndeterminate: true,
+        color: 'blue.300',
+        thickness: '12px', // Thickness of the progress bar
+        size: '200px', // Size of the progress bar
+    });
 
 
 
@@ -36,15 +45,21 @@ const Dashboard = () => {
     };
 
     const fetchProbability = async () => {
+        updateProgress(null, true, 'blue.300', '200px', '12px');
         try {
+            console.log("Logged in user is: " + loggedInUser)
             const response = await axios.get('/api/recommendations/'+loggedInUser); // Adjust the URL if needed
+            var percent = (Math.round(response.data.data.probability_of_permanent_residency * 100) / 100);
             console.log(response);
             console.log(response.data.data.probability_of_permanent_residency);
-            setPercentage(Math.round(response.data.data.probability_of_permanent_residency * 100) / 100);
-            findColor();
-            console.log(customColor);
+            //findColor();
+
+            // Update progress to 100% when request is complete
+            updateProgress(percent, false, 'purple.400', '200px', '12px');
+            console.log(response.data); // Handle the response as needed
 
         } catch (err) {
+            updateProgress(100, false, 'red.400', '200px', '12px'); // Show error state
         }
     }
 
@@ -66,6 +81,10 @@ const Dashboard = () => {
             setCustomColor('purple.400');
         }
     }
+
+    const updateProgress = (percentage, isIndeterminate, color, size, thickness) => {
+        setProgressState({ percentage, isIndeterminate, color, size, thickness });
+    };
 
 
     // Fetch data when the component mounts
@@ -104,14 +123,29 @@ const Dashboard = () => {
 
                 )}
                 {/* TODO: Dynamic values from prediction model */}
-                {/* TODO: If indeterminate (while loading or not submitted? */}
-                if (
-                <CircularProgress thickness='12px' size="200px" isIndeterminate color='blue.300'>
-                    <CircularProgressLabel>Erm</CircularProgressLabel>
-                </CircularProgress>
-                <CircularProgress value={percentage} color={customColor} thickness='12px' size="200px"  >
-                    <CircularProgressLabel>{percentage}%</CircularProgressLabel>
-                </CircularProgress>
+                {/* TODO: If indeterminate (while loading or not submitted? <CircularProgress {...progressMethod}>*/}
+                <ChakraProvider>
+
+                <Box display="flex" alignItems="center" justifyContent="center" height="200px">
+                    {progressState.isIndeterminate ? (
+                        <CircularProgress
+                            isIndeterminate
+                            color={progressState.color}
+                            thickness={progressState.thickness}
+                            size={progressState.size}
+                        />
+                    ) : (
+                        <CircularProgress
+                            value={progressState.percentage}
+                            color={progressState.color}
+                            thickness={progressState.thickness}
+                            size={progressState.size}
+                        >
+                            <CircularProgressLabel>{progressState.percentage}%</CircularProgressLabel>
+                        </CircularProgress>
+                    )}
+                </Box>
+                </ChakraProvider>
 
 
             </div>

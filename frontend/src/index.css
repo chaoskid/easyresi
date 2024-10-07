@@ -344,4 +344,17 @@
         margin-top: 20px;
         color: #333333;
     }
-  
+
+
+
+.general-button {
+    background-color: #008080;
+    color: #ffffff;
+    border: none;
+    padding: 6px 12px;
+    font-size: 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-right: 10px;
+}
