@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import '../index.css';
 import axios from '../axiosConfig';  // Assuming axios is configured for API requests
 import {
@@ -6,32 +6,71 @@ import {
 } from '@chakra-ui/react';
 import { InfoIcon } from '@chakra-ui/icons';  // Import the info icon for tooltips
 import Navbar from '../components/Navbar';
+import { useNavigate, useLocation } from 'react-router-dom';
+
 
 const Questionnaire = () => {
-  const [visaType, setVisaType] = useState('');
-  const [formData, setFormData] = useState({});
-  const [preferredIndustry, setPreferredIndustry] = useState('');
+    // Navigation and error
+    const navigate = useNavigate();
+    const [error, setError] = useState('');
 
-  // Handle form submission using axios to send form data to the backend
-  const handleFormSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.post('/api/questionnaire', formData);  // API call using axios
-      console.log('Success:', response.data);
-    } catch (error) {
-      console.error('Error:', error);
+    // Form states
+    const [visaType, setVisaType] = useState('');
+    const [formData, setFormData] = useState({});
+    const [preferredIndustry, setPreferredIndustry] = useState('');
+
+    // Location and data
+    const location = useLocation();
+    const locationData = location.state?.data;
+    const [prefillData, setPrefillData] = useState(''); // TODO: Abdul, your data is in this variable, work on prefilling with this - Alex.
+
+    const checkPrefill = async (e) => {
+        if (location && locationData) { // if not null
+            console.log('Previous Data exists:', locationData);
+            setPrefillData(locationData);
+        } 
+        else { // else it is null get stuff from database questionairre
+            const response = await axios.get('/api/questionnaire');  // API call using axios
+            console.log('Database data exists:', response.data.data.prefill_data);
+            setPrefillData(response.data.data.prefill_data);
+        }
     }
-  };
 
-  // Function to update form data state
-  const updateFormData = (field, value) => {
-    setFormData({
-      ...formData,
-      [field]: value,
-    });
-  };
+    // Handle form submission using axios to send form data to the backend
+    const handleFormSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await axios.post('/api/preview_results', formData);  // API call using axios
+            console.log('Success:', response.data);
+            if (response.status === 200) {
+                console.log(sessionStorage.getItem('user_id'));
+                navigate('/dashpreview', { state: { data: response.data } });
+            } else {
+                setError(response.data.message);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
 
-  return (
+        // Debugging output to the console
+        console.log({
+            formData,
+        });
+    };
+
+    // Function to update form data state
+    const updateFormData = (field, value) => {
+        setFormData({
+            ...formData,
+            [field]: value,
+        });
+    };
+
+    useEffect(() => {
+        checkPrefill();
+    }, []);
+
+    return (
     <>
       <Navbar />
       {/* Form Container */}
@@ -268,9 +307,8 @@ const Questionnaire = () => {
               </Tooltip>
             </FormLabel>
             <Select placeholder="Select a course level" onChange={(e) => updateFormData("courseLevel", e.target.value)} fontSize="lg" color="gray.600">
-              <option value="masters">Masters</option>
-              <option value="bachelors">Bachelors</option>
-              <option value="diploma">Diploma</option>
+              <option value="postgraduate">Masters</option>
+              <option value="undergraduate">Bachelors</option>
             </Select>
           </FormControl>
           <Divider my={4} borderColor="gray.300" />
@@ -341,14 +379,14 @@ const Questionnaire = () => {
             </Select>
           </FormControl>
 
-          {/* Submit Button */}
-          <Button mt={6} colorScheme="teal" type="submit">
-            Submit Questionnaire
-          </Button>
-        </form>
-      </Box>
-    </>
-  );
+                    {/* Submit Button */}
+                    <Button mt={6} colorScheme="teal" type="submit">
+                        Preview Results
+                    </Button>
+                </form>
+            </Box>
+        </>
+    );
 };
 
 export default Questionnaire;
