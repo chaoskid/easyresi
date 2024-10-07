@@ -13,6 +13,7 @@ import Notfound from './pages/notfound';
 import Statistics from './pages/statistics';
 import Account from './pages/account';
 import Settings from './pages/settings';
+import Updateagent from './pages/updateagent';
 
 function App() {
     return (
@@ -30,6 +31,7 @@ function App() {
                         <Route path="/statistics" element={<Statistics />} />
                         <Route path="/account" element={<Account />} />
                         <Route path="/settings" element={<Settings />} />
+                        <Route path="/updateagent" element={<Updateagent />} />
                         <Route path="*" element={<Notfound />} />
                     </Routes>
                 </div>
