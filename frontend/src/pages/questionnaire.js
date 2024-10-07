@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import '../index.css';
 import axios from '../axiosConfig';  // Assuming axios is configured for API requests
 import {
-  Box, FormControl, FormLabel, Select, RadioGroup, Radio, Button, Stack
+  Box, FormControl, FormLabel, Select, RadioGroup, Radio, Button, Stack, Tooltip, IconButton, Divider
 } from '@chakra-ui/react';
+import { InfoIcon } from '@chakra-ui/icons';  // Import the info icon for tooltips
 import Navbar from '../components/Navbar';
 
 const Questionnaire = () => {
-  // Form states
   const [visaType, setVisaType] = useState('');
   const [formData, setFormData] = useState({});
   const [preferredIndustry, setPreferredIndustry] = useState('');
@@ -21,11 +21,6 @@ const Questionnaire = () => {
     } catch (error) {
       console.error('Error:', error);
     }
-
-    // Debugging output to the console
-    console.log({
-      formData,
-    });
   };
 
   // Function to update form data state
@@ -38,65 +33,88 @@ const Questionnaire = () => {
 
   return (
     <>
-    <Navbar />
+      <Navbar />
       {/* Form Container */}
-      <Box maxW="800px" mx="auto" mt={8} p={6} borderWidth="1px" borderRadius="lg" boxShadow="lg" bg="white">
+      <Box maxW="75%" mx="auto" mt={8} p={6} borderWidth="1px" borderRadius="lg" boxShadow="lg" bg="#F9FAFC" borderColor="#E2E8F0">
         <form onSubmit={handleFormSubmit}>
-          
+
           {/* Visa Subclass Selection */}
           <FormControl isRequired mb={4}>
-            <FormLabel>Which visa subclass are you applying for?</FormLabel>
-            <RadioGroup
-              onChange={(value) => {
-                setVisaType(value);         // Update visaType state
-                updateFormData("visaType", value); // Update form data
-                }}
-              value={visaType}
-            >
-              <Stack direction="row">
-                <Radio value="189">Skilled Independent Visa (Subclass 189)</Radio>
-                <Radio value="190">Skilled Nominated Visa (Subclass 190)</Radio>
-                <Radio value="491">Skilled Work Regional (Subclass 491)</Radio>
+            <FormLabel fontWeight="bold" fontSize="lg" color="gray.700">
+              Which visa subclass are you applying for? 
+              <Tooltip label="Select the visa category you are applying for." fontSize="md">
+                <IconButton variant="ghost" aria-label="Info" icon={<InfoIcon />} size="sm" />
+              </Tooltip>
+            </FormLabel>
+            <RadioGroup onChange={(value) => { setVisaType(value); updateFormData("visaType", value); }} value={visaType}>
+              <Stack direction="column">
+                <Radio value="189" fontSize="lg" color="gray.600">Skilled Independent Visa (Subclass 189)</Radio>
+                <Radio value="190" fontSize="lg" color="gray.600">Skilled Nominated Visa (Subclass 190)</Radio>
+                <Radio value="491" fontSize="lg" color="gray.600">Skilled Work Regional (Subclass 491)</Radio>
               </Stack>
             </RadioGroup>
           </FormControl>
+          <Divider my={4} borderColor="gray.300" />
 
           {/* Age Selection */}
           <FormControl isRequired mb={4}>
-            <FormLabel>Please select your age range at the time of invitation:</FormLabel>
-            <Select placeholder="Select your age range" onChange={(e) => updateFormData("age", e.target.value)}>
+            <FormLabel fontWeight="bold" fontSize="lg" color="gray.700">
+              Please select your age range at the time of invitation:
+              <Tooltip label="Your age range when you receive your invitation." fontSize="md">
+                <IconButton variant="ghost" aria-label="Info" icon={<InfoIcon />} size="sm" />
+              </Tooltip>
+            </FormLabel>
+            <Select placeholder="Select your age range" onChange={(e) => updateFormData("age", e.target.value)} fontSize="lg" color="gray.600">
               <option value="18-25">At least 18 but less than 25 years</option>
               <option value="25-33">At least 25 but less than 33 years</option>
               <option value="33-40">At least 33 but less than 40 years</option>
               <option value="40-45">At least 40 but less than 45 years</option>
             </Select>
           </FormControl>
+          <Divider my={4} borderColor="gray.300" />
 
           {/* English Proficiency */}
           <FormControl isRequired mb={4}>
-            <FormLabel>What is your level of English proficiency?</FormLabel>
-            <Select placeholder="Select your English proficiency level" onChange={(e) => updateFormData("englishProficiency", e.target.value)}>
+            <FormLabel fontWeight="bold" fontSize="lg" color="gray.700">
+              What is your level of English proficiency?
+              <Tooltip label="Select the level of English proficiency you possess." fontSize="md">
+                <IconButton variant="ghost" aria-label="Info" icon={<InfoIcon />} size="sm" />
+              </Tooltip>
+            </FormLabel>
+            <Select placeholder="Select your English proficiency level" onChange={(e) => updateFormData("englishProficiency", e.target.value)} fontSize="lg" color="gray.600">
               <option value="competent">Competent English</option>
               <option value="proficient">Proficient English</option>
               <option value="superior">Superior English</option>
             </Select>
           </FormControl>
+          <Divider my={4} borderColor="gray.300" />
 
           {/* Overseas Skilled Employment Experience */}
           <FormControl isRequired mb={4}>
-            <FormLabel>How many years of skilled employment experience do you have outside of Australia in your nominated occupation (within the last 10 years)?</FormLabel>
-            <Select placeholder="Select your overseas work experience" onChange={(e) => updateFormData("overseasExperience", e.target.value)}>
+            <FormLabel fontWeight="bold" fontSize="lg" color="gray.700">
+              How many years of skilled employment experience do you have outside of Australia in your nominated occupation (within the last 10 years)?
+              <Tooltip label="Enter the number of years of skilled employment experience outside Australia." fontSize="md">
+                <IconButton variant="ghost" aria-label="Info" icon={<InfoIcon />} size="sm" />
+              </Tooltip>
+            </FormLabel>
+            <Select placeholder="Select your overseas work experience" onChange={(e) => updateFormData("overseasExperience", e.target.value)} fontSize="lg" color="gray.600">
               <option value="0">Less than 3 years</option>
               <option value="3-5">At least 3 but less than 5 years</option>
               <option value="5-8">At least 5 but less than 8 years</option>
               <option value="8+">At least 8 years</option>
             </Select>
           </FormControl>
+          <Divider my={4} borderColor="gray.300" />
 
           {/* Australian Skilled Employment Experience */}
           <FormControl isRequired mb={4}>
-            <FormLabel>How many years of skilled employment experience do you have in Australia in your nominated occupation (within the last 10 years)?</FormLabel>
-            <Select placeholder="Select your Australian work experience" onChange={(e) => updateFormData("australiaExperience", e.target.value)}>
+            <FormLabel fontWeight="bold" fontSize="lg" color="gray.700">
+              How many years of skilled employment experience do you have in Australia in your nominated occupation (within the last 10 years)?
+              <Tooltip label="Enter the number of years of skilled employment experience in Australia." fontSize="md">
+                <IconButton variant="ghost" aria-label="Info" icon={<InfoIcon />} size="sm" />
+              </Tooltip>
+            </FormLabel>
+            <Select placeholder="Select your Australian work experience" onChange={(e) => updateFormData("australiaExperience", e.target.value)} fontSize="lg" color="gray.600">
               <option value="0">Less than 1 year</option>
               <option value="1-3">At least 1 but less than 3 years</option>
               <option value="3-5">At least 3 but less than 5 years</option>
@@ -104,71 +122,113 @@ const Questionnaire = () => {
               <option value="8+">At least 8 years</option>
             </Select>
           </FormControl>
+          <Divider my={4} borderColor="gray.300" />
 
           {/* Australian Study Requirement */}
           <FormControl mb={4}>
-            <FormLabel>Have you met the Australian Study Requirement (at least 1 degree, diploma, or trade qualification obtained while living and studying in Australia)?</FormLabel>
-            <Select placeholder="Select your Australian study status" onChange={(e) => updateFormData("australianStudy", e.target.value)}>
+            <FormLabel fontWeight="bold" fontSize="lg" color="gray.700">
+              Have you met the Australian Study Requirement?
+              <Tooltip label="Do you have at least 1 degree, diploma, or trade qualification from Australia?" fontSize="md">
+                <IconButton variant="ghost" aria-label="Info" icon={<InfoIcon />} size="sm" />
+              </Tooltip>
+            </FormLabel>
+            <Select placeholder="Select your Australian study status" onChange={(e) => updateFormData("australianStudy", e.target.value)} fontSize="lg" color="gray.600">
               <option value="yes">Yes</option>
               <option value="no">No</option>
             </Select>
           </FormControl>
+          <Divider my={4} borderColor="gray.300" />
 
           {/* Specialist Education Qualification */}
           <FormControl mb={4}>
-            <FormLabel>Have you completed a Master’s degree by research or Doctorate from an Australian educational institution in the fields of science, technology, engineering, mathematics, or ICT?</FormLabel>
-            <Select placeholder="Select your specialist qualification status" onChange={(e) => updateFormData("specialistEducation", e.target.value)}>
+            <FormLabel fontWeight="bold" fontSize="lg" color="gray.700">
+              Have you completed a Master's degree by research or Doctorate in STEM or ICT?
+              <Tooltip label="Select if you've completed advanced degrees in Australia in the STEM or ICT fields." fontSize="md">
+                <IconButton variant="ghost" aria-label="Info" icon={<InfoIcon />} size="sm" />
+              </Tooltip>
+            </FormLabel>
+            <Select placeholder="Select your specialist qualification status" onChange={(e) => updateFormData("specialistEducation", e.target.value)} fontSize="lg" color="gray.600">
               <option value="yes">Yes</option>
               <option value="no">No</option>
             </Select>
           </FormControl>
+          <Divider my={4} borderColor="gray.300" />
 
           {/* Educational Qualification */}
           <FormControl isRequired mb={4}>
-            <FormLabel>What is your highest level of educational qualification?</FormLabel>
-            <Select placeholder="Select your highest qualification" onChange={(e) => updateFormData("education", e.target.value)}>
+            <FormLabel fontWeight="bold" fontSize="lg" color="gray.700">
+              What is your highest level of educational qualification?
+              <Tooltip label="Select the highest level of educational qualification you possess." fontSize="md">
+                <IconButton variant="ghost" aria-label="Info" icon={<InfoIcon />} size="sm" />
+              </Tooltip>
+            </FormLabel>
+            <Select placeholder="Select your highest qualification" onChange={(e) => updateFormData("education", e.target.value)} fontSize="lg" color="gray.600">
               <option value="phd">Doctorate (PhD or a Masters Degree by Research)</option>
               <option value="bachelor">Masters Degree by Coursework or a Bachelor’s Degree</option>
               <option value="diploma">Diploma/Trade Qualification</option>
               <option value="qualification">Qualification for Nominated Skilled Occupation</option>
             </Select>
           </FormControl>
+          <Divider my={4} borderColor="gray.300" />
 
           {/* Professional Year in Australia */}
           <FormControl mb={4}>
-            <FormLabel>Have you completed a Professional Year in Australia in Accounting, ICT, or Engineering?</FormLabel>
-            <Select placeholder="Select your professional year status" onChange={(e) => updateFormData("professionalYear", e.target.value)}>
+            <FormLabel fontWeight="bold" fontSize="lg" color="gray.700">
+              Have you completed a Professional Year in Australia in Accounting, ICT, or Engineering?
+              <Tooltip label="Have you completed a Professional Year in Australia in one of the fields?" fontSize="md">
+                <IconButton variant="ghost" aria-label="Info" icon={<InfoIcon />} size="sm" />
+              </Tooltip>
+            </FormLabel>
+            <Select placeholder="Select your professional year status" onChange={(e) => updateFormData("professionalYear", e.target.value)} fontSize="lg" color="gray.600">
               <option value="yes">Yes</option>
               <option value="no">No</option>
             </Select>
           </FormControl>
+          <Divider my={4} borderColor="gray.300" />
 
           {/* Credentialled Community Language */}
           <FormControl mb={4}>
-            <FormLabel>Do you hold a recognised qualification in a credentialled community language?</FormLabel>
+            <FormLabel fontWeight="bold" fontSize="lg" color="gray.700">
+              Do you hold a recognised qualification in a credentialled community language?
+              <Tooltip label="Select whether you hold a recognised credentialled community language qualification." fontSize="md">
+                <IconButton variant="ghost" aria-label="Info" icon={<InfoIcon />} size="sm" />
+              </Tooltip>
+            </FormLabel>
             <RadioGroup onChange={(value) => updateFormData("communityLanguage", value)}>
-              <Stack direction="row">
-                <Radio value="yes">Yes</Radio>
-                <Radio value="no">No</Radio>
+              <Stack direction="column">
+                <Radio value="yes" fontSize="lg" color="gray.600">Yes</Radio>
+                <Radio value="no" fontSize="lg" color="gray.600">No</Radio>
               </Stack>
             </RadioGroup>
           </FormControl>
+          <Divider my={4} borderColor="gray.300" />
 
           {/* Study in Regional Australia */}
           <FormControl mb={4}>
-            <FormLabel>Have you studied in a regional area of Australia and met the Australian study requirement?</FormLabel>
+            <FormLabel fontWeight="bold" fontSize="lg" color="gray.700">
+              Have you studied in a regional area of Australia and met the Australian study requirement?
+              <Tooltip label="Select whether you have studied in a regional area of Australia." fontSize="md">
+                <IconButton variant="ghost" aria-label="Info" icon={<InfoIcon />} size="sm" />
+              </Tooltip>
+            </FormLabel>
             <RadioGroup onChange={(value) => updateFormData("regionalStudy", value)}>
-              <Stack direction="row">
-                <Radio value="yes">Yes</Radio>
-                <Radio value="no">No</Radio>
+              <Stack direction="column">
+                <Radio value="yes" fontSize="lg" color="gray.600">Yes</Radio>
+                <Radio value="no" fontSize="lg" color="gray.600">No</Radio>
               </Stack>
             </RadioGroup>
           </FormControl>
+          <Divider my={4} borderColor="gray.300" />
 
           {/* State Preferred */}
           <FormControl isRequired mb={4}>
-            <FormLabel>State Preferred</FormLabel>
-            <Select placeholder="Select a state" onChange={(e) => updateFormData("statePreferred", e.target.value)}>
+            <FormLabel fontWeight="bold" fontSize="lg" color="gray.700">
+              State Preferred
+              <Tooltip label="Select your preferred state in Australia." fontSize="md">
+                <IconButton variant="ghost" aria-label="Info" icon={<InfoIcon />} size="sm" />
+              </Tooltip>
+            </FormLabel>
+            <Select placeholder="Select a state" onChange={(e) => updateFormData("statePreferred", e.target.value)} fontSize="lg" color="gray.600">
               <option value="NSW">New South Wales</option>
               <option value="VIC">Victoria</option>
               <option value="QLD">Queensland</option>
@@ -179,16 +239,17 @@ const Questionnaire = () => {
               <option value="NT">Northern Territory</option>
             </Select>
           </FormControl>
+          <Divider my={4} borderColor="gray.300" />
 
           {/* Preferred Industry */}
           <FormControl isRequired mb={4}>
-            <FormLabel>Preferred Industry</FormLabel>
-            <Select placeholder="Select an industry" 
-              onChange={(e) => {
-              setPreferredIndustry(e.target.value) ;
-              updateFormData("preferredIndustry", e.target.value)
-              }}
-            >
+            <FormLabel fontWeight="bold" fontSize="lg" color="gray.700">
+              Preferred Industry
+              <Tooltip label="Select your preferred industry." fontSize="md">
+                <IconButton variant="ghost" aria-label="Info" icon={<InfoIcon />} size="sm" />
+              </Tooltip>
+            </FormLabel>
+            <Select placeholder="Select an industry" onChange={(e) => { setPreferredIndustry(e.target.value); updateFormData("preferredIndustry", e.target.value) }} fontSize="lg" color="gray.600">
               <option value="business">Business</option>
               <option value="it">IT</option>
               <option value="education">Education</option>
@@ -196,21 +257,33 @@ const Questionnaire = () => {
               <option value="healthcare">Healthcare</option>
             </Select>
           </FormControl>
+          <Divider my={4} borderColor="gray.300" />
 
           {/* Preferred Level of Course */}
           <FormControl isRequired mb={4}>
-            <FormLabel>Preferred Level of Course</FormLabel>
-            <Select placeholder="Select a course level" onChange={(e) => updateFormData("courseLevel", e.target.value)}>
+            <FormLabel fontWeight="bold" fontSize="lg" color="gray.700">
+              Preferred Level of Course
+              <Tooltip label="Select the level of course you want to pursue." fontSize="md">
+                <IconButton variant="ghost" aria-label="Info" icon={<InfoIcon />} size="sm" />
+              </Tooltip>
+            </FormLabel>
+            <Select placeholder="Select a course level" onChange={(e) => updateFormData("courseLevel", e.target.value)} fontSize="lg" color="gray.600">
               <option value="masters">Masters</option>
               <option value="bachelors">Bachelors</option>
               <option value="diploma">Diploma</option>
             </Select>
           </FormControl>
+          <Divider my={4} borderColor="gray.300" />
 
           {/* Preferred Course */}
           <FormControl isRequired mb={4}>
-            <FormLabel>Preferred Course (based on industry and level)</FormLabel>
-            <Select placeholder="Select a course" onChange={(e) => updateFormData("preferredCourse", e.target.value)}>
+            <FormLabel fontWeight="bold" fontSize="lg" color="gray.700">
+              Preferred Course (based on industry and level)
+              <Tooltip label="Select the preferred course based on the industry." fontSize="md">
+                <IconButton variant="ghost" aria-label="Info" icon={<InfoIcon />} size="sm" />
+              </Tooltip>
+            </FormLabel>
+            <Select placeholder="Select a course" onChange={(e) => updateFormData("preferredCourse", e.target.value)} fontSize="lg" color="gray.600">
               {preferredIndustry === 'business' && <option value="accounting">Accounting</option>}
               {preferredIndustry === 'it' && <option value="softwareEngineering">Software Engineering</option>}
               {preferredIndustry === 'education' && <option value="teaching">Teaching</option>}
@@ -218,11 +291,17 @@ const Questionnaire = () => {
               {preferredIndustry === 'healthcare' && <option value="nursing">Nursing</option>}
             </Select>
           </FormControl>
+          <Divider my={4} borderColor="gray.300" />
 
           {/* Preferred Occupation */}
           <FormControl isRequired mb={4}>
-            <FormLabel>Preferred Occupation (based on industry)</FormLabel>
-            <Select placeholder="Select an occupation" onChange={(e) => updateFormData("preferredOccupation", e.target.value)}>
+            <FormLabel fontWeight="bold" fontSize="lg" color="gray.700">
+              Preferred Occupation (based on industry)
+              <Tooltip label="Select your preferred occupation." fontSize="md">
+                <IconButton variant="ghost" aria-label="Info" icon={<InfoIcon />} size="sm" />
+              </Tooltip>
+            </FormLabel>
+            <Select placeholder="Select an occupation" onChange={(e) => updateFormData("preferredOccupation", e.target.value)} fontSize="lg" color="gray.600">
               {preferredIndustry === 'business' && <option value="263112">Business Analyst</option>}
               {preferredIndustry === 'it' && <option value="263112">Software Developer</option>}
               {preferredIndustry === 'education' && <option value="263112">Teacher</option>}
@@ -230,21 +309,33 @@ const Questionnaire = () => {
               {preferredIndustry === 'healthcare' && <option value="263112">Nurse</option>}
             </Select>
           </FormControl>
+          <Divider my={4} borderColor="gray.300" />
 
           {/* Marital Status */}
           <FormControl isRequired mb={4}>
-            <FormLabel>What is your marital status?</FormLabel>
-            <Select onChange={(e) => updateFormData("maritalStatus", e.target.value)} placeholder="Select your marital status">
+            <FormLabel fontWeight="bold" fontSize="lg" color="gray.700">
+              What is your marital status?
+              <Tooltip label="Select your current marital status." fontSize="md">
+                <IconButton variant="ghost" aria-label="Info" icon={<InfoIcon />} size="sm" />
+              </Tooltip>
+            </FormLabel>
+            <Select onChange={(e) => updateFormData("maritalStatus", e.target.value)} placeholder="Select your marital status" fontSize="lg" color="gray.600">
               <option value="single">Single or partner is an Australian citizen/ permanent resident</option>
-              <option value="married_skilled">Married and partner meets age, english and skill criteria</option>
-              <option value="married_unskilled">Married and partner has competent english</option>
+              <option value="married_skilled">Married and partner meets age, English, and skill criteria</option>
+              <option value="married_unskilled">Married and partner has competent English</option>
             </Select>
           </FormControl>
+          <Divider my={4} borderColor="gray.300" />
 
           {/* Nomination */}
           <FormControl isRequired mb={4}>
-            <FormLabel>Have you been invited to apply for a Skilled Nominated visa (subclass 190) and the nominating State or Territory government agency has not withdrawn the nomination?</FormLabel>
-            <Select onChange={(e) => updateFormData("nomination", e.target.value)} placeholder="Select your nomination status">
+            <FormLabel fontWeight="bold" fontSize="lg" color="gray.700">
+              Have you been invited to apply for a Skilled Nominated visa (subclass 190)?
+              <Tooltip label="Select whether you've received an invitation for subclass 190." fontSize="md">
+                <IconButton variant="ghost" aria-label="Info" icon={<InfoIcon />} size="sm" />
+              </Tooltip>
+            </FormLabel>
+            <Select onChange={(e) => updateFormData("nomination", e.target.value)} placeholder="Select your nomination status" fontSize="lg" color="gray.600">
               <option value="yes">Yes</option>
               <option value="no">No</option>
             </Select>
