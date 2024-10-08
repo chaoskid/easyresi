@@ -1,6 +1,7 @@
 import React from "react";
 import '../index.css';
 import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 import { useNavigate } from 'react-router-dom';
 
 // // Import axios if you plan to use it in the future
@@ -20,6 +21,7 @@ const Home = () => {
                 <button className="login-button" onClick={() => navigate('/login')}>Login</button><br />
                 <button className="register-button" onClick={() => navigate('/register')}>Register</button>
             </div>
+            <Footer />
         </>
     );
 }
