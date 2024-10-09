@@ -39,7 +39,8 @@ const Dashboard = () => {
         try {
             const response = await axios.get('/api/recommendations/'+loggedInUser); // Adjust the URL if needed
             console.log(response);
-            setPercentage(Math.round(response.data.probability_of_permanent_residency * 100) / 100);
+            console.log(response.data.data.probability_of_permanent_residency);
+            setPercentage(Math.round(response.data.data.probability_of_permanent_residency * 100) / 100);
             findColor();
             console.log(customColor);
 

@@ -112,80 +112,80 @@ anzsco,occupation,nsw_shortage,vic_shortage,qld_shortage,sa_shortage,wa_shortage
 312911,Maintenance Planner,-30,-20,-30,-30,-30,-30,10,-30,Engineering
 312912,Metallurgical or Materials Technician,10,20,20,10,20,10,10,-30,Engineering
 312913,Mine Deputy,20,20,10,10,10,10,10,-30,Engineering
-251111,Dietitian,-30,-30,11,-30,-30,-30,30,-30,Heath
-251112,Nutritionist,-30,-30,-30,-30,-30,-30,-20,-30,Heath
-251211,Medical Diagnostic Radiographer,20,20,20,20,20,20,30,30,Heath
-251212,Medical Radiation Therapist,20,20,20,20,20,20,20,30,Heath
-251213,Nuclear Medicine Technologist,10,10,10,10,10,-30,-30,-30,Heath
-251214,Sonographer,30,30,30,30,30,30,30,30,Heath
-251311,Environmental Health Officer,10,-30,21,11,11,11,31,-30,Heath
-251312,Occupational Health and Safety Adviser,-30,-30,-30,-30,-30,-30,30,-10,Heath
-251411,Optometrist,31,31,32,31,31,31,31,30,Heath
-251412,Orthoptist,-19,-19,-19,21,31,-19,-19,-30,Heath
-251511,Hospital Pharmacist,31,31,31,31,31,31,30,30,Heath
-251512,Industrial Pharmacist,-30,-30,-30,-30,-30,-30,-30,-30,Heath
-251513,Retail Pharmacist,31,31,31,31,31,31,30,30,Heath
-251911,Health Promotion Officer,-30,-30,-30,-30,-30,-30,30,-30,Heath
-251912,Orthotist or Prosthetist,20,20,20,20,20,20,30,30,Heath
-252111,Chiropractor,-30,-30,-30,-30,10,-30,-10,-30,Heath
-252112,Osteopath,-30,-30,-30,-30,20,-30,-30,-30,Heath
-252211,Acupuncturist,-30,-30,-30,-30,-30,-30,-30,-30,Heath
-252212,Homoeopath,-30,-30,-30,-30,-30,-30,-30,-30,Heath
-252213,Naturopath,-30,-30,-30,-30,-30,-30,-30,-30,Heath
-252214,Traditional Chinese Medicine Practitioner,-30,-30,-30,-30,-30,-30,-30,-30,Heath
-252311,Dental Specialist,-30,-30,-30,-30,-30,-30,-30,-30,Heath
-252312,Dentist,20,20,21,20,20,20,30,30,Heath
-252411,Occupational Therapist,30,30,20,30,30,30,30,30,Heath
-252511,Physiotherapist,30,30,30,30,30,30,30,30,Heath
-252611,Podiatrist,30,30,30,30,30,30,30,30,Heath
-252711,Audiologist,20,10,11,10,20,10,30,10,Heath
-252712,Speech Pathologist / Speech Language Therapist,30,30,30,30,30,30,30,30,Heath
-253111,General Practitioner,31,31,31,31,31,31,30,30,Heath
-253112,Resident Medical Officer,31,31,31,31,31,31,30,30,Heath
-253211,Anaesthetist,32,32,32,32,32,32,31,30,Heath
-253311,Specialist Physician (General Medicine),20,20,20,20,20,20,30,30,Heath
-253312,Cardiologist,32,31,31,31,31,31,30,30,Heath
-253313,Clinical Haematologist,20,20,20,20,20,20,20,30,Heath
-253314,Medical Oncologist,31,31,31,31,31,31,30,30,Heath
-253315,Endocrinologist,20,20,20,20,20,20,20,30,Heath
-253316,Gastroenterologist,21,20,20,20,20,20,20,30,Heath
-253317,Intensive Care Specialist,20,20,20,20,20,20,20,30,Heath
-253318,Neurologist,20,20,20,20,20,20,20,30,Heath
-253321,Paediatrician,20,20,20,20,20,20,30,30,Heath
-253322,Renal Medicine Specialist,20,20,20,20,20,20,20,30,Heath
-253323,Rheumatologist,20,20,20,20,20,20,20,30,Heath
-253324,Thoracic Medicine Specialist,20,20,20,20,20,20,20,30,Heath
-253411,Psychiatrist,30,30,30,30,30,30,30,30,Heath
-253511,Surgeon (General),31,31,31,31,31,31,30,30,Heath
-253512,Cardiothoracic Surgeon,20,20,20,20,20,20,20,30,Heath
-253513,Neurosurgeon,20,20,20,20,20,20,30,30,Heath
-253514,Orthopaedic Surgeon,21,20,20,20,20,20,20,30,Heath
-253515,Otorhinolaryngologist,20,20,20,20,20,20,20,30,Heath
-253516,Paediatric Surgeon,20,20,20,20,20,20,20,30,Heath
-253517,Plastic and Reconstructive Surgeon,20,20,20,20,20,20,30,30,Heath
-253518,Urologist,20,20,20,20,20,20,20,30,Heath
-253521,Vascular Surgeon,20,20,20,20,20,20,20,30,Heath
-253911,Dermatologist,31,31,31,31,31,31,31,30,Heath
-253912,Emergency Medicine Specialist,20,20,20,20,20,20,30,30,Heath
-253913,Obstetrician and Gynaecologist,32,32,32,32,32,32,31,30,Heath
-253914,Ophthalmologist,31,31,31,31,31,31,30,30,Heath
-253915,Pathologist,30,30,30,30,30,30,30,30,Heath
-253917,Diagnostic and Interventional Radiologist,32,32,32,32,32,32,30,30,Heath
-253918,Radiation Oncologist,11,10,10,10,10,-30,-30,30,Heath
-254111,Midwife,31,31,32,31,31,31,30,30,Heath
-254211,Nurse Educator,10,10,10,10,10,10,30,10,Heath
-254212,Nurse Researcher,20,20,20,20,20,20,20,30,Heath
-254311,Nurse Manager,-30,-30,-30,-30,10,-30,-30,-30,Heath
-254411,Nurse Practitioner,20,20,20,20,20,20,30,30,Heath
-254412,Registered Nurse (Aged Care),20,20,20,20,20,20,30,30,Heath
-254413,Registered Nurse (Child and Family Health),20,20,20,20,20,20,20,30,Heath
-254414,Registered Nurse (Community Health),20,20,20,20,20,20,20,30,Heath
-254415,Registered Nurse (Critical Care and Emergency),20,20,20,20,20,20,30,30,Heath
-254416,Registered Nurse (Developmental Disability),20,20,20,20,20,20,30,30,Heath
-254417,Registered Nurse (Disability and Rehabilitation),20,20,20,20,20,20,30,30,Heath
-254418,Registered Nurse (Medical),20,20,20,20,20,20,30,30,Heath
-254421,Registered Nurse (Medical Practice),20,20,20,20,20,20,30,30,Heath
-254422,Registered Nurse (Mental Health),20,20,20,20,20,20,30,30,Heath
-254423,Registered Nurse (Perioperative),20,20,20,20,20,20,30,30,Heath
-254424,Registered Nurse (Surgical),20,20,20,20,20,20,30,30,Heath
-254425,Registered Nurse (Paediatrics),20,20,20,20,20,20,30,30,Heath
+251111,Dietitian,-30,-30,11,-30,-30,-30,30,-30,Health
+251112,Nutritionist,-30,-30,-30,-30,-30,-30,-20,-30,Health
+251211,Medical Diagnostic Radiographer,20,20,20,20,20,20,30,30,Health
+251212,Medical Radiation Therapist,20,20,20,20,20,20,20,30,Health
+251213,Nuclear Medicine Technologist,10,10,10,10,10,-30,-30,-30,Health
+251214,Sonographer,30,30,30,30,30,30,30,30,Health
+251311,Environmental Health Officer,10,-30,21,11,11,11,31,-30,Health
+251312,Occupational Health and Safety Adviser,-30,-30,-30,-30,-30,-30,30,-10,Health
+251411,Optometrist,31,31,32,31,31,31,31,30,Health
+251412,Orthoptist,-19,-19,-19,21,31,-19,-19,-30,Health
+251511,Hospital Pharmacist,31,31,31,31,31,31,30,30,Health
+251512,Industrial Pharmacist,-30,-30,-30,-30,-30,-30,-30,-30,Health
+251513,Retail Pharmacist,31,31,31,31,31,31,30,30,Health
+251911,Health Promotion Officer,-30,-30,-30,-30,-30,-30,30,-30,Health
+251912,Orthotist or Prosthetist,20,20,20,20,20,20,30,30,Health
+252111,Chiropractor,-30,-30,-30,-30,10,-30,-10,-30,Health
+252112,Osteopath,-30,-30,-30,-30,20,-30,-30,-30,Health
+252211,Acupuncturist,-30,-30,-30,-30,-30,-30,-30,-30,Health
+252212,Homoeopath,-30,-30,-30,-30,-30,-30,-30,-30,Health
+252213,Naturopath,-30,-30,-30,-30,-30,-30,-30,-30,Health
+252214,Traditional Chinese Medicine Practitioner,-30,-30,-30,-30,-30,-30,-30,-30,Health
+252311,Dental Specialist,-30,-30,-30,-30,-30,-30,-30,-30,Health
+252312,Dentist,20,20,21,20,20,20,30,30,Health
+252411,Occupational Therapist,30,30,20,30,30,30,30,30,Health
+252511,Physiotherapist,30,30,30,30,30,30,30,30,Health
+252611,Podiatrist,30,30,30,30,30,30,30,30,Health
+252711,Audiologist,20,10,11,10,20,10,30,10,Health
+252712,Speech Pathologist / Speech Language Therapist,30,30,30,30,30,30,30,30,Health
+253111,General Practitioner,31,31,31,31,31,31,30,30,Health
+253112,Resident Medical Officer,31,31,31,31,31,31,30,30,Health
+253211,Anaesthetist,32,32,32,32,32,32,31,30,Health
+253311,Specialist Physician (General Medicine),20,20,20,20,20,20,30,30,Health
+253312,Cardiologist,32,31,31,31,31,31,30,30,Health
+253313,Clinical Haematologist,20,20,20,20,20,20,20,30,Health
+253314,Medical Oncologist,31,31,31,31,31,31,30,30,Health
+253315,Endocrinologist,20,20,20,20,20,20,20,30,Health
+253316,Gastroenterologist,21,20,20,20,20,20,20,30,Health
+253317,Intensive Care Specialist,20,20,20,20,20,20,20,30,Health
+253318,Neurologist,20,20,20,20,20,20,20,30,Health
+253321,Paediatrician,20,20,20,20,20,20,30,30,Health
+253322,Renal Medicine Specialist,20,20,20,20,20,20,20,30,Health
+253323,Rheumatologist,20,20,20,20,20,20,20,30,Health
+253324,Thoracic Medicine Specialist,20,20,20,20,20,20,20,30,Health
+253411,Psychiatrist,30,30,30,30,30,30,30,30,Health
+253511,Surgeon (General),31,31,31,31,31,31,30,30,Health
+253512,Cardiothoracic Surgeon,20,20,20,20,20,20,20,30,Health
+253513,Neurosurgeon,20,20,20,20,20,20,30,30,Health
+253514,Orthopaedic Surgeon,21,20,20,20,20,20,20,30,Health
+253515,Otorhinolaryngologist,20,20,20,20,20,20,20,30,Health
+253516,Paediatric Surgeon,20,20,20,20,20,20,20,30,Health
+253517,Plastic and Reconstructive Surgeon,20,20,20,20,20,20,30,30,Health
+253518,Urologist,20,20,20,20,20,20,20,30,Health
+253521,Vascular Surgeon,20,20,20,20,20,20,20,30,Health
+253911,Dermatologist,31,31,31,31,31,31,31,30,Health
+253912,Emergency Medicine Specialist,20,20,20,20,20,20,30,30,Health
+253913,Obstetrician and Gynaecologist,32,32,32,32,32,32,31,30,Health
+253914,Ophthalmologist,31,31,31,31,31,31,30,30,Health
+253915,Pathologist,30,30,30,30,30,30,30,30,Health
+253917,Diagnostic and Interventional Radiologist,32,32,32,32,32,32,30,30,Health
+253918,Radiation Oncologist,11,10,10,10,10,-30,-30,30,Health
+254111,Midwife,31,31,32,31,31,31,30,30,Health
+254211,Nurse Educator,10,10,10,10,10,10,30,10,Health
+254212,Nurse Researcher,20,20,20,20,20,20,20,30,Health
+254311,Nurse Manager,-30,-30,-30,-30,10,-30,-30,-30,Health
+254411,Nurse Practitioner,20,20,20,20,20,20,30,30,Health
+254412,Registered Nurse (Aged Care),20,20,20,20,20,20,30,30,Health
+254413,Registered Nurse (Child and Family Health),20,20,20,20,20,20,20,30,Health
+254414,Registered Nurse (Community Health),20,20,20,20,20,20,20,30,Health
+254415,Registered Nurse (Critical Care and Emergency),20,20,20,20,20,20,30,30,Health
+254416,Registered Nurse (Developmental Disability),20,20,20,20,20,20,30,30,Health
+254417,Registered Nurse (Disability and Rehabilitation),20,20,20,20,20,20,30,30,Health
+254418,Registered Nurse (Medical),20,20,20,20,20,20,30,30,Health
+254421,Registered Nurse (Medical Practice),20,20,20,20,20,20,30,30,Health
+254422,Registered Nurse (Mental Health),20,20,20,20,20,20,30,30,Health
+254423,Registered Nurse (Perioperative),20,20,20,20,20,20,30,30,Health
+254424,Registered Nurse (Surgical),20,20,20,20,20,20,30,30,Health
+254425,Registered Nurse (Paediatrics),20,20,20,20,20,20,30,30,Health

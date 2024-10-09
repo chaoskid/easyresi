@@ -2,15 +2,13 @@ import React, { useState } from "react";
 import '../index.css';
 import axios from '../axiosConfig';  // Assuming axios is configured for API requests
 import {
-  Box, FormControl, FormLabel, Select, RadioGroup, Radio, Checkbox,
-  Button, Stack, CheckboxGroup } from '@chakra-ui/react';
+  Box, FormControl, FormLabel, Select, RadioGroup, Radio, Button, Stack
+} from '@chakra-ui/react';
 import Navbar from '../components/Navbar';
 
 const Questionnaire = () => {
   // Form states
   const [visaType, setVisaType] = useState('');
-  //const [maritalStatus, setMaritalStatus] = useState('');
-  //const [spouseSkilled, setSpouseSkilled] = useState('');
   const [formData, setFormData] = useState({});
   const [preferredIndustry, setPreferredIndustry] = useState('');
 
@@ -107,14 +105,12 @@ const Questionnaire = () => {
             </Select>
           </FormControl>
 
-          {/* Educational Qualification */}
-          <FormControl isRequired mb={4}>
-            <FormLabel>What is your highest level of educational qualification?</FormLabel>
-            <Select placeholder="Select your highest qualification" onChange={(e) => updateFormData("education", e.target.value)}>
-              <option value="phd">Doctorate (PhD or a Masters Degree by Research)</option>
-              <option value="bachelor">Masters Degree by Coursework or a Bachelor’s Degree</option>
-              <option value="diploma">Diploma/Trade Qualification</option>
-              <option value="qualification">Qualification for Nominated Skilled Occupation</option>
+          {/* Australian Study Requirement */}
+          <FormControl mb={4}>
+            <FormLabel>Have you met the Australian Study Requirement (at least 1 degree, diploma, or trade qualification obtained while living and studying in Australia)?</FormLabel>
+            <Select placeholder="Select your Australian study status" onChange={(e) => updateFormData("australianStudy", e.target.value)}>
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
             </Select>
           </FormControl>
 
@@ -127,12 +123,14 @@ const Questionnaire = () => {
             </Select>
           </FormControl>
 
-          {/* Australian Study Requirement */}
-          <FormControl mb={4}>
-            <FormLabel>Have you met the Australian Study Requirement (at least 1 degree, diploma, or trade qualification obtained while living and studying in Australia)?</FormLabel>
-            <Select placeholder="Select your Australian study status" onChange={(e) => updateFormData("australianStudy", e.target.value)}>
-              <option value="yes">Yes</option>
-              <option value="no">No</option>
+          {/* Educational Qualification */}
+          <FormControl isRequired mb={4}>
+            <FormLabel>What is your highest level of educational qualification?</FormLabel>
+            <Select placeholder="Select your highest qualification" onChange={(e) => updateFormData("education", e.target.value)}>
+              <option value="phd">Doctorate (PhD or a Masters Degree by Research)</option>
+              <option value="bachelor">Masters Degree by Coursework or a Bachelor’s Degree</option>
+              <option value="diploma">Diploma/Trade Qualification</option>
+              <option value="qualification">Qualification for Nominated Skilled Occupation</option>
             </Select>
           </FormControl>
 
@@ -148,23 +146,23 @@ const Questionnaire = () => {
           {/* Credentialled Community Language */}
           <FormControl mb={4}>
             <FormLabel>Do you hold a recognised qualification in a credentialled community language?</FormLabel>
-            <CheckboxGroup onChange={(value) => updateFormData("communityLanguage", value)}>
+            <RadioGroup onChange={(value) => updateFormData("communityLanguage", value)}>
               <Stack direction="row">
-                <Checkbox value="yes">Yes</Checkbox>
-                <Checkbox value="no">No</Checkbox>
+                <Radio value="yes">Yes</Radio>
+                <Radio value="no">No</Radio>
               </Stack>
-            </CheckboxGroup>
+            </RadioGroup>
           </FormControl>
 
           {/* Study in Regional Australia */}
           <FormControl mb={4}>
             <FormLabel>Have you studied in a regional area of Australia and met the Australian study requirement?</FormLabel>
-            <CheckboxGroup onChange={(value) => updateFormData("regionalStudy", value)}>
+            <RadioGroup onChange={(value) => updateFormData("regionalStudy", value)}>
               <Stack direction="row">
-                <Checkbox value="yes">Yes</Checkbox>
-                <Checkbox value="no">No</Checkbox>
+                <Radio value="yes">Yes</Radio>
+                <Radio value="no">No</Radio>
               </Stack>
-            </CheckboxGroup>
+            </RadioGroup>
           </FormControl>
 
           {/* State Preferred */}
@@ -191,11 +189,11 @@ const Questionnaire = () => {
               updateFormData("preferredIndustry", e.target.value)
               }}
             >
-              <option value="business">Business (ANZCO starts with '22')</option>
-              <option value="it">IT (ANZCO starts with '26')</option>
-              <option value="education">Education (ANZCO starts with '24')</option>
-              <option value="engineering">Engineering (ANZCO starts with '312')</option>
-              <option value="healthcare">Healthcare (ANZCO starts with '25')</option>
+              <option value="business">Business</option>
+              <option value="it">IT</option>
+              <option value="education">Education</option>
+              <option value="engineering">Engineering</option>
+              <option value="healthcare">Healthcare</option>
             </Select>
           </FormControl>
 
@@ -225,11 +223,11 @@ const Questionnaire = () => {
           <FormControl isRequired mb={4}>
             <FormLabel>Preferred Occupation (based on industry)</FormLabel>
             <Select placeholder="Select an occupation" onChange={(e) => updateFormData("preferredOccupation", e.target.value)}>
-              {preferredIndustry === 'business' && <option value="224411">Business Analyst</option>}
-              {preferredIndustry === 'it' && <option value="224411">Software Developer</option>}
-              {preferredIndustry === 'education' && <option value="224411">Teacher</option>}
-              {preferredIndustry === 'engineering' && <option value="224411">Civil Engineer</option>}
-              {preferredIndustry === 'healthcare' && <option value="224411">Nurse</option>}
+              {preferredIndustry === 'business' && <option value="263112">Business Analyst</option>}
+              {preferredIndustry === 'it' && <option value="263112">Software Developer</option>}
+              {preferredIndustry === 'education' && <option value="263112">Teacher</option>}
+              {preferredIndustry === 'engineering' && <option value="263112">Civil Engineer</option>}
+              {preferredIndustry === 'healthcare' && <option value="263112">Nurse</option>}
             </Select>
           </FormControl>
 

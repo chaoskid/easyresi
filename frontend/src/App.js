@@ -12,6 +12,7 @@ import Notfound from './pages/notfound';
 import Statistics from './pages/statistics';
 import Account from './pages/account';
 import Settings from './pages/settings';
+import DisplaySettings from './pages/displaysettings';
 
 function App() {
     return (
@@ -27,7 +28,8 @@ function App() {
                         <Route path="/dashboard" element={<Dashboard />} />
                         <Route path="/statistics" element={<Statistics />} />
                         <Route path="/account" element={<Account />} />
-                        <Route path="/settings" element={<Settings />} /> 
+                        <Route path="/displaysettings" element={<DisplaySettings />} /> 
+                        <Route path="/settings" element={<Settings />} />
                         <Route path="*" element={<Notfound />} />
                     </Routes>
                 </div>

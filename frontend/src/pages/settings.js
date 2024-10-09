@@ -1,27 +1,84 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import '../index.css';
 import Navbar from "../components/Navbar";
+import axios from '../axiosConfig';
+import { useNavigate, useLocation } from 'react-router-dom';
+
+
+
+
 
 const Settings = () => {
-    const [userDetails, setUserDetails] = useState({
-        firstName: '',
-        lastName: '',
-        email: '',
-        password: ''
-    });
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setUserDetails((prevDetails) => ({
-            ...prevDetails,
-            [name]: value,
-        }));
-    };
+    const [data, setData] = useState('');
+    const navigate = useNavigate();
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log('User Details Submitted:', userDetails);
+        console.log('User Details Submitted:', formData);
+        if (formData.current_password !== null || formData.current_password !== '') {
+            console.log('Current password is not null or empty');
+            // check if both new and confirm pw should match and not null.
+            if((formData.new_password === formData.confirm_new_password) && formData.new_password != '') {           
+                console.log('All good. sending to backend');   // wait for axios post request      
+                const response = axios.post('/api/profile', formData); // format needed. success (200) or error (400)
+                if (response.status === 200) {
+                    console.log('User details updated successfully');
+                    // navigate to the displaysettings page
+                    navigate('/displaysettings', { state: { message: response.message } });
+                }
+                else {
+                    console.log('Something went wrong.');
+                }
+            }  
+            else {
+                console.log('Passwords do not match');
+            }
+        }
+        else {
+            const response = axios.post('/api/profile', formData); // format needed. success (200) or error (400)
+            if (response.status === 200) {
+                console.log('User details updated successfully');
+                // navigate to the displaysettings page
+                navigate('/displaysettings', { state: { message: response.message } });
+            }
+            else {
+                console.log('Something went wrong.');
+            }
+
+        }
     };
+    const fetchSettingsData = async () => {
+        try {
+            const response = await axios.get('/api/profile'); // Adjust the URL if needed
+            console.log(response);
+            setFormData(response.data.data);
+        } catch (err) {
+            // navigate('/login', { state: { message: "Please log in" } });
+            // setError('Failed to load dashboard data. Please try again later.');
+        } finally {
+            // setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchSettingsData();
+    }, []);
+
+    const [formData, setFormData] = useState({
+        first_name: '',
+        last_name: '',
+        email: '',
+        current_password: '',
+        new_password: '',
+        confirm_new_password: ''
+     }); 
+
+      const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+      };
+
+
 
     return (
         <>
@@ -35,9 +92,12 @@ const Settings = () => {
                             First Name:
                             <input
                                 type="text"
-                                name="firstName"
-                                value={userDetails.firstName}
+                                name="first_name"
+                                pattern="[a-zA-Z]*"
+                                title="Please enter a valid name"
+                                value={formData.first_name || ''}
                                 onChange={handleChange}
+
                             />
                         </label>
                     </div>
@@ -47,8 +107,10 @@ const Settings = () => {
                             Last Name:
                             <input
                                 type="text"
-                                name="lastName"
-                                value={userDetails.lastName}
+                                name="last_name"
+                                pattern="[a-zA-Z]*"
+                                title="Please enter a valid name"
+                                value={formData.last_name || ''}
                                 onChange={handleChange}
                             />
                         </label>
@@ -60,7 +122,21 @@ const Settings = () => {
                             <input
                                 type="email"
                                 name="email"
-                                value={userDetails.email}
+                                value={formData.email || ''}
+                                onChange={handleChange}
+                                pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                                title="Please enter a valid email address"
+                            />
+                        </label>
+                    </div>
+
+                    <div className="form-field">
+                        <label>
+                            Current Password:
+                            <input
+                                type="password"
+                                name="current_password"
+                                value={formData.current_password || ''}
                                 onChange={handleChange}
                             />
                         </label>
@@ -68,15 +144,29 @@ const Settings = () => {
 
                     <div className="form-field">
                         <label>
-                            Password:
+                            New Password:
                             <input
                                 type="password"
-                                name="password"
-                                value={userDetails.password}
+                                name="new_password"
+                                value={formData.new_password || ''}
                                 onChange={handleChange}
                             />
                         </label>
                     </div>
+
+
+                    <div className="form-field">
+                        <label>
+                            Confirm New Password:
+                            <input
+                                type="password"
+                                name="confirm_new_password"
+                                value={formData.confirm_new_password || ''}
+                                onChange={handleChange}
+                            />
+                        </label>
+                    </div>
+
 
                     <button type="submit" className="settings-button">Save Changes</button>
                 </form>
