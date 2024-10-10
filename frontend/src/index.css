@@ -28,14 +28,7 @@
   
   .home h1 {
     font-size: 2.5rem;
-    margin-bottom: 20px;
     color: #333333;
-    
-  }
-  
-  .home p {
-    font-size: 1.25rem;
-    margin-bottom: 20px;
   }
 
 /* About Page */
@@ -269,12 +262,6 @@
     margin-left: 35px;
     margin-top: 35px;
     height: 100vh;
-  }
-  
-  .questionnaire h1 {
-    font-size: 2.5rem;
-    margin-bottom: 20px;
-    color: #333333;
   }
 
   /* Not Found Page */
