@@ -291,6 +291,14 @@ def get_pr_prob_for_jobs(model,input_df,db,profile):
     
     return prob_for_jobs
 
+def cost_of_living(db,profile): # add cost of living function
+    state = profile.preferred_location
+    query = "SELECT * FROM cost_of_living WHERE lower(state) = lower('{}')".format(state)
+    df = pd.read_sql(query, db.engine)
+    cost_of_living = df[['min_cost', 'max_cost']].values[0]
+    return cost_of_living
+
+
 def recommend_uni(db,profile):
     state = profile.preferred_location
     degree = profile.preferred_qualifications
