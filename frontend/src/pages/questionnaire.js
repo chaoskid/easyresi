@@ -24,6 +24,20 @@ const Questionnaire = () => {
     const locationData = location.state?.data;
     const [prefillData, setPrefillData] = useState(''); // TODO: Abdul, your data is in this variable, work on prefilling with this - Alex.
 
+    // Check to see if logged in
+    const fetchLogin = async () => {
+        try {
+            const response = await axios.get('/auth/login'); // Adjust the URL if needed
+            console.log(response);
+            if (response.data.type == "error") {
+                navigate('/login', { state: { message: "User was not logged in, redirecting to login..." } });
+            }
+        } catch (err) {
+        } finally {
+        }
+    };
+
+    // Fetch data when the component mounts
     const checkPrefill = async (e) => {
         if (location && locationData) { // if not null
             console.log('Previous Data exists:', locationData);
@@ -67,6 +81,7 @@ const Questionnaire = () => {
     };
 
     useEffect(() => {
+        fetchLogin();
         checkPrefill();
     }, []);
 

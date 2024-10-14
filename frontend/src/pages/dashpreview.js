@@ -34,6 +34,19 @@ const Dashpreview = () => {
         size: '200px', // Size of the progress bar
     });
 
+    // Check to see if logged in
+    const fetchLogin = async () => {
+        try {
+            const response = await axios.get('/auth/login'); // Adjust the URL if needed
+            console.log(response);
+            if (response.data.type == "error") {
+                navigate('/login', { state: { message: "User was not logged in, redirecting to login..." } });
+            }
+        } catch (err) {
+        } finally {
+        }
+    };
+
     const findColor = async () => {
         if (percentage <= 25.00) {
             setCustomColor('red.400');
@@ -96,6 +109,7 @@ const Dashpreview = () => {
 
     // Fetch data when the component mounts
     useEffect(() => {
+        fetchLogin();
         displayProbability();
     }, []);
 
