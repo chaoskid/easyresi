@@ -22,7 +22,7 @@ function Login() {
             if (response.status === 200) {
                 sessionStorage.setItem('user_id', response.data.data.user_id);
                 console.log(sessionStorage.getItem('user_id'));
-                navigate('/dashboard', { state: { message: 'Logged in' } });
+                navigate('/', { state: { message: 'Logged in' } });
             } else {
                 setError(response.data.message);
             }

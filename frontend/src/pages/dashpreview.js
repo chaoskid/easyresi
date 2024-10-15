@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from '../axiosConfig';
 import Navbar from '../components/Navbar';
+import Footer from '../components/Footer'; 
 import { ChakraProvider, Button, Box, CircularProgress, CircularProgressLabel } from '@chakra-ui/react';
-
-
-
 import { useNavigate, useLocation } from 'react-router-dom';
 
 const Dashpreview = () => {
@@ -146,6 +144,7 @@ const Dashpreview = () => {
 
 
             </div>
+            <Footer />
         </>
     );
 };

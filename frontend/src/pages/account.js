@@ -1,6 +1,7 @@
 import React from "react";
 import '../index.css';
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 const Account = () => {
     return (
@@ -13,6 +14,7 @@ const Account = () => {
                     application status, and access personalized recommendations based on your input.
                 </p>
             </div>
+            <Footer />
         </>
     );
 };
