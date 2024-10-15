@@ -161,21 +161,57 @@ def recommendations(input_user_id):
 @api.route('/profile', methods=['GET'])
 @login_required
 def profile():
-    try:
-        user_id=session['user_id']
-        print(user_id)
-        entry = db.session.query(User).filter_by(user_id=user_id).first()
-        if entry:
-            return jsonify({
-                    'type' : 'success',
-                    'message': 'User detail retreived successfully',
-                    'data' : {
-                            'first_name':entry.first_name,
-                            'last_name':entry.last_name,
-                            'email': entry.email
-                        }
-                    })
-        else:
-            return jsonify({'type':'error','message': 'User not found'}), 404
-    except Exception as e:
-        return jsonify({'type':'error','message': 'An internal error occured.\n {}'.format(e)}), 500
+    if request.methos == 'GET':
+        try:
+            user_id=session['user_id']
+            print(user_id)
+            entry = db.session.query(User).filter_by(user_id=user_id).first()
+            if entry:
+                return jsonify({
+                        'type' : 'success',
+                        'message': 'User detail retreived successfully',
+                        'data' : {
+                                'first_name':entry.first_name,
+                                'last_name':entry.last_name,
+                                'email': entry.email
+                            }
+                        })
+            else:
+                return jsonify({'type':'error','message': 'User not found'}), 404
+        except Exception as e:
+            return jsonify({'type':'error','message': 'An internal error occured.\n {}'.format(e)}), 500
+    if request.methos == 'POST':
+        data = request.get_json()
+        try:
+            user_id=session['user_id']
+            print(user_id)
+            user = db.session.query(User).filter_by(user_id=user_id).first()
+            hashed_new_password = bcrypt.generate_password_hash(data.get('new_password')).decode('utf-8')
+            if user:
+                user.first_name = data.get('first_name')
+                user.last_name = data.get('last_name')
+                user.email = data.get('email')
+                if data.get('new_password'):
+                    hashed_new_password = bcrypt.generate_password_hash(data.get('new_password')).decode('utf-8')
+                    if bcrypt.check_password_hash(user.password_hash, hashed_new_password):
+                        user.password_hash = hashed_new_password
+                        db.session.commit()
+                    else:
+                        return jsonify({'type':'error','message': 'Invalid Credentials'}), 409
+                else:
+                    db.session.commit()
+
+                return jsonify({
+                        'type' : 'success',
+                        'message': 'User detail updated successfully',
+                        'data' : {
+                                'first_name':user.first_name,
+                                'last_name':user.last_name,
+                                'email': user.email
+                            }
+                        })
+            else:
+                return jsonify({'type':'error','message': 'User not found'}), 404
+        except Exception as e:
+            return jsonify({'type':'error','message': 'An internal error occured.\n {}'.format(e)}), 500
+
