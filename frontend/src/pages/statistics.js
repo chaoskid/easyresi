@@ -1,10 +1,11 @@
-// NOTE THAT THIS IS A PLACEHOLDER FILE THAT WILL BE CHANGED EVENTUALLY FOR DYNAMIC DATA
+// NOTE THAT THIS IS A PLACEHOLDER FILE THAT WILL BE CHANGED EVENTUALLY FOR DYNAMIC DATA - HARRISON
 
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../index.css';
 import axios from '../axiosConfig'; // Assuming axios is configured for API requests
 import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 import { Box, Text, Button, Select } from '@chakra-ui/react';
 
 const Statistics = () => {
@@ -71,6 +72,7 @@ const Statistics = () => {
                     </Box>
                 )}
             </Box>
+            <Footer /> 
         </>
     );
 };

@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import '../index.css';
 import axios from '../axiosConfig'; // Assuming axios is configured for API requests
 import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 import { Box, Text, Button, Select } from '@chakra-ui/react';
 
 const UpdateAgent = () => {
@@ -93,6 +94,7 @@ const UpdateAgent = () => {
                 </Button>
                 </form>
             </Box>
+            <Footer />
         </>
     );
 };

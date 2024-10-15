@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from '../axiosConfig';
-import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
-import { ChakraProvider, Box, CircularProgress, CircularProgressLabel } from '@chakra-ui/react';
+import Footer from '../components/Footer';
+import { ChakraProvider, Button, Box, CircularProgress, CircularProgressLabel } from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
     const navigate = useNavigate();
@@ -209,6 +210,7 @@ const Dashboard = () => {
                 )}
 
             </div>
+            <Footer />
         </>
     );
 };
