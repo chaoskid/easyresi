@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import '../App.js';
 import axios from '../axiosConfig';
 import { useNavigate } from 'react-router-dom';
+import { color } from 'framer-motion';
 
 const FormComponent = () => {
     // State to store user input and errors
@@ -66,6 +67,9 @@ const FormComponent = () => {
                     className='input'
                     type="text"
                     name="fname"
+                    pattern="[a-zA-Z]*"
+                    title='Please enter a valid name'
+                    style={{ textTransform: 'capitalize' }}
                     value={formData.fname}
                     onChange={handleChange}
                     required
@@ -78,6 +82,7 @@ const FormComponent = () => {
                     className='input'
                     type="text"
                     name="lname"
+                    pattern="[a-zA-Z]*"
                     value={formData.lname}
                     onChange={handleChange}
                     required
@@ -120,7 +125,7 @@ const FormComponent = () => {
                 />
             </label>
 
-            {error && <p className="error-message">{error}</p>}
+            {error && <p style={{color: "red"}} className="error-message" >{error}</p>}
 
             <button className='register-button' type="submit">Submit</button>
             <button className='login-button' type="button" onClick={() => navigate('/login')}>Login</button>

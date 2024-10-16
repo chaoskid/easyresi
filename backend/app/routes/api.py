@@ -218,3 +218,4 @@ def profile():
                 return jsonify({'type':'error','message': 'User not found'}), 404
         except Exception as e:
             return jsonify({'type':'error','message': 'An internal error occured.\n {}'.format(e)}), 500
+        

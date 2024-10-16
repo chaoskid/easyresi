@@ -185,6 +185,10 @@
     box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.6);
 }
 
+.login_error {
+  color: red;
+}
+
 .logout-button {
     background-color: #008080;
     color: #ffffff;
@@ -505,3 +509,7 @@
 .display-settings .settings-button:hover {
   background-color: #006666;
 }
+
+
+/* login wrong password
+*/

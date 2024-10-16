@@ -27,7 +27,7 @@ function Login() {
                 setError(response.data.message);
             }
         } catch (error) {
-            setError('An error occurred');
+            setError('Incorrect password');
         }
     };
 
@@ -58,7 +58,7 @@ function Login() {
                             required
                         />
                     </div>
-                    {error && <div className="error">{error}</div>}
+                    {error && <div className="login_error" >{error}</div>}
                     <button type="submit" className='login-button'>Login</button>
                     <button 
                         type="button" 

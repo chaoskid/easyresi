@@ -41,7 +41,7 @@ const Questionnaire = () => {
     <Navbar />
       {/* Form Container */}
       <Box maxW="800px" mx="auto" mt={8} p={6} borderWidth="1px" borderRadius="lg" boxShadow="lg" bg="white">
-        <form onSubmit={handleFormSubmit}>
+        <form onSubmit={handleFormSubmit} method="POST">
           
           {/* Visa Subclass Selection */}
           <FormControl isRequired mb={4}>
