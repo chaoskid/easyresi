@@ -14,6 +14,8 @@ import Statistics from './pages/statistics';
 import Account from './pages/account';
 import Settings from './pages/settings';
 import Updateagent from './pages/updateagent';
+import AdminDashboard from './pages/admindashboard';
+import AdminEditUser from './pages/adminedituser';
 
 function App() {
     return (
@@ -32,6 +34,8 @@ function App() {
                         <Route path="/account" element={<Account />} />
                         <Route path="/settings" element={<Settings />} />
                         <Route path="/updateagent" element={<Updateagent />} />
+                        <Route path="/admindashboard" element={<AdminDashboard />} />
+                        <Route path="/adminedituser" element={<AdminEditUser />} />
                         <Route path="*" element={<Notfound />} />
                     </Routes>
                 </div>
