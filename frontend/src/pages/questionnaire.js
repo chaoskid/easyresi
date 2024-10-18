@@ -21,8 +21,9 @@ const Questionnaire = () => {
     // Location and data
     const location = useLocation();
     const locationData = location.state?.data;
-    const [prefillData, setPrefillData] = useState({}); // TODO: Abdul, your data is in this variable, work on prefilling with this - Alex.
-
+    const [prefillData, setPrefillData] = useState({}); 
+    const [occupations, setOccupations] = useState({});
+    
     // Check to see if logged in
     const fetchLogin = async () => {
         try {
@@ -35,19 +36,35 @@ const Questionnaire = () => {
         } finally {
         }
     };
+  
+      // Fetch data when the component mounts
+    const fetchOccupations = async () => {
+            try {
+                const response = await axios.get('/api/questionnaire'); // API call for data
+                const occupationData = response.data.data.occupations;
+                setOccupations(occupationData);
+              } catch (error) {
+                console.error('Error fetching Dynamic Dropdown data:', error);
+            }
+        };
 
     // Fetch data when the component mounts
     const checkPrefill = async () => {
         if (locationData) { // If location data is available
             console.log('Using location data:', locationData);
             setPrefillData(locationData);
+            console.log(locationData)
             setFormData(locationData); // Prefill form with location data
+            setPreferredIndustry(locationData.preferredIndustry)
         } else {
             try {
                 const response = await axios.get('/api/questionnaire'); // API call for data
                 console.log('Using API data:', response.data.data.prefill_data);
+                if(response.data.data.prefill_data){
                 setPrefillData(response.data.data.prefill_data);
-                setFormData(response.data.data.prefill_data); // Prefill form with API data
+                setFormData(response.data.data.prefill_data);
+                setPreferredIndustry(response.data.data.prefill_data.preferredIndustry)
+                } // Prefill form with API data
             } catch (error) {
                 console.error('Error fetching prefill data:', error);
             }
@@ -56,6 +73,7 @@ const Questionnaire = () => {
 
     // Handle form submission using axios to send data to backend
     const handleFormSubmit = async (e) => {
+      formData.preferredCourse = 'TBD'
         e.preventDefault();
         try {
             const response = await axios.post('/api/preview_results', formData); // Submit form data
@@ -76,11 +94,24 @@ const Questionnaire = () => {
             ...formData,
             [field]: value,
         });
+        console.log('Form Data: ', formData)
     };
+
+    const getOccupationsForIndustry = () => {
+      console.log('Occupations inside funct: ',occupations)
+      console.log('Preferred Industry: ',preferredIndustry)
+      console.log('Occupations for preferred Industry inside funct: ',occupations[preferredIndustry])
+      if (occupations && preferredIndustry) {
+          return occupations[preferredIndustry] || [];
+      }
+      return [];
+  };
 
     useEffect(() => {
         fetchLogin();
+        fetchOccupations();
         checkPrefill();
+        
     }, []);
 
     return (
@@ -122,6 +153,7 @@ const Questionnaire = () => {
                             onChange={(e) => updateFormData('age', e.target.value)}
                             fontSize="lg" color="gray.600"
                         >
+                            <option value="">Please select an option</option>
                             <option value="18-25">At least 18 but less than 25 years</option>
                             <option value="25-33">At least 25 but less than 33 years</option>
                             <option value="33-40">At least 33 but less than 40 years</option>
@@ -352,11 +384,11 @@ const Questionnaire = () => {
                             }}
                             fontSize="lg" color="gray.600"
                         >
-                            <option value="business">Business</option>
-                            <option value="it">IT</option>
-                            <option value="education">Education</option>
-                            <option value="engineering">Engineering</option>
-                            <option value="healthcare">Healthcare</option>
+                            <option value="Business">Business</option>
+                            <option value="IT">IT</option>
+                            <option value="Education">Education</option>
+                            <option value="Engineering">Engineering</option>
+                            <option value="Healthcare">Healthcare</option>
                         </Select>
                     </FormControl>
                     <Divider my={4} borderColor="gray.300" />
@@ -380,27 +412,7 @@ const Questionnaire = () => {
                     </FormControl>
                     <Divider my={4} borderColor="gray.300" />
 
-                    {/* Preferred Course */}
-                    <FormControl isRequired mb={4}>
-                        <FormLabel fontWeight="bold" fontSize="lg" color="gray.700">
-                            Preferred Course (based on industry and level)
-                            <Tooltip label="Select the preferred course based on the industry." fontSize="md">
-                                <IconButton variant="ghost" aria-label="Info" icon={<InfoIcon />} size="sm" />
-                            </Tooltip>
-                        </FormLabel>
-                        <Select
-                            value={formData.preferredCourse || ''}
-                            onChange={(e) => updateFormData('preferredCourse', e.target.value)}
-                            fontSize="lg" color="gray.600"
-                        >
-                            {preferredIndustry === 'business' && <option value="accounting">Accounting</option>}
-                            {preferredIndustry === 'it' && <option value="softwareEngineering">Software Engineering</option>}
-                            {preferredIndustry === 'education' && <option value="teaching">Teaching</option>}
-                            {preferredIndustry === 'engineering' && <option value="civilEngineering">Civil Engineering</option>}
-                            {preferredIndustry === 'healthcare' && <option value="nursing">Nursing</option>}
-                        </Select>
-                    </FormControl>
-                    <Divider my={4} borderColor="gray.300" />
+                    
 
                     {/* Preferred Occupation */}
                     <FormControl isRequired mb={4}>
@@ -415,11 +427,11 @@ const Questionnaire = () => {
                             onChange={(e) => updateFormData('preferredOccupation', e.target.value)}
                             fontSize="lg" color="gray.600"
                         >
-                            {preferredIndustry === 'business' && <option value="263112">Business Analyst</option>}
-                            {preferredIndustry === 'it' && <option value="263112">Software Developer</option>}
-                            {preferredIndustry === 'education' && <option value="263112">Teacher</option>}
-                            {preferredIndustry === 'engineering' && <option value="263112">Civil Engineer</option>}
-                            {preferredIndustry === 'healthcare' && <option value="263112">Nurse</option>}
+                            {getOccupationsForIndustry().map((occupation) => (
+                                <option key={occupation.anzsco} value={occupation.anzsco}>
+                                    {occupation.occupation}
+                                </option>
+                            ))}
                         </Select>
                     </FormControl>
                     <Divider my={4} borderColor="gray.300" />
