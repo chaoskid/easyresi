@@ -6,6 +6,7 @@ import '../index.css';
 import axios from '../axiosConfig'; // Assuming axios is configured for API requests
 import Navbar from '../components/Navbar';
 import { Box, Text, Button, Select } from '@chakra-ui/react';
+import AdminNavbar from '../components/AdminNavbar';
 
 const Statistics = () => {
     const navigate = useNavigate();

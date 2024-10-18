@@ -6,6 +6,7 @@ import {
 } from '@chakra-ui/react';
 import { InfoIcon } from '@chakra-ui/icons';  // Import the info icon for tooltips
 import Navbar from '../components/Navbar';
+import AdminNavbar from '../components/AdminNavbar';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 

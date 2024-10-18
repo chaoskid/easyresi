@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from '../axiosConfig';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
+import AdminNavbar  from '../components/AdminNavbar';
 import { Button } from '@chakra-ui/react';
 
 const AdminEditUser = () => {
@@ -10,14 +11,22 @@ const AdminEditUser = () => {
     const [userData, setUserData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-
     const editUserId = sessionStorage.getItem('edit_user_id');
 
+    const [userType, setUserType] = useState('');
+
+    // Admin fetchlogin (apply to all admin pages)
     const fetchLogin = async () => {
         try {
             const response = await axios.get('/auth/login');
             if (response.data.type === "error") {
                 navigate('/login', { state: { message: "User was not logged in, redirecting to login..." } });
+            }
+            if (response.data.type === "success") {
+                setUserType(response.data.data.user_type);
+                if (response.data.data.user_type !== "admin") {
+                    navigate('/login', { state: { message: "User was not logged in as admin, redirecting to login..." } });
+                }
             }
         } catch (err) { }
     };
@@ -62,7 +71,7 @@ const AdminEditUser = () => {
 
     return (
         <>
-            <Navbar />
+            {userType === 'admin' ? <AdminNavbar /> : <Navbar />}
             <div className="dashboard">
                 {loading ? (
                     <p>Loading...</p>

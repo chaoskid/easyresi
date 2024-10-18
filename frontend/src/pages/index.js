@@ -1,6 +1,7 @@
 import React from "react";
 import '../index.css';
 import Navbar from '../components/Navbar';
+import AdminNavbar  from '../components/AdminNavbar';
 import { useNavigate } from 'react-router-dom';
 
 // // Import axios if you plan to use it in the future

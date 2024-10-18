@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from '../axiosConfig';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
+import AdminNavbar from '../components/AdminNavbar';
 import { Button } from '@chakra-ui/react'; // Import Button from Chakra UI
 
 const AdminDashboard = () => {
@@ -11,11 +12,20 @@ const AdminDashboard = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
+    const [userType, setUserType] = useState('');
+
+    // Admin fetchlogin (apply to all admin pages)
     const fetchLogin = async () => {
         try {
             const response = await axios.get('/auth/login');
             if (response.data.type === "error") {
                 navigate('/login', { state: { message: "User was not logged in, redirecting to login..." } });
+            }
+            if (response.data.type === "success") {
+                setUserType(response.data.data.user_type);
+                if (response.data.data.user_type !== "admin") {
+                    navigate('/login', { state: { message: "User was not logged in as admin, redirecting to login..." } });
+                }
             }
         } catch (err) { }
     };
@@ -72,7 +82,7 @@ const AdminDashboard = () => {
 
     return (
         <>
-            <Navbar />
+            {userType === 'admin' ? <AdminNavbar /> : <Navbar />}
             <div className="dashboard">
                 {loading ? (
                     <p>Loading...</p>
@@ -81,8 +91,6 @@ const AdminDashboard = () => {
                 ) : (
                     <div>
                         <h1>Dashboard</h1>
-                        <h2>{welcomeMessage}</h2>
-
                         {/* Display Users in a Table */}
                         <h2>User Entries</h2>
                         {data.length > 0 ? (

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from '../axiosConfig';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
+import AdminNavbar  from '../components/AdminNavbar';
 import { ChakraProvider, Box, CircularProgress, CircularProgressLabel } from '@chakra-ui/react';
 
 const Dashboard = () => {
@@ -20,15 +21,52 @@ const Dashboard = () => {
 
     const loggedInUser = sessionStorage.getItem('user_id');
 
+    const [userType, setUserType] = useState('');
+    const [occupations, setOccupations] = useState([]);
+
+
     const fetchLogin = async () => {
         try {
             const response = await axios.get('/auth/login');
             if (response.data.type === "error") {
                 navigate('/login', { state: { message: "User was not logged in, redirecting to login..." } });
             }
+            if (response.data.type === "success") {
+                setUserType(response.data.data.user_type);
+                if (response.data.data.user_type === "admin") {
+                    //navigate('/admindashboard', { state: { message: "Admin detected" } });
+                }
+            }
         } catch (err) { }
     };
+    const fetchQuest = async () => {
+        try {
+            const response = await axios.get('/api/questionnaire');
+            setOccupations(response.data.data.occupations);
+        } catch (err) {
+            setError('Failed to load occupations. Please try again later.');
+        }
+    };
+    const getJobTitleByAnzsco = (anzsco) => {
+        // Convert the input anzsco to a number
+        const anzscoNumber = Number(anzsco);
 
+        // Check if occupations is an object
+        if (occupations && typeof occupations === 'object') {
+            // Use flatMap to create a flattened array of occupations
+            const allOccupations = Object.values(occupations).flatMap(category => category);
+
+            // Loop through all occupations to find the corresponding anzsco code
+            for (const occupation of allOccupations) {
+                // Convert the occupation's anzsco to a number for comparison
+                if (Number(occupation.anzsco) === anzscoNumber) {
+                    //console.log(occupation.jobTitle);
+                    return occupation.occupation; // Return the job title if found
+                }
+            }
+        }
+        return 'Unknown Job Title'; // Fallback if no match is found
+    };
     const fetchDashboardData = async () => {
         try {
             const response = await axios.get('/api/dashboard');
@@ -47,7 +85,7 @@ const Dashboard = () => {
             setData(response.data.data);
             updateProgress(percent, false, 'purple.400', '200px', '12px');
         } catch (err) {
-            updateProgress(100, false, 'red.400', '200px', '12px');
+            updateProgress(100, true, 'blue.400', '200px', '12px');
         }
     };
 
@@ -57,13 +95,14 @@ const Dashboard = () => {
 
     useEffect(() => {
         fetchLogin();
+        fetchQuest();
         fetchDashboardData();
         fetchProbability();
     }, []);
 
     return (
         <>
-            <Navbar />
+            {userType === 'admin' ? <AdminNavbar /> : <Navbar />}
             <div className="dashboard">
                 {loading ? (
                     <p>Loading...</p>
@@ -72,8 +111,6 @@ const Dashboard = () => {
                 ) : (
                     <div>
                         <h1>Dashboard</h1>
-                        <h2>{welcomeMessage}</h2>
-
                         {/*Display Probability in Chakra Circular Progress*/}
 
                         <div>
@@ -99,30 +136,31 @@ const Dashboard = () => {
                                 </Box>
                             </ChakraProvider>
                         </div>
-
-                        {/* Probability of Other Jobs */}
-                        <h2>Probability of Other Jobs</h2>
-                        {data && data.probability_of_other_jobs ? (
-                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                <thead>
-                                    <tr>
-                                        <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>Job ID</th>
-                                        <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>Probability (%)</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {Object.entries(data.probability_of_other_jobs).map(([jobId, probability]) => (
-                                        <tr key={jobId}>
-                                            <td style={{ border: '1px solid black', padding: '8px' }}>{jobId}</td>
-                                            <td style={{ border: '1px solid black', padding: '8px' }}>{probability}</td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        ) : (
-                            <p>No data available for probabilities of other jobs.</p>
-                        )}
-
+                                {data && data.probability_of_other_jobs ? (
+                                    <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                        <thead>
+                                            <tr>
+                                                <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>Job ID</th>
+                                                <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>Probability (%)</th>
+                                                <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>Job Title</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {Object.entries(data.probability_of_other_jobs).map(([jobId, probability]) => {
+                                                const jobTitle = getJobTitleByAnzsco(jobId); // Use the anzsco code directly
+                                                return (
+                                                    <tr key={jobId}>
+                                                        <td style={{ border: '1px solid black', padding: '8px' }}>{jobId}</td>
+                                                        <td style={{ border: '1px solid black', padding: '8px' }}>{probability}</td>
+                                                        <td style={{ border: '1px solid black', padding: '8px' }}>{jobTitle}</td>
+                                                    </tr>
+                                                );
+                                            })}
+                                        </tbody>
+                                    </table>
+                                ) : (
+                                    <p>No data available for probabilities of other jobs.</p>
+                                )}
                         {/* Probability of Other States */}
                         <h2>Probability of Other States</h2>
                         {data && data.probability_of_other_states ? (
@@ -134,21 +172,20 @@ const Dashboard = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {Object.entries(data.probability_of_other_states).map(([state, probability]) => (
-                                        <tr key={state}>
-                                            <td style={{ border: '1px solid black', padding: '8px' }}>{state}</td>
-                                            <td style={{ border: '1px solid black', padding: '8px' }}>{probability}</td>
-                                        </tr>
-                                    ))}
+                                    {Object.entries(data.probability_of_other_states)
+                                        .sort(([, probA], [, probB]) => probB - probA) // Sort by probability descending
+                                        .map(([state, probability]) => (
+                                            <tr key={state}>
+                                                <td style={{ border: '1px solid black', padding: '8px' }}>{state}</td>
+                                                <td style={{ border: '1px solid black', padding: '8px' }}>{probability}</td>
+                                            </tr>
+                                        ))}
                                 </tbody>
                             </table>
                         ) : (
                             <p>No data available for probabilities of other states.</p>
                         )}
 
-                        {/* Probability of Permanent Residency */}
-                        <h2>Probability of Permanent Residency</h2>
-                        <div>{data ? `Probability: ${data.probability_of_permanent_residency}%` : 'No data available.'}</div>
 
                         {/* University Recommendations Based on Fee */}
                         <h2>University Recommendations Based on Fee</h2>
@@ -207,7 +244,6 @@ const Dashboard = () => {
                         )}
                     </div>
                 )}
-
             </div>
         </>
     );
