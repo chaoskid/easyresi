@@ -12,7 +12,7 @@ auth_bp = Blueprint('auth', __name__)
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        print("login required", session)
+        print("user details", session)
         if "user_id" not in session:
             return jsonify({'type':'error',"message":"Unauthorized access, please log in"}),401
         return f(*args, **kwargs)

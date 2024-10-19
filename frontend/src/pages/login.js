@@ -24,10 +24,11 @@ function Login() {
                 console.log(sessionStorage.getItem('user_id'));
                 navigate('/dashboard', { state: { message: 'Logged in' } });
             } else {
-                setError(response.data.message);
+                setError(response.data.message); // show this on a popup - bottom right
             }
         } catch (error) {
             setError('Incorrect password');
+            alert('Incorrect password');
         }
     };
 

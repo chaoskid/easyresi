@@ -49,6 +49,14 @@ const FormComponent = () => {
             const response = await axios.post('/auth/register', formData);
             console.log(response.data); // Handle response from backend
             navigate('/', { state: { message: 'Registered' } }); // Navigate after successful registration
+            let popup = document.getElementById("popup");
+            function openPopup() {
+                popup.classList.add("open-popup")
+            }
+            function closePopup() {
+                popup.classList.remove("open-popup")
+            }
+        
         } catch (error) {
             console.error('There was an error submitting the form!', error);
             setError('An error occurred while registering. Please try again.'); // Set error message on catch

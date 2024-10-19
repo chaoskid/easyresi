@@ -26,6 +26,8 @@ def create_questionnaire():
     if request.method == 'GET':
         try:
             ques_data = get_ques_data(db)
+            print("ques data");
+            print(ques_data)
             existing_profile_entry = db.session.query(UserProfile).filter_by(user_id=session['user_id']).first()
             if existing_profile_entry:
                 prefill_data=prefill_ques(existing_profile_entry)
@@ -58,7 +60,7 @@ def create_questionnaire():
                 user_score_entry = get_or_update_points(profile_entry,db)
                 db.session.add(user_score_entry)
                 db.session.commit()
-            return jsonify({'type':'success','message': 'Questionnaire and points submitted and successfully!'}), 201
+            return jsonify({'type':'success','message': 'Questionnaire and points submitted and successfully!'}), 200
         except Exception as e:
             print(e)
             return jsonify({'type':'error','message': 'An internal error occured.\n {}'.format(e)}), 500
@@ -122,9 +124,9 @@ def preview_results():
                         'probability_of_other_jobs':prob_for_other_occupations,
                         'uni_recommendations_based_on_fee':uni_recommendations["by_fee"],
                         'uni_recommendations_based_on_rank':uni_recommendations["by_rank"],
-                        'user_input_for_prefill_or_save':data
+                        'user_input_for_prefill_or_save':data # Questionairre Data
                     }
-                })
+                }), 200
         except Exception as e:
             print(e)
             return jsonify({'type':'error','message': 'An internal error occured.\n {}'.format(e)}), 500

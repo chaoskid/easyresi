@@ -28,14 +28,7 @@
   
   .home h1 {
     font-size: 2.5rem;
-    margin-bottom: 20px;
     color: #333333;
-    
-  }
-  
-  .home p {
-    font-size: 1.25rem;
-    margin-bottom: 20px;
   }
 
 /* About Page */
@@ -274,12 +267,6 @@
     margin-top: 35px;
     height: 100vh;
   }
-  
-  .questionnaire h1 {
-    font-size: 2.5rem;
-    margin-bottom: 20px;
-    color: #333333;
-  }
 
   /* Not Found Page */
 .not-found {
@@ -513,3 +500,17 @@
 
 /* login wrong password
 */
+
+.general-button {
+  background-color: #008080;
+  color: #ffffff;
+  border: none;
+  padding: 6px 12px;
+  font-size: 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  margin: 20px;
+}
+
+

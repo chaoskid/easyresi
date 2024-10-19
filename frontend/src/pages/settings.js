@@ -3,6 +3,7 @@ import '../index.css';
 import Navbar from "../components/Navbar";
 import axios from '../axiosConfig';
 import { useNavigate, useLocation } from 'react-router-dom';
+import Footer from "../components/Footer";
 
 
 
@@ -171,6 +172,7 @@ const Settings = () => {
                     <button type="submit" className="settings-button">Save Changes</button>
                 </form>
             </div>
+            <Footer />
         </>
     );
 };

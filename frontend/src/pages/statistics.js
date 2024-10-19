@@ -1,14 +1,32 @@
-// NOTE THAT THIS IS A PLACEHOLDER FILE THAT WILL BE CHANGED EVENTUALLY FOR DYNAMIC DATA
+// NOTE THAT THIS IS A PLACEHOLDER FILE THAT WILL BE CHANGED EVENTUALLY FOR DYNAMIC DATA - HARRISON
 
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../index.css';
 import axios from '../axiosConfig'; // Assuming axios is configured for API requests
 import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 import { Box, Text, Button, Select } from '@chakra-ui/react';
 
 const Statistics = () => {
+    const navigate = useNavigate();
+
     const [data, setData] = useState([]);
     const [selectedStat, setSelectedStat] = useState('');
+
+
+    // Check to see if logged in
+    const fetchLogin = async () => {
+        try {
+            const response = await axios.get('/auth/login'); // Adjust the URL if needed
+            console.log(response);
+            if (response.data.type == "error") {
+                navigate('/login', { state: { message: "User was not logged in, redirecting to login..." } });
+            }
+        } catch (err) {
+        } finally {
+        }
+    };
 
     // Fetch statistics data from the backend
     const fetchStatistics = async () => {
@@ -21,6 +39,7 @@ const Statistics = () => {
     };
 
     useEffect(() => {
+        fetchLogin();
         fetchStatistics(); // Fetch data on component mount
     }, []);
 
@@ -53,6 +72,7 @@ const Statistics = () => {
                     </Box>
                 )}
             </Box>
+            <Footer /> 
         </>
     );
 };
