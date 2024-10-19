@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from '../axiosConfig';
 import { useNavigate } from 'react-router-dom';
+import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
 import AdminNavbar  from '../components/AdminNavbar';
 import { ChakraProvider, Box, CircularProgress, CircularProgressLabel } from '@chakra-ui/react';
@@ -34,7 +35,7 @@ const Dashboard = () => {
             if (response.data.type === "success") {
                 setUserType(response.data.data.user_type);
                 if (response.data.data.user_type === "admin") {
-                    //navigate('/admindashboard', { state: { message: "Admin detected" } });
+                    navigate('/admindashboard', { state: { message: "Admin detected" } });
                 }
             }
         } catch (err) { }
@@ -245,6 +246,7 @@ const Dashboard = () => {
                     </div>
                 )}
             </div>
+            <Footer />
         </>
     );
 };

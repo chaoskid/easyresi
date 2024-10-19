@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import '../index.css';
 import axios from '../axiosConfig'; // Assuming axios is configured for API requests
 import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 import { useNavigate } from 'react-router-dom';
 import AdminNavbar from '../components/AdminNavbar';
 import { Box, Text, Button, Select } from '@chakra-ui/react';
@@ -64,13 +65,15 @@ const UpdateAgent = () => {
     };
 
     useEffect(() => {
-        fetchLogin();
         fetchAgentsAndUsers();
+        fetchLogin();
     }, []);
 
     return (
         <>
-            {userType === 'admin' ? <AdminNavbar /> : <Navbar />}
+            {/* TODO: Have placeholder navigation and use ternary operator to check for it (optional) */}
+            {userType === 'admin' ? <AdminNavbar /> : userType === 'applicant' ? <Navbar /> : userType}
+
             <Box maxW="800px" mx="auto" mt={8} p={6} borderWidth="1px" borderRadius="lg" boxShadow="lg" bg="white">
             <form onSubmit={handleFormSubmit}>
                 <Text fontSize="2xl" mb={4}>Update Users to Agent</Text>
@@ -115,6 +118,7 @@ const UpdateAgent = () => {
                 </Button>
                 </form>
             </Box>
+            <Footer />
         </>
     );
 };

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from '../axiosConfig';
 import Navbar from '../components/Navbar';
 import AdminNavbar from '../components/AdminNavbar';
+import Footer from '../components/Footer'; 
 import { ChakraProvider, Button, Box, CircularProgress, CircularProgressLabel } from '@chakra-ui/react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -251,6 +252,7 @@ const Dashpreview = () => {
             <Button colorScheme="teal" onClick={handleAccept}>Accept Changes</Button><br /><br />
             <Button colorScheme="teal" onClick={handleRevert}>Revert</Button>
             </div>
+            <Footer />
         </>
     );
 };

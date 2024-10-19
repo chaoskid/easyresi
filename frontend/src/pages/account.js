@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 import '../index.css';
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 import AdminNavbar from '../components/AdminNavbar';
 
 
@@ -42,6 +43,7 @@ const Account = () => {
                     application status, and access personalized recommendations based on your input.
                 </p>
             </div>
+            <Footer />
         </>
     );
 };
