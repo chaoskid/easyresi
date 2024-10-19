@@ -117,7 +117,8 @@ const Questionnaire = () => {
     return (
         <>
             <Navbar />
-            <Box maxW="75%" mx="auto" mt={8} p={6} borderWidth="1px" borderRadius="lg" boxShadow="lg" bg="#F9FAFC" borderColor="#E2E8F0">
+            <h1 className="PR-Header">Permanent Residency Questionnaire</h1>
+            <Box maxW="75%" mx="auto" mt={8} mb={12} p={6} borderWidth="1px" borderRadius="lg" boxShadow="lg" bg="#F9FAFC" borderColor="#E2E8F0">
                 <form onSubmit={handleFormSubmit}>
                     {/* Visa Subclass Selection */}
                     <FormControl isRequired mb={4}>
@@ -475,9 +476,7 @@ const Questionnaire = () => {
                     </FormControl>
 
                     {/* Submit Button */}
-                    <Button mt={6} colorScheme="teal" type="submit">
-                        Preview Results
-                    </Button>
+                    <button type="submit" className='login-button'>Preview Results</button>
                 </form>
             </Box>
             <Footer />

@@ -116,6 +116,7 @@ const Dashpreview = () => {
         <>
             <Navbar />
             <div className="dashboard">
+            <Box display="block" flexDirection={'column'} minHeight={'100vh'}>
                 {loading ? (
                     <p>Loading...</p>
                 ) : error ? (
@@ -152,11 +153,48 @@ const Dashpreview = () => {
                         )}
                     </Box>
                     <br /><br />
-                    <Button colorScheme="teal" onClick={handleAccept}>Accept Changes</Button><br /><br />
-                    <Button colorScheme="teal" onClick={handleRevert}>Revert</Button>
+                    <Button
+                    sx={{
+                        backgroundColor: '#008080',
+                        color: '#ffffff',
+                        padding: '6px 12px',
+                        fontSize: '14px',
+                        height: '35px',
+                        fontWeight: '400',
+                        borderRadius: '8px',
+                        cursor: 'pointer',
+                        transition: 'background-color 0.3s ease, transform 0.2s ease',
+                        marginRight: '10px',
+                        border: 'none',
+                        _hover: { backgroundColor: '#003366', transform: 'scale(1.05)' },
+                        _focus: { outline: 'none', boxShadow: '0 0 0 3px rgba(66, 153, 225, 0.6)' },
+                    }}
+                    onClick={handleAccept}
+                    >
+                    Accept Results
+                    </Button>
+                    <Button
+                    sx={{
+                        backgroundColor: '#008080',
+                        color: '#ffffff',
+                        padding: '6px 12px',
+                        fontSize: '14px',
+                        height: '35px',
+                        fontWeight: '400',
+                        borderRadius: '8px',
+                        cursor: 'pointer',
+                        transition: 'background-color 0.3s ease, transform 0.2s ease',
+                        marginRight: '10px',
+                        border: 'none',
+                        _hover: { backgroundColor: '#003366', transform: 'scale(1.05)' },
+                        _focus: { outline: 'none', boxShadow: '0 0 0 3px rgba(66, 153, 225, 0.6)' },
+                    }}
+                    onClick={handleRevert}
+                    >
+                    Revert
+                    </Button>
                 </ChakraProvider>
-
-
+            </Box>
             </div>
             <Footer />
         </>
