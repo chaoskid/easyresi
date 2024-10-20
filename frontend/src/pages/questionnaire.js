@@ -84,6 +84,7 @@ const Questionnaire = () => {
                 setError(response.data.message);
             }
         } catch (error) {
+            alert('Submission error. Please try again.');
             console.error('Submission error:', error);
         }
     };

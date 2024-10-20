@@ -23,26 +23,31 @@ const Settings = () => {
                 console.log('All good. sending to backend');   // wait for axios post request      
                 const response = axios.post('/api/profile', formData); // format needed. success (200) or error (400)
                 if (response.status === 200) {
+                    alert('User details updated successfully');
                     console.log('User details updated successfully');
                     // navigate to the displaysettings page
                     navigate('/displaysettings', { state: { message: response.message } });
                 }
                 else {
+                    alert('Something went wrong.');
                     console.log('Something went wrong.');
                 }
             }  
             else {
+                alert('Passwords do not match');
                 console.log('Passwords do not match');
             }
         }
         else {
             const response = axios.post('/api/profile', formData); // format needed. success (200) or error (400)
             if (response.status === 200) {
+                alert('User details updated successfully');
                 console.log('User details updated successfully');
                 // navigate to the displaysettings page
                 navigate('/displaysettings', { state: { message: response.message } });
             }
             else {
+                alert('Something went wrong.');
                 console.log('Something went wrong.');
             }
 
