@@ -5,11 +5,32 @@ import '../index.css';
 import axios from '../axiosConfig'; // Assuming axios is configured for API requests
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import { useNavigate } from 'react-router-dom';
+import AdminNavbar from '../components/AdminNavbar';
 import { Box, Text, Button, Select } from '@chakra-ui/react';
 
 const UpdateAgent = () => {
+    const navigate = useNavigate();
     const [data, setData] = useState([]);
     const [formData, setFormData] = useState({});
+
+    const [userType, setUserType] = useState('');
+
+    // Admin fetchlogin (apply to all admin pages)
+    const fetchLogin = async () => {
+        try {
+            const response = await axios.get('/auth/login');
+            if (response.data.type === "error") {
+                navigate('/login', { state: { message: "User was not logged in, redirecting to login..." } });
+            }
+            if (response.data.type === "success") {
+                setUserType(response.data.data.user_type);
+                if (response.data.data.user_type !== "admin") {
+                    navigate('/login', { state: { message: "User was not logged in as admin, redirecting to login..." } });
+                }
+            }
+        } catch (err) { }
+    };
 
     // Fetch statistics data from the backend
     const fetchAgentsAndUsers = async () => {
@@ -45,11 +66,14 @@ const UpdateAgent = () => {
 
     useEffect(() => {
         fetchAgentsAndUsers();
+        fetchLogin();
     }, []);
 
     return (
         <>
-            <Navbar />
+            {/* TODO: Have placeholder navigation and use ternary operator to check for it (optional) */}
+            {userType === 'admin' ? <AdminNavbar /> : userType === 'applicant' ? <Navbar /> : userType}
+
             <Box maxW="800px" mx="auto" mt={8} p={6} borderWidth="1px" borderRadius="lg" boxShadow="lg" bg="white">
             <form onSubmit={handleFormSubmit}>
                 <Text fontSize="2xl" mb={4}>Update Users to Agent</Text>

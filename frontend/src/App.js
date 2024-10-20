@@ -15,6 +15,8 @@ import Account from './pages/account';
 import Settings from './pages/settings';
 import Updateagent from './pages/updateagent';
 import DisplaySettings from './pages/displaysettings';
+import AdminDashboard from './pages/admindashboard';
+import AdminEditUser from './pages/adminedituser';
 
 function App() {
     return (
@@ -34,6 +36,8 @@ function App() {
                         <Route path="/displaysettings" element={<DisplaySettings />} /> 
                         <Route path="/settings" element={<Settings />} />
                         <Route path="/updateagent" element={<Updateagent />} />
+                        <Route path="/admindashboard" element={<AdminDashboard />} />
+                        <Route path="/adminedituser" element={<AdminEditUser />} />
                         <Route path="*" element={<Notfound />} />
                     </Routes>
                 </div>

@@ -11,18 +11,33 @@ function Login() {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
 
+    const [userType, setUserType] = useState('');
+
     // Handle form submission
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
             const response = await axios.post('/auth/login', { email, password });
             console.log(response); // Successful response
-
+            console.log(response.data.data.user_type);
+            setUserType(response.data.data.user_type);
+            console.log(userType);
+            
             // Check if the response status is 200
             if (response.status === 200) {
                 sessionStorage.setItem('user_id', response.data.data.user_id);
                 console.log(sessionStorage.getItem('user_id'));
-                navigate('/dashboard', { state: { message: 'Logged in' } });
+
+
+                console.log("AHAHHAAHHA");
+                console.log(userType);
+
+                if (response.data.data.user_type === "admin") {
+                    navigate('/admindashboard', { state: { message: 'Logged in' } });
+                }
+                else if (response.data.data.user_type === "applicant") {
+                    navigate('/dashboard', { state: { message: 'Logged in' } });
+                }
             } else {
                 setError(response.data.message); // show this on a popup - bottom right
             }

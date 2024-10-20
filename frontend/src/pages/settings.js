@@ -4,6 +4,8 @@ import Navbar from "../components/Navbar";
 import axios from '../axiosConfig';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Footer from "../components/Footer";
+import AdminNavbar from '../components/AdminNavbar';
+
 
 
 
@@ -11,6 +13,7 @@ import Footer from "../components/Footer";
 
 const Settings = () => {
     const [data, setData] = useState('');
+    const [userType, setUserType] = useState('');
     const navigate = useNavigate();
 
     const handleSubmit = (e) => {
@@ -66,6 +69,7 @@ const Settings = () => {
         }
     };
 
+
     useEffect(() => {
         fetchSettingsData();
     }, []);
@@ -88,7 +92,9 @@ const Settings = () => {
 
     return (
         <>
-            <Navbar />
+            {userType === 'admin' ? <AdminNavbar /> : <Navbar />}
+            
+
             <div className="settings">
                 <h1>Settings</h1>
                 <p>Update your account details</p>

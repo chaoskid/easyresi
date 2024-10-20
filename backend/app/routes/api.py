@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, request, session
-from create_app import db, bcrypt
+from flask_cors import cross_origin
+from create_app import db
 import pickle
 from app.models.db_models import *
 from app.routes.auth import login_required
@@ -144,7 +145,9 @@ def recommendations(input_user_id):
         prob_for_other_occupations = get_pr_prob_for_jobs(model,model_inputdf,db,profile)
         prob_for_other_states=get_pr_prob_for_states(profile,model_inputdf,model)
         uni_recommendations=recommend_uni(db,profile)
-        cost_of_living = cost_of_living(profile) # call cost of living function
+        print("something first")
+        cost_living = cost_of_living(db,profile) # call cost of living function
+        print("something here")
         return jsonify({
                 'type' : 'success',
                 'message': 'Permanent residency recommendations calculated successfully',
@@ -155,69 +158,122 @@ def recommendations(input_user_id):
                         'uni_recommendations_based_on_fee':uni_recommendations["by_fee"],
                         'uni_recommendations_based_on_rank':uni_recommendations["by_rank"],
                         # add cost of living
-                        'cost_of_living': cost_of_living
+                        'cost_of_living': cost_living
                     }
                 })
     except Exception as e:
+        print(e)
         return jsonify({'type':'error','message': 'An internal error occured.\n {}'.format(e)}), 500
     
 @api.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
-    if request.method == 'GET':
-        try:
-            user_id=session['user_id']
-            print(user_id)
-            entry = db.session.query(User).filter_by(user_id=user_id).first()
-            if entry:
-                return jsonify({
-                        'type' : 'success',
-                        'message': 'User detail retreived successfully',
-                        'data' : {
-                                'first_name':entry.first_name,
-                                'last_name':entry.last_name,
-                                'email': entry.email
-                            }
-                        })
-            else:
-                return jsonify({'type':'error','message': 'User not found'}), 404
-        except Exception as e:
-            return jsonify({'type':'error','message': 'An internal error occured.\n {}'.format(e)}), 500
-    if request.method == 'POST':
-        data = request.get_json()
-        print(data)
-        try:
-            user_id=session['user_id']
-            print(user_id)
-            user = db.session.query(User).filter_by(user_id=user_id).first()
-            hashed_new_password = bcrypt.generate_password_hash(data.get('new_password')).decode('utf-8')
-            if user:
-                user.first_name = data.get('first_name')
-                user.last_name = data.get('last_name')
-                user.email = data.get('email')
-                if data.get('new_password'):
-                    print('request to change pw')
-                    hashed_new_password = bcrypt.generate_password_hash(data.get('new_password')).decode('utf-8')
-                    if bcrypt.check_password_hash(user.password_hash, hashed_new_password):
-                        user.password_hash = hashed_new_password
-                        db.session.commit()
-                    else:
-                        return jsonify({'type':'error','message': 'Invalid Credentials'}), 409
-                else:
-                    db.session.commit()
-                    print('updated changes to db')
+    try:
+        user_id=session['user_id']
+        print(user_id)
+        entry = db.session.query(User).filter_by(user_id=user_id).first()
+        if entry:
+            return jsonify({
+                    'type' : 'success',
+                    'message': 'User detail retreived successfully',
+                    'data' : {
+                            'first_name':entry.first_name,
+                            'last_name':entry.last_name,
+                            'email': entry.email
+                        }
+                    })
+        else:
+            return jsonify({'type':'error','message': 'User not found'}), 404
+    except Exception as e:
+        return jsonify({'type':'error','message': 'An internal error occured.\n {}'.format(e)}), 500
 
-                return jsonify({
-                        'type' : 'success',
-                        'message': 'User detail updated successfully',
-                        'data' : {
-                                'first_name':user.first_name,
-                                'last_name':user.last_name,
-                                'email': user.email
-                            }
-                        })
-            else:
-                return jsonify({'type':'error','message': 'User not found'}), 404
-        except Exception as e:
-            return jsonify({'type':'error','message': 'An internal error occured.\n {}'.format(e)}), 500
+# Route to get all records in JSON
+@api.route('/get_all_records', methods=['GET'])
+@login_required
+def get_all_records():
+    try:
         
+        # Fetch all entries from users
+        entries = db.session.query(User).all()   # Fetch all records
+        print(entries)
+        if (entries):
+            return jsonify([{
+                'type' : 'success',
+                'message': 'User detail retreived successfully',
+                'data' : {
+                        'user_id':entry.user_id,
+                        'first_name':entry.first_name,
+                        'last_name':entry.last_name,
+                        'email': entry.email,
+                        'user_type': entry.user_type
+                    }
+                }for entry in entries])
+        else:
+            return jsonify({'type':'error','message': 'No records found'}), 404
+    except Exception as e:
+        return jsonify({'type':'error','message': 'An internal error occured.\n {}'.format(e)}), 500
+
+@api.route('/delete_user/<int:user_id>', methods=['DELETE'])
+@login_required
+def delete_user(user_id):
+    try:
+        # Query the user by user_id
+        user = db.session.query(User).filter(User.user_id == user_id).first()
+        
+        if user:
+            db.session.delete(user)  # Delete the user
+            db.session.commit()  # Commit the changes
+            return jsonify({"message": "User deleted successfully"}), 200
+        else:
+            return jsonify({"message": "User not found"}), 404
+    
+    except Exception as e:
+        print(e)
+        db.session.rollback()  # Roll back in case of error
+        return jsonify({"message": "An error occurred", "error": str(e)}), 500
+
+
+@api.route('/get_user/<int:user_id>', methods=['GET'])
+@login_required
+def get_user(user_id):
+    try:
+        user = db.session.query(User).filter(User.user_id == user_id).first()
+        if user:
+            return jsonify({
+                'user_id': user.user_id,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'email': user.email,
+                'user_type': user.user_type
+            }), 200
+        else:
+            return jsonify({"message": "User not found"}), 404
+    except Exception as e:
+        return jsonify({"message": "An error occurred", "error": str(e)}), 500
+
+@api.route('/update_user/<int:user_id>', methods=['PUT'])
+@login_required
+def update_user(user_id):
+    try:
+        # Get the JSON data from the request
+        data = request.get_json()
+
+        # Fetch the existing user from the database
+        user = db.session.query(User).filter_by(user_id=user_id).first()
+        
+        if user:
+            # Update user fields based on the incoming data
+            user.first_name = data.get('first_name', user.first_name)
+            user.last_name = data.get('last_name', user.last_name)
+            user.email = data.get('email', user.email)
+            user.user_type = data.get('user_type', user.user_type)
+
+            # Commit the changes to the database
+            db.session.commit()
+
+            return jsonify({'type': 'success', 'message': 'User updated successfully!'}), 200
+        else:
+            return jsonify({'type': 'error', 'message': 'User not found'}), 404
+    except Exception as e:
+        db.session.rollback()  # Rollback in case of error
+        return jsonify({'type': 'error', 'message': f'An internal error occurred. {str(e)}'}), 500
