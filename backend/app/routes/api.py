@@ -175,6 +175,29 @@ def preview_results(input_user_id):
             print(traceback.format_exc())
             return jsonify({'type': 'error', 'message': f'An internal error occurred.\n {e}'}), 500
 
+@api.route('/check_questionnaire_submission/<int:input_user_id>', methods=['GET'])
+@login_required
+def check_questionnaire_submission(input_user_id):
+    try:
+        
+        scores = db.session.query(UserScore).filter_by(user_id=input_user_id).first()
+        if scores:
+            return jsonify({
+                    'type' : 'success',
+                    'message': 'PR questionnaire already filled',
+                    'data' : {}
+                    })
+        else:
+            return jsonify({
+                    'type' : 'error',
+                    'message': 'PR questionnaire not filled',
+                    'data' : {}
+                    })
+
+    except Exception as e:
+        print(e)
+        return jsonify({'type':'error','message': 'An internal error occured.\n {}'.format(e)}), 500
+
 @api.route('/recommendations/<int:input_user_id>', methods=['GET'])
 @login_required
 def recommendations(input_user_id):

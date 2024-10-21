@@ -7,7 +7,7 @@ const AdminNavbar = () => {
     const handleLogout = async () => {
         try {
             const response = await axios.post('/auth/logout', {});
-            console.log(response.data.message); // Log success message or handle accordingly
+            sessionStorage.clear();
             window.location.href = '/login'; // Redirect to login page
         } catch (error) {
             console.error('Logout failed:', error);

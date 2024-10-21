@@ -6,6 +6,9 @@ import AgentNavbar from '../components/AgentNavbar';
 import AdminNavbar from '../components/AdminNavbar';
 import NothingNavbar from '../components/NothingNavbar';
 import { Button } from '@chakra-ui/react'; // Import Button from Chakra UI
+import Footer from "../components/Footer";
+
+import Popup from '../components/Popup';
 
 const AgentDashboard = () => {
     const navigate = useNavigate();
@@ -15,6 +18,10 @@ const AgentDashboard = () => {
     const [error, setError] = useState('');
 
     const [userType, setUserType] = useState('');
+
+    const handleClosePopup = () => {
+        setError(''); // Close the popup by clearing the error message
+    };
 
     const renderNavbar = () => {
         switch (userType) {
@@ -63,7 +70,11 @@ const AgentDashboard = () => {
             console.log(response.data); // For debugging
             setData(response.data || []); // Set the data (applicants) received from the API
         } catch (err) {
-            setError('Failed to load applicants data. Please try again later.');
+            if(err.status === 404) {
+                setError(err.response.data.message)}
+            else {
+            setError('An unexpected error occurred while submitting. Please contact administrator');
+            }
         }
     };
     
@@ -91,11 +102,6 @@ const AgentDashboard = () => {
         <>
             {renderNavbar()}
             <div className="dashboard">
-                {loading ? (
-                    <p>Loading...</p>
-                ) : error ? (
-                    <p style={{ color: 'red' }}>{error}</p>
-                ) : (
                     <div>
                         <h1>Dashboard</h1>
                         {/* Display Users in a Table */}
@@ -128,8 +134,9 @@ const AgentDashboard = () => {
                             <p>No user data available.</p>
                         )}
                     </div>
-                )}
             </div>
+            <Popup error={error} onClose={handleClosePopup} />
+            <Footer />
         </>
     );
 };
