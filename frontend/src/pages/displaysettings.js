@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import '../index.css';
+import { Box, Button, Container, Text, Heading, VStack, useToast, Flex } from '@chakra-ui/react';
 import Navbar from "../components/Navbar";
 import axios from '../axiosConfig';
+import Footer from "../components/Footer";
 import { useNavigate } from 'react-router-dom';
 
 const DisplaySettings = () => {
@@ -12,13 +13,19 @@ const DisplaySettings = () => {
     });
 
     const navigate = useNavigate();
+    const toast = useToast();
 
     const fetchSettingsData = async () => {
         try {
             const response = await axios.get('/api/profile'); // Adjust the URL if needed
             setFormData(response.data.data);
         } catch (err) {
-            console.error("Failed to load user details.");
+            toast({
+                title: "Failed to load user details.",
+                status: "error",
+                duration: 3000,
+                isClosable: true,
+            });
         }
     };
 
@@ -32,17 +39,29 @@ const DisplaySettings = () => {
 
     return (
         <>
-            <Navbar />
-            <div className="display-settings">
-                <h1>Settings</h1>
-                <p>View your account details</p>
-                <div className="form-container">
-                
-                <label>First Name: {formData.first_name}</label>
-                <label>Last Name: {formData.last_name}</label>
-                <label>Email: {formData.email}</label>
-                <button onClick={handleEditClick} className="settings-button">Edit User Details</button>
-                </div>
+        <div className="displaysettings">
+            <Flex direction="column" minH="100vh">
+                <Navbar />
+                <Flex flex="1" direction="column">
+                    <Container maxW="container.md" py={8} flex="1">
+                        <VStack spacing={6} align="start">
+                            <Heading as="h1" size="xl">Settings</Heading>
+                            <Text fontSize="lg">View your account details</Text>
+                            <Box w="100%" bg="gray.50" p={6} borderRadius="md" boxShadow="md">
+                                <VStack spacing={4} align="start">
+                                    <Text fontWeight="bold">First Name: <Text as="span" fontWeight="normal">{formData.first_name}</Text></Text>
+                                    <Text fontWeight="bold">Last Name: <Text as="span" fontWeight="normal">{formData.last_name}</Text></Text>
+                                    <Text fontWeight="bold">Email: <Text as="span" fontWeight="normal">{formData.email}</Text></Text>
+                                    <Button colorScheme="teal" onClick={handleEditClick}>
+                                        Edit User Details
+                                    </Button>
+                                </VStack>
+                            </Box>
+                        </VStack>
+                    </Container>
+                </Flex>
+                <Footer />
+            </Flex>
             </div>
         </>
     );
