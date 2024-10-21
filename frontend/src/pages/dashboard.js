@@ -149,7 +149,7 @@ const Dashboard = () => {
             <div className="dashboard">
                 {isQuestionnaireFilled ? (
                     <div>
-                        <h1>Dashboard</h1>
+                        <h1>Applicant Dashboard</h1>
                         <h2>Your Chances of Getting Permanent Residency</h2>
                         <div>
                             <ChakraProvider>
