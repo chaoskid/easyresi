@@ -26,16 +26,6 @@ EOF
     cd frontend
     npm run start
 
-elif [ "$os_type" = "Linux" ]; then
-    # For Linux systems
-    echo "Starting backend in a new terminal..."
-    gnome-terminal -- bash -c "cd backend && source env/bin/activate && python app.py; exec bash"
-
-    # Start frontend in the current terminal
-    echo "Starting frontend..."
-    cd frontend
-    npm run start
-
 else
     echo "Unsupported OS: $OS"
     exit 1
