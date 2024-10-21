@@ -38,6 +38,9 @@ function Login() {
                 else if (response.data.data.user_type === "applicant") {
                     navigate('/dashboard', { state: { message: 'Logged in' } });
                 }
+                else if (response.data.data.user_type === "agent") {
+                    navigate('/agentdashboard', {state: {message: 'Logged in'}});
+                }
             } else {
                 setError(response.data.message);
             }

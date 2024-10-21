@@ -21,6 +21,7 @@ const Dashboard = () => {
     });
 
     const loggedInUser = sessionStorage.getItem('user_id');
+    const checkingUser = sessionStorage.getItem('checking_user_id');
 
     const [userType, setUserType] = useState('');
     const [occupations, setOccupations] = useState([]);
@@ -42,7 +43,7 @@ const Dashboard = () => {
     };
     const fetchQuest = async () => {
         try {
-            const response = await axios.get('/api/questionnaire');
+            const response = await axios.get(`/api/questionnaire/${loggedInUser}`);
             setOccupations(response.data.data.occupations);
         } catch (err) {
             setError('Failed to load occupations. Please try again later.');
@@ -81,7 +82,9 @@ const Dashboard = () => {
 
     const fetchProbability = async () => {
         try {
-            const response = await axios.get(`/api/recommendations/${loggedInUser}`);
+            const userIdToFetch = checkingUser || loggedInUser;
+            console.log("Fetching data for user:", userIdToFetch); // Debugging log
+            const response = await axios.get(`/api/recommendations/${userIdToFetch}`);
             const percent = Math.round(response.data.data.probability_of_permanent_residency * 100) / 100;
             setData(response.data.data);
             updateProgress(percent, false, 'purple.400', '200px', '12px');

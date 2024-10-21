@@ -14,7 +14,8 @@ const Questionnaire = () => {
     // Navigation and error
     const navigate = useNavigate();
     const [error, setError] = useState('');
-
+    const loggedInUser = sessionStorage.getItem('user_id');
+    const checkingUser = sessionStorage.getItem('checking_user_id');
     // Form states
     const [formData, setFormData] = useState({});
     const [preferredIndustry, setPreferredIndustry] = useState('');
@@ -41,7 +42,8 @@ const Questionnaire = () => {
       // Fetch data when the component mounts
     const fetchOccupations = async () => {
             try {
-                const response = await axios.get('/api/questionnaire'); // API call for data
+                const userIdToFetch = checkingUser || loggedInUser;
+                const response = await axios.get(`/api/questionnaire/${userIdToFetch}`); // API call for data
                 const occupationData = response.data.data.occupations;
                 setOccupations(occupationData);
               } catch (error) {
@@ -59,7 +61,8 @@ const Questionnaire = () => {
             setPreferredIndustry(locationData.preferredIndustry)
         } else {
             try {
-                const response = await axios.get('/api/questionnaire'); // API call for data
+                const userIdToFetch = checkingUser || loggedInUser;
+                const response = await axios.get(`/api/questionnaire/${userIdToFetch}`); // API call for data
                 console.log('Using API data:', response.data.data.prefill_data);
                 if(response.data.data.prefill_data){
                 setPrefillData(response.data.data.prefill_data);
@@ -77,7 +80,8 @@ const Questionnaire = () => {
       formData.preferredCourse = 'TBD'
         e.preventDefault();
         try {
-            const response = await axios.post('/api/preview_results', formData); // Submit form data
+            const userIdToFetch = checkingUser || loggedInUser;
+            const response = await axios.post(`/api/preview_results/${userIdToFetch}`, formData); // Submit form data
             console.log('Success:', response.data);
             if (response.status === 200) {
                 navigate('/dashpreview', { state: { data: response.data } });

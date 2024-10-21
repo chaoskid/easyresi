@@ -10,7 +10,8 @@ const Dashpreview = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const locationData = location.state?.data;
-
+    const loggedInUser = sessionStorage.getItem('user_id');
+    const checkingUser = sessionStorage.getItem('checking_user_id');
     const [welcomeMessage, setWelcomeMessage] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
@@ -61,16 +62,36 @@ const Dashpreview = () => {
     const handleAccept = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('/api/questionnaire', locationData.data.user_input_for_prefill_or_save);
+            // Fetch user IDs from session storage (checkingUser = client's user_id, loggedInUser = agent's user_id)
+            const userIdToFetch = checkingUser || loggedInUser; // Prefer checkingUser (client's user_id) if it exists
+    
+            // Ensure the correct user ID is present
+            if (!userIdToFetch) {
+                throw new Error('User ID is missing'); // Handle case where neither client nor agent's user_id is present
+            }
+    
+            // Fetch the user's input data (prefilled or saved data from the form)
+            const userInput = locationData?.data?.user_input_for_prefill_or_save;
+            if (!userInput) {
+                throw new Error('User input data is missing'); // Handle case where no form data is present
+            }
+    
+            // Submit the data to the backend for the correct user (client if acting on behalf of them)
+            const response = await axios.post(`/api/questionnaire/${userIdToFetch}`, userInput);
+    
+            // If successful, navigate to the user's dashboard
             if (response.status === 200) {
-                navigate('/dashboard');
+                navigate('/dashboard'); // Redirect to the user's dashboard after successful update
             } else {
-                setError(response.data.message);
+                setError(response.data.message); // Set the error message if the request fails
             }
         } catch (error) {
-            console.error('Error:', error);
+            console.error('Error:', error); // Log the error for debugging
+            setError('An error occurred while accepting changes.'); // Show a user-friendly error message
         }
     };
+    
+    
 
     const handleRevert = async (e) => {
         e.preventDefault();
@@ -79,7 +100,8 @@ const Dashpreview = () => {
 
     const fetchQuest = async () => {
         try {
-            const response = await axios.get('/api/questionnaire');
+            const userIdToFetch = checkingUser || loggedInUser;
+            const response = await axios.get(`/api/questionnaire/${userIdToFetch}`);
             setOccupations(response.data.data.occupations);
         } catch (err) {
             setError('Failed to load occupations. Please try again later.');
