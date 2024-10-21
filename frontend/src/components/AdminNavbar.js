@@ -63,7 +63,7 @@ const AdminNavbar = () => {
                         transition="background-color 0.3s"
                         _hover={{ bg: "#008080", borderRadius: "10px" }}
                     >
-                        Update Agents
+                        Manage Agents
                     </Text>
                 </Link>
 
@@ -81,7 +81,7 @@ const AdminNavbar = () => {
                             <Link to="/account" style={{ color: '#333333', textDecoration: 'none' }}>Account</Link>
                         </MenuItem>
                         <MenuItem>
-                            <Link to="/settings" style={{ color: '#333333', textDecoration: 'none' }}>Settings</Link>
+                            <Link to="/displaysettings" style={{ color: '#333333', textDecoration: 'none' }}>Settings</Link>
                         </MenuItem>
 
                         {/* To Do: "Are you sure you want to log out?" button and session/local storage clean */}

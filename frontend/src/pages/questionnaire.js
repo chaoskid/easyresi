@@ -29,7 +29,6 @@ const Questionnaire = () => {
     const fetchLogin = async () => {
         try {
             const response = await axios.get('/auth/login'); // Adjust the URL if needed
-            console.log(response);
             if (response.data.type == "error") {
                 navigate('/login', { state: { message: "User was not logged in, redirecting to login..." } });
             }
@@ -52,7 +51,7 @@ const Questionnaire = () => {
     // Fetch data when the component mounts
     const checkPrefill = async () => {
         if (locationData) { // If location data is available
-            console.log('Using location data:', locationData);
+            console.log('prefilling using location data:', locationData);
             setPrefillData(locationData);
             console.log(locationData)
             setFormData(locationData); // Prefill form with location data
@@ -60,7 +59,7 @@ const Questionnaire = () => {
         } else {
             try {
                 const response = await axios.get('/api/questionnaire'); // API call for data
-                console.log('Using API data:', response.data.data.prefill_data);
+                console.log('Prefilling using API data:', response.data.data.prefill_data);
                 if(response.data.data.prefill_data){
                 setPrefillData(response.data.data.prefill_data);
                 setFormData(response.data.data.prefill_data);
@@ -78,7 +77,6 @@ const Questionnaire = () => {
         e.preventDefault();
         try {
             const response = await axios.post('/api/preview_results', formData); // Submit form data
-            console.log('Success:', response.data);
             if (response.status === 200) {
                 navigate('/dashpreview', { state: { data: response.data } });
             } else {
@@ -100,9 +98,6 @@ const Questionnaire = () => {
     };
 
     const getOccupationsForIndustry = () => {
-      console.log('Occupations inside funct: ',occupations)
-      console.log('Preferred Industry: ',preferredIndustry)
-      console.log('Occupations for preferred Industry inside funct: ',occupations[preferredIndustry])
       if (occupations && preferredIndustry) {
           return occupations[preferredIndustry] || [];
       }
@@ -113,6 +108,7 @@ const Questionnaire = () => {
         fetchLogin();
         fetchOccupations();
         checkPrefill();
+        console.log('Form Data: ',formData)
         
     }, []);
 
@@ -177,6 +173,7 @@ const Questionnaire = () => {
                             onChange={(e) => updateFormData('englishProficiency', e.target.value)}
                             fontSize="lg" color="gray.600"
                         >
+                            <option value="">Please select an option</option>
                             <option value="competent">Competent English</option>
                             <option value="proficient">Proficient English</option>
                             <option value="superior">Superior English</option>
@@ -197,6 +194,7 @@ const Questionnaire = () => {
                             onChange={(e) => updateFormData('overseasExperience', e.target.value)}
                             fontSize="lg" color="gray.600"
                         >
+                            <option value="">Please select an option</option>
                             <option value="0">Less than 3 years</option>
                             <option value="3-5">At least 3 but less than 5 years</option>
                             <option value="5-8">At least 5 but less than 8 years</option>
@@ -218,6 +216,7 @@ const Questionnaire = () => {
                             onChange={(e) => updateFormData('australiaExperience', e.target.value)}
                             fontSize="lg" color="gray.600"
                         >
+                            <option value="">Please select an option</option>
                             <option value="0">Less than 1 year</option>
                             <option value="1-3">At least 1 but less than 3 years</option>
                             <option value="3-5">At least 3 but less than 5 years</option>
@@ -240,6 +239,7 @@ const Questionnaire = () => {
                             onChange={(e) => updateFormData('australianStudy', e.target.value)}
                             fontSize="lg" color="gray.600"
                         >
+                            <option value="">Please select an option</option>
                             <option value="yes">Yes</option>
                             <option value="no">No</option>
                         </Select>
@@ -259,6 +259,7 @@ const Questionnaire = () => {
                             onChange={(e) => updateFormData('specialistEducation', e.target.value)}
                             fontSize="lg" color="gray.600"
                         >
+                            <option value="">Please select an option</option>
                             <option value="yes">Yes</option>
                             <option value="no">No</option>
                         </Select>
@@ -278,6 +279,7 @@ const Questionnaire = () => {
                             onChange={(e) => updateFormData('education', e.target.value)}
                             fontSize="lg" color="gray.600"
                         >
+                            <option value="">Please select an option</option>
                             <option value="phd">Doctorate (PhD or a Masters Degree by Research)</option>
                             <option value="bachelor">Masters Degree by Coursework or a Bachelor’s Degree</option>
                             <option value="diploma">Diploma/Trade Qualification</option>
@@ -299,6 +301,7 @@ const Questionnaire = () => {
                             onChange={(e) => updateFormData('professionalYear', e.target.value)}
                             fontSize="lg" color="gray.600"
                         >
+                            <option value="">Please select an option</option>
                             <option value="yes">Yes</option>
                             <option value="no">No</option>
                         </Select>
@@ -358,6 +361,7 @@ const Questionnaire = () => {
                             onChange={(e) => updateFormData('statePreferred', e.target.value)}
                             fontSize="lg" color="gray.600"
                         >
+                            <option value="">Please select an option</option>
                             <option value="NSW">New South Wales</option>
                             <option value="VIC">Victoria</option>
                             <option value="QLD">Queensland</option>
@@ -386,6 +390,7 @@ const Questionnaire = () => {
                             }}
                             fontSize="lg" color="gray.600"
                         >
+                            <option value="">Please select an option</option>
                             <option value="Business">Business</option>
                             <option value="IT">IT</option>
                             <option value="Education">Education</option>
@@ -408,6 +413,7 @@ const Questionnaire = () => {
                             onChange={(e) => updateFormData('courseLevel', e.target.value)}
                             fontSize="lg" color="gray.600"
                         >
+                            <option value="">Please select an option</option>
                             <option value="postgraduate">Masters</option>
                             <option value="undergraduate">Bachelors</option>
                         </Select>
@@ -429,6 +435,7 @@ const Questionnaire = () => {
                             onChange={(e) => updateFormData('preferredOccupation', e.target.value)}
                             fontSize="lg" color="gray.600"
                         >
+                            <option value="">Please select an option</option>
                             {getOccupationsForIndustry().map((occupation) => (
                                 <option key={occupation.anzsco} value={occupation.anzsco}>
                                     {occupation.occupation}
@@ -451,6 +458,7 @@ const Questionnaire = () => {
                             onChange={(e) => updateFormData('maritalStatus', e.target.value)}
                             fontSize="lg" color="gray.600"
                         >
+                            <option value="">Please select an option</option>
                             <option value="single">Single or partner is an Australian citizen/ permanent resident</option>
                             <option value="married_skilled">Married and partner meets age, English, and skill criteria</option>
                             <option value="married_unskilled">Married and partner has competent English</option>
@@ -471,6 +479,7 @@ const Questionnaire = () => {
                             onChange={(e) => updateFormData('nomination', e.target.value)}
                             fontSize="lg" color="gray.600"
                         >
+                            <option value="">Please select an option</option>
                             <option value="yes">Yes</option>
                             <option value="no">No</option>
                         </Select>

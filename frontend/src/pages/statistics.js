@@ -8,25 +8,30 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { Box, Text, Button, Select } from '@chakra-ui/react';
 import AdminNavbar from '../components/AdminNavbar';
+import Popup from '../components/Popup';
+
 
 const Statistics = () => {
     const navigate = useNavigate();
-
+    const [error, setError] = useState('');
     const [data, setData] = useState([]);
     const [selectedStat, setSelectedStat] = useState('');
 
-
+    const handleClosePopup = () => {
+        setError(''); // Close the popup by clearing the error message
+    };
     // Check to see if logged in
     const fetchLogin = async () => {
         try {
             const response = await axios.get('/auth/login'); // Adjust the URL if needed
             console.log(response);
             if (response.data.type == "error") {
-                navigate('/login', { state: { message: "User was not logged in, redirecting to login..." } });
+                setError('User was not logged in, redirecting to login.')
+                navigate('/login', { state: { message: "User was not logged in, redirecting to login." } });
             }
         } catch (err) {
-        } finally {
-        }
+            setError('An unexpected error occurred. Please contact administrator');
+        } 
     };
 
     // Fetch statistics data from the backend
@@ -35,7 +40,7 @@ const Statistics = () => {
             const response = await axios.get('/api/statistics'); // API call using axios
             setData(response.data);
         } catch (error) {
-            console.error('Error fetching statistics:', error);
+            setError('Statistics feature is still being built. Please wait untill the next update. Thank you for your patience.');
         }
     };
 
@@ -73,6 +78,8 @@ const Statistics = () => {
                     </Box>
                 )}
             </Box>
+            
+            <Popup error={error} onClose={handleClosePopup} />
             <Footer /> 
         </>
     );

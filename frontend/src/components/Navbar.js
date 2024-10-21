@@ -74,7 +74,7 @@ const Navbar = () => {
                         transition="background-color 0.3s"
                         _hover={{ bg: "#008080", borderRadius: "10px" }}
                     >
-                        Questionnaire
+                        PR Calculator
                     </Text>
                 </Link>
 

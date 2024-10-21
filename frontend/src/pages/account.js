@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from '../axiosConfig';
 import { useNavigate } from 'react-router-dom';
-
+import Popup from '../components/Popup';
 import '../index.css';
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
@@ -10,6 +10,12 @@ import AdminNavbar from '../components/AdminNavbar';
 
 const Account = () => {
     const navigate = useNavigate();
+    
+    const [error, setError] = useState('');
+
+    const handleClosePopup = () => {
+        setError(''); // Close the popup by clearing the error message
+    };
 
     const [userType, setUserType] = useState('');
 
@@ -19,12 +25,15 @@ const Account = () => {
         try {
             const response = await axios.get('/auth/login');
             if (response.data.type === "error") {
+                setError('User was not logged in, redirecting to login...')
                 navigate('/login', { state: { message: "User was not logged in, redirecting to login..." } });
             }
             if (response.data.type === "success") {
                 setUserType(response.data.data.user_type);
             }
-        } catch (err) { }
+        } catch (err) { 
+            setError('Unexpected error occured. Please contact administrator')
+        }
     };
 
 
@@ -43,6 +52,7 @@ const Account = () => {
                     application status, and access personalized recommendations based on your input.
                 </p>
             </div>
+            <Popup error={error} onClose={handleClosePopup} />
             <Footer />
         </>
     );

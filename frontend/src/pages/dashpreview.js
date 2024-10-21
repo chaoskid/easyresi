@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from '../axiosConfig';
+import Popup from '../components/Popup';
 import Navbar from '../components/Navbar';
 import AdminNavbar from '../components/AdminNavbar';
 import Footer from '../components/Footer'; 
@@ -10,9 +11,6 @@ const Dashpreview = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const locationData = location.state?.data;
-
-    const [welcomeMessage, setWelcomeMessage] = useState('');
-    const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [progressState, setProgressState] = useState({
         percentage: null,
@@ -25,22 +23,20 @@ const Dashpreview = () => {
     const [occupations, setOccupations] = useState([]);
     const [userType, setUserType] = useState('');
 
-
+    const handleClosePopup = () => {
+        setError(''); // Close the popup by clearing the error message
+    };
 
     // Check if logged in
     const fetchLogin = async () => {
         try {
             const response = await axios.get('/auth/login');
             if (response.data.type === "error") {
+                setError('User was not logged in, redirecting to login.')
                 navigate('/login', { state: { message: "User was not logged in, redirecting to login..." } });
             }
-            if (response.data.type === "success") {
-                setUserType(response.data.data.user_type);
-                if (response.data.data.user_type === "admin") {
-                    //navigate('/admindashboard', { state: { message: "Admin detected" } });
-                }
-            }
-        } catch (err) { }
+        } catch (err) { 
+            setError('Unable to submit your responses. Please try again later');}
     };
 
     const updateProgress = (percentage, isIndeterminate, color, size, thickness) => {
@@ -54,6 +50,7 @@ const Dashpreview = () => {
             updateProgress(percent, false, 'purple.400', '200px', '12px');
             setData(locationData.data);
         } catch (err) {
+            setError('Unable to submit your responses. Please try again later');
             updateProgress(100, false, 'red.400', '200px', '12px');
         }
     };
@@ -65,10 +62,10 @@ const Dashpreview = () => {
             if (response.status === 200) {
                 navigate('/dashboard');
             } else {
-                setError(response.data.message);
+                setError('Unable to submit your responses. Please try again later');
             }
         } catch (error) {
-            console.error('Error:', error);
+            setError('Unable to submit your responses. Please try again later');
         }
     };
 
@@ -108,15 +105,11 @@ const Dashpreview = () => {
         <>
             {userType === 'admin' ? <AdminNavbar /> : <Navbar />}
             <div className="dashboard">
-                {loading ? (
-                    <p>Loading...</p>
-                ) : error ? (
-                    <p style={{ color: 'red' }}>{error}</p>
-                ) : (
                     <div>
-                        <h1>Dashboard</h1>
+                        <h1>Preview Results</h1>
                         {/*Display Probability in Chakra Circular Progress*/}
-
+                        
+                        <h2>Your Chances of Getting Permanent Residency</h2>
                         <div>
                             <ChakraProvider>
                                 <Box display="flex" alignItems="center" justifyContent="center" height="200px">
@@ -140,13 +133,14 @@ const Dashpreview = () => {
                                 </Box>
                             </ChakraProvider>
                         </div>
+                        <h2>Probability for Other Occupations</h2>
                         {data && data.probability_of_other_jobs ? (
                             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                 <thead>
                                     <tr>
-                                        <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>Job ID</th>
-                                        <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>Probability (%)</th>
+                                        <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>ANZCO</th>
                                         <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>Job Title</th>
+                                        <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>Probability (%)</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -155,8 +149,8 @@ const Dashpreview = () => {
                                         return (
                                             <tr key={jobId}>
                                                 <td style={{ border: '1px solid black', padding: '8px' }}>{jobId}</td>
-                                                <td style={{ border: '1px solid black', padding: '8px' }}>{probability}</td>
                                                 <td style={{ border: '1px solid black', padding: '8px' }}>{jobTitle}</td>
+                                                <td style={{ border: '1px solid black', padding: '8px' }}>{probability}</td>
                                             </tr>
                                         );
                                     })}
@@ -247,11 +241,11 @@ const Dashpreview = () => {
                             <p>No university recommendations based on rank available.</p>
                         )}
                     </div>
-                )}
             <br />
             <Button colorScheme="teal" onClick={handleAccept}>Accept Changes</Button><br /><br />
             <Button colorScheme="teal" onClick={handleRevert}>Revert</Button>
             </div>
+            <Popup error={error} onClose={handleClosePopup} />
             <Footer />
         </>
     );
