@@ -345,3 +345,51 @@
     transition: background-color 0.3s ease, transform 0.2s ease;
     margin: 20px;
 }
+
+/* Popup toast styles */
+.popup {
+  position: fixed; /* Make it fixed so it floats over the content */
+  bottom: 20px;
+  right: 20px;
+  background-color: red; /* Red background for error messages */
+  color: white;
+  padding: 15px;
+  border-radius: 5px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1000; /* Ensure it appears above everything */
+  display: flex;
+  align-items: center;
+  animation: fadeOut 4s forwards; /* Toast disappears after 4 seconds */
+  max-width: 300px; /* Limit the width */
+  word-wrap: break-word; /* Handle long error messages */
+}
+
+.popup-close {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 18px;
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+/* Fade-out animation for toast */
+@keyframes fadeOut {
+  0% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+
+/* Fade-out animation for toast */
+@keyframes fadeOut {
+  0% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+
+.popup-message {
+  flex-grow: 1;
+  margin-right: 10px;
+}

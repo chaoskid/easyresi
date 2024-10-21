@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from '../axiosConfig';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import Popup from '../components/Popup';
 import { ChakraProvider, Button, Box, CircularProgress, CircularProgressLabel } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 
@@ -25,15 +26,21 @@ const Dashboard = () => {
         try {
             const response = await axios.get('/auth/login');
             if (response.data.type === "error") {
+                setError(response.data.message)
                 navigate('/login', { state: { message: "User was not logged in, redirecting to login..." } });
             }
-        } catch (err) { }
+        } catch (err) { 
+            setError('An unexpected error occurred');
+        }
     };
 
     const fetchDashboardData = async () => {
         try {
             const response = await axios.get('/api/dashboard');
             setWelcomeMessage(response.data.message);
+            if (response.data.type === "error") {
+                setError('Failed to load dashboard data. Please try again later.')
+            }
         } catch (err) {
             setError('Failed to load dashboard data. Please try again later.');
         } finally {
@@ -43,18 +50,33 @@ const Dashboard = () => {
 
     const fetchProbability = async () => {
         try {
-            const response = await axios.get(`/api/recommendations/${loggedInUser}`);
+            //const response = await axios.get(`/api/recommendations/${loggedInUser}`);
+            const response = await axios.get(`/api/recommendations/15`);
+            console.log('response.data.message',response.data.message)
+            if (response.data.type === "error") {
+                setError('Failed to load dashboard data. Please try again later.')
+                console.log('response.data.message',response.data.message)
+                console.log('error: ',error)
+            }
+            else{
             const percent = Math.round(response.data.data.probability_of_permanent_residency * 100) / 100;
             setData(response.data.data);
             updateProgress(percent, false, 'purple.400', '200px', '12px');
+            }
         } catch (err) {
-            updateProgress(100, false, 'red.400', '200px', '12px');
+            setError('Failed to load dashboard data. Please try again later.')
+            updateProgress(100, true, 'red.400', '200px', '12px');
         }
     };
 
     const updateProgress = (percentage, isIndeterminate, color, size, thickness) => {
         setProgressState({ percentage, isIndeterminate, color, size, thickness });
     };
+
+    const handleClosePopup = () => {
+        setError(''); // Close the popup by clearing the error message
+    };
+
 
     useEffect(() => {
         fetchLogin();
@@ -66,11 +88,6 @@ const Dashboard = () => {
         <>
             <Navbar />
             <div className="dashboard">
-                {loading ? (
-                    <p>Loading...</p>
-                ) : error ? (
-                    <p style={{ color: 'red' }}>{error}</p>
-                ) : (
                     <div>
                         <h1>Dashboard</h1>
                         <h2>{welcomeMessage}</h2>
@@ -207,9 +224,11 @@ const Dashboard = () => {
                             <p>No university recommendations based on rank available.</p>
                         )}
                     </div>
-                )}
+            
+            
 
             </div>
+            <Popup error={error} onClose={handleClosePopup} />
             <Footer />
         </>
     );
