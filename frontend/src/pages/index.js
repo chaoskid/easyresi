@@ -45,7 +45,7 @@ const Home = () => {
                         />
                         <Tile 
                             title="Settings" 
-                            to="/settings" 
+                            to="/displaysettings" 
                             description="Adjust your preferences and system settings." 
                             imgSrc="/images/settingsImage.png"
                         />

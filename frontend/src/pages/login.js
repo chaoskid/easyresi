@@ -39,10 +39,11 @@ function Login() {
                     navigate('/dashboard', { state: { message: 'Logged in' } });
                 }
             } else {
-                setError(response.data.message);
+                setError(response.data.message); // show this on a popup - bottom right
             }
         } catch (error) {
-            setError('An error occurred');
+            setError('Incorrect password');
+            alert('Incorrect password');
         }
     };
 
@@ -73,7 +74,7 @@ function Login() {
                             required
                         />
                     </div>
-                    {error && <div className="error">{error}</div>}
+                    {error && <div className="login_error" >{error}</div>}
                     <button type="submit" className='login-button'>Login</button>
                     <button 
                         type="button" 

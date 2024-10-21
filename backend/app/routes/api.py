@@ -145,6 +145,9 @@ def recommendations(input_user_id):
         prob_for_other_occupations = get_pr_prob_for_jobs(model,model_inputdf,db,profile)
         prob_for_other_states=get_pr_prob_for_states(profile,model_inputdf,model)
         uni_recommendations=recommend_uni(db,profile)
+        print("something first")
+        cost_living = cost_of_living(db,profile) # call cost of living function
+        print("something here")
         return jsonify({
                 'type' : 'success',
                 'message': 'Permanent residency recommendations calculated successfully',
@@ -153,13 +156,16 @@ def recommendations(input_user_id):
                         'probability_of_other_states':prob_for_other_states,
                         'probability_of_other_jobs':prob_for_other_occupations,
                         'uni_recommendations_based_on_fee':uni_recommendations["by_fee"],
-                        'uni_recommendations_based_on_rank':uni_recommendations["by_rank"]
+                        'uni_recommendations_based_on_rank':uni_recommendations["by_rank"],
+                        # add cost of living
+                        'cost_of_living': cost_living
                     }
                 })
     except Exception as e:
+        print(e)
         return jsonify({'type':'error','message': 'An internal error occured.\n {}'.format(e)}), 500
-
-@api.route('/profile', methods=['GET'])
+    
+@api.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
     try:

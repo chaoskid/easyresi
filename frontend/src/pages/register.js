@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import '../App.js';
 import axios from '../axiosConfig';
 import { useNavigate } from 'react-router-dom';
+import Modal from '../Modal/Modal'; // Import the Modal component
 
 const FormComponent = () => {
     // State to store user input and errors
@@ -13,6 +14,7 @@ const FormComponent = () => {
         repass: '',
     });
     const [error, setError] = useState('');
+    const [showModal, setShowModal] = useState(false); // State to control Modal visibility
     const navigate = useNavigate();
 
     // Handle form input changes
@@ -47,84 +49,93 @@ const FormComponent = () => {
         try {
             const response = await axios.post('/auth/register', formData);
             console.log(response.data); // Handle response from backend
-            navigate('/', { state: { message: 'Registered' } }); // Navigate after successful registration
+            setShowModal(true); // Show the modal on successful registration
+            // navigate('/', { state: { message: 'Registered' } }); // Navigate after successful registration
         } catch (error) {
             console.error('There was an error submitting the form!', error);
             setError('An error occurred while registering. Please try again.'); // Set error message on catch
         }
     };
 
+    const closeModal = () => {
+        setShowModal(false);
+        navigate('/'); // Navigate after closing the modal
+    };
+
     return (
-        <form className='register' onSubmit={handleSubmit}>
-            <h1><strong>Easy Resi</strong></h1>
-            <p>The easy way to find your best pathway to permanent residency in Australia.</p>
-            <h2>Register</h2>
-            
-            <label className='fname'>
-                First Name:
-                <input
-                    className='input'
-                    type="text"
-                    name="fname"
-                    value={formData.fname}
-                    onChange={handleChange}
-                    required
-                />
-            </label>
-            <br />
-            <label className='lname'>
-                Last Name:
-                <input
-                    className='input'
-                    type="text"
-                    name="lname"
-                    value={formData.lname}
-                    onChange={handleChange}
-                    required
-                />
-            </label>
-            <br />
-            <label className='email'>
-                Email:
-                <input
-                    className='input'
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                />
-            </label>
-            <br />
-            <label className='password'>
-                Password:
-                <input
-                    className='input'
-                    type="password"
-                    name="pass"
-                    value={formData.pass}
-                    onChange={handleChange}
-                    required
-                />
-            </label>
-            <br />
-            <label className='re-password'>
-                Re-Enter Password:
-                <input
-                    className='input'
-                    type="password"
-                    name="repass"
-                    value={formData.repass}
-                    onChange={handleChange}
-                    required
-                />
-            </label>
+        <div>
+            <form className='register' onSubmit={handleSubmit}>
+                <h1><strong>Easy Resi</strong></h1>
+                <p>The easy way to find your best pathway to permanent residency in Australia.</p>
+                <h2>Register</h2>
+                
+                <label className='fname'>
+                    First Name:
+                    <input
+                        className='input'
+                        type="text"
+                        name="fname"
+                        value={formData.fname}
+                        onChange={handleChange}
+                        required
+                    />
+                </label>
+                <br />
+                <label className='lname'>
+                    Last Name:
+                    <input
+                        className='input'
+                        type="text"
+                        name="lname"
+                        value={formData.lname}
+                        onChange={handleChange}
+                        required
+                    />
+                </label>
+                <br />
+                <label className='email'>
+                    Email:
+                    <input
+                        className='input'
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        required
+                    />
+                </label>
+                <br />
+                <label className='password'>
+                    Password:
+                    <input
+                        className='input'
+                        type="password"
+                        name="pass"
+                        value={formData.pass}
+                        onChange={handleChange}
+                        required
+                    />
+                </label>
+                <br />
+                <label className='re-password'>
+                    Re-Enter Password:
+                    <input
+                        className='input'
+                        type="password"
+                        name="repass"
+                        value={formData.repass}
+                        onChange={handleChange}
+                        required
+                    />
+                </label>
 
-            {error && <p className="error-message">{error}</p>}
+                {error && <p className="error-message">{error}</p>}
 
-            <button className='register-button' type="submit">Submit</button>
-            <button className='login-button' type="button" onClick={() => navigate('/login')}>Login</button>
-        </form>
+                <button className='register-button' type="submit">Submit</button>
+                <button className='login-button' type="button" onClick={() => navigate('/login')}>Login</button>
+            </form>
+            <Modal showModal={showModal} closeModal={closeModal} /> {/* Pass props to Modal */}
+        </div>
     );
 };
 
