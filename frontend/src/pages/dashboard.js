@@ -4,288 +4,356 @@ import Popup from '../components/Popup';
 import { useNavigate } from 'react-router-dom';
 import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
-import AdminNavbar  from '../components/AdminNavbar';
-import { ChakraProvider, Box, CircularProgress, CircularProgressLabel } from '@chakra-ui/react';
+import AdminNavbar from '../components/AdminNavbar';
+import {
+  ChakraProvider,
+  Box,
+  CircularProgress,
+  CircularProgressLabel,
+  VStack,
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+  Heading,
+  Text,
+  Flex,
+  Icon,
+  Divider,
+} from '@chakra-ui/react';
+import { InfoIcon } from '@chakra-ui/icons';
 
 const Dashboard = () => {
-    const navigate = useNavigate();
-    const [data, setData] = useState(null);
-    const [error, setError] = useState('');
-    const [progressState, setProgressState] = useState({
-        percentage: null,
-        isIndeterminate: true,
-        color: 'blue.300',
-        thickness: '12px',
-        size: '200px',
-    });
+  const navigate = useNavigate();
+  const [data, setData] = useState(null);
+  const [error, setError] = useState('');
+  const [progressState, setProgressState] = useState({
+    percentage: null,
+    isIndeterminate: true,
+    color: 'blue.300',
+    thickness: '12px',
+    size: '200px',
+  });
 
-    const loggedInUser = sessionStorage.getItem('user_id');
+  const loggedInUser = sessionStorage.getItem('user_id');
+  const [userType, setUserType] = useState('');
+  const [occupations, setOccupations] = useState([]);
 
-    const [userType, setUserType] = useState('');
-    const [occupations, setOccupations] = useState([]);
-
-
-    const fetchLogin = async () => {
-        try {
-            const response = await axios.get('/auth/login');
-            if (response.data.type === "error") {
-                setError('User was not logged in, redirecting to login.')
-                console.log('User not logged in')
-                navigate('/login', { state: { message: "User was not logged in, redirecting to login." } });
-            }
-            if (response.data.type === "success") {
-                setUserType(response.data.data.user_type);
-                console.log('User logged in. User ID: ',response.data.data.user_id )
-                console.log('User logged in. User Type: ',response.data.data.user_type )
-                if (response.data.data.user_type === "admin") {
-                    navigate('/admindashboard', { state: { message: "Admin detected" } });
-                }
-            }
-        } catch (err) { 
-            setError('An unexpected error occurred. Please contact administrator');
+  const fetchLogin = async () => {
+    try {
+      const response = await axios.get('/auth/login');
+      if (response.data.type === 'error') {
+        setError('User was not logged in, redirecting to login.');
+        navigate('/login', {
+          state: { message: 'User was not logged in, redirecting to login.' },
+        });
+      } else if (response.data.type === 'success') {
+        setUserType(response.data.data.user_type);
+        if (response.data.data.user_type === 'admin') {
+          navigate('/admindashboard', { state: { message: 'Admin detected' } });
         }
-    };
-    const fetchQuest = async () => {
-        try {
-            const response = await axios.get('/api/questionnaire');
-            setOccupations(response.data.data.occupations);
-        } catch (err) {
-            setError('Failed to load occupations. Please try again later.');
+      }
+    } catch (err) {
+      setError('An unexpected error occurred. Please contact administrator');
+    }
+  };
+
+  const fetchQuest = async () => {
+    try {
+      const response = await axios.get('/api/questionnaire');
+      setOccupations(response.data.data.occupations);
+    } catch (err) {
+      setError('Failed to load occupations. Please try again later.');
+    }
+  };
+
+  const getJobTitleByAnzsco = (anzsco) => {
+    const anzscoNumber = Number(anzsco);
+    if (occupations && typeof occupations === 'object') {
+      const allOccupations = Object.values(occupations).flatMap((category) => category);
+      for (const occupation of allOccupations) {
+        if (Number(occupation.anzsco) === anzscoNumber) {
+          return occupation.occupation;
         }
-    };
-    const getJobTitleByAnzsco = (anzsco) => {
-        // Convert the input anzsco to a number
-        const anzscoNumber = Number(anzsco);
+      }
+    }
+    return 'Unknown Job Title';
+  };
 
-        // Check if occupations is an object
-        if (occupations && typeof occupations === 'object') {
-            // Use flatMap to create a flattened array of occupations
-            const allOccupations = Object.values(occupations).flatMap(category => category);
+  const fetchProbability = async () => {
+    try {
+      const response = await axios.get(`/api/recommendations/${loggedInUser}`);
+      const percent = Math.round(response.data.data.probability_of_permanent_residency * 100) / 100;
+      setData(response.data.data);
+      updateProgress(percent, false, 'purple.400', '200px', '12px');
+    } catch (err) {
+      setError('Failed to load dashboard data. Please try again later.');
+      updateProgress(100, true, 'red.400', '200px', '12px');
+    }
+  };
 
-            // Loop through all occupations to find the corresponding anzsco code
-            for (const occupation of allOccupations) {
-                // Convert the occupation's anzsco to a number for comparison
-                if (Number(occupation.anzsco) === anzscoNumber) {
-                    //console.log(occupation.jobTitle);
-                    return occupation.occupation; // Return the job title if found
-                }
-            }
-        }
-        return 'Unknown Job Title';
-    };
+  const updateProgress = (percentage, isIndeterminate, color, size, thickness) => {
+    setProgressState({ percentage, isIndeterminate, color, size, thickness });
+  };
 
-    const fetchProbability = async () => {
-        try {
-            const response = await axios.get(`/api/recommendations/${loggedInUser}`);
-            //const response = await axios.get(`/api/recommendations/15`);
-            console.log('response.data.message',response.data.message)
-            if (response.data.type === "error") {
-                setError('Failed to load dashboard data. Please try again later.')
-                console.log('response.data.message',response.data.message)
-                console.log('error: ',error)
-            }
-            else{
-            const percent = Math.round(response.data.data.probability_of_permanent_residency * 100) / 100;
-            setData(response.data.data);
-            updateProgress(percent, false, 'purple.400', '200px', '12px');
-            }
-        } catch (err) {
-            setError('Failed to load dashboard data. Please try again later.')
-            console.log('Failed to load dashboard data. Please try again later.')
-            updateProgress(100, true, 'red.400', '200px', '12px');
-        }
-    };
+  const handleClosePopup = () => {
+    setError('');
+  };
 
-    const updateProgress = (percentage, isIndeterminate, color, size, thickness) => {
-        setProgressState({ percentage, isIndeterminate, color, size, thickness });
-    };
+  useEffect(() => {
+    fetchLogin();
+    fetchQuest();
+    fetchProbability();
+  }, []);
 
-    const handleClosePopup = () => {
-        setError(''); // Close the popup by clearing the error message
-    };
+  // Utility function to highlight the highest probability
+  const highlightHighestProbability = (entries) => {
+    const maxProbability = Math.max(...Object.values(entries));
+    return Object.entries(entries).map(([key, probability]) => ({
+      key,
+      probability,
+      isHighest: probability === maxProbability,
+    }));
+  };
 
+  return (
+    <ChakraProvider>
+      <Flex direction="column" minH="100vh">
+        {/* Navbar/Header */}
+        {userType === 'admin' ? <AdminNavbar /> : <Navbar />}
 
-    useEffect(() => {
-        fetchLogin();
-        fetchQuest();
-        fetchProbability();
-    }, []);
+        {/* Dashboard Content */}
+        <Box flex="1" py={8} px={4}>
+          <VStack spacing={8} align="start" maxW="1200px" mx="auto">
+            <Heading as="h1" size="xl">
+              Dashboard
+            </Heading>
 
-    return (
-        <>
-            {userType === 'admin' ? <AdminNavbar /> : <Navbar />}
-            <div className="dashboard">
-                    <div>
-                        <h1>Dashboard</h1>
-                        {/*Display Probability in Chakra Circular Progress*/}
-                        <h2>Your Chances of Getting Permanent Residency</h2>
-                        <div>
-                            <ChakraProvider>
-                                <Box display="flex" alignItems="center" justifyContent="center" height="200px">
-                                    {progressState.isIndeterminate ? (
-                                        <CircularProgress
-                                            isIndeterminate
-                                            color={progressState.color}
-                                            thickness={progressState.thickness}
-                                            size={progressState.size}
-                                        />
-                                    ) : (
-                                        <CircularProgress
-                                            value={progressState.percentage}
-                                            color={progressState.color}
-                                            thickness={progressState.thickness}
-                                            size={progressState.size}
-                                        >
-                                            <CircularProgressLabel>{progressState.percentage}%</CircularProgressLabel>
-                                        </CircularProgress>
-                                    )}
-                                </Box>
-                            </ChakraProvider>
-                            <br />
-                        </div>
-                        <h2>Probability for Other Occupations</h2>
-                                {data && data.probability_of_other_jobs ? (
-                                    <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                        <thead>
-                                            <tr>
-                                                <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>ANZSCO</th>
-                                                <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>Job Title</th>
-                                                <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>Probability (%)</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {Object.entries(data.probability_of_other_jobs).map(([jobId, probability]) => {
-                                                const jobTitle = getJobTitleByAnzsco(jobId); // Use the anzsco code directly
-                                                return (
-                                                    <tr key={jobId}>
-                                                        <td style={{ border: '1px solid black', padding: '8px' }}>{jobId}</td>
-                                                        <td style={{ border: '1px solid black', padding: '8px' }}>{jobTitle}</td>
-                                                        <td style={{ border: '1px solid black', padding: '8px' }}>{probability}</td>
-                                                    </tr>
-                                                );
-                                            })}
-                                        </tbody>
-                                    </table>
-                                ) : (
-                                    <p>No data available for probabilities of other jobs.</p>
-                                )}
-                        {/* Probability of Other States */}
-                        <h2>Probability of Other States</h2>
-                        {data && data.probability_of_other_states ? (
-                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                <thead>
-                                    <tr>
-                                        <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>State</th>
-                                        <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>Probability (%)</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {Object.entries(data.probability_of_other_states)
-                                        .sort(([, probA], [, probB]) => probB - probA) // Sort by probability descending
-                                        .map(([state, probability]) => (
-                                            <tr key={state}>
-                                                <td style={{ border: '1px solid black', padding: '8px' }}>{state}</td>
-                                                <td style={{ border: '1px solid black', padding: '8px' }}>{probability}</td>
-                                            </tr>
-                                        ))}
-                                </tbody>
-                            </table>
-                        ) : (
-                            <p>No data available for probabilities of other states.</p>
-                        )}
+            {/* Circular Progress for Residency Probability */}
+            <Box
+              w="full"
+              p={6}
+              bg="white"
+              borderRadius="lg"
+              boxShadow="md"
+              borderWidth="1px"
+              textAlign="center"
+            >
+              <Heading as="h2" size="lg" mb={4}>
+                Your Chances of Getting Permanent Residency
+              </Heading>
+              <CircularProgress
+                value={progressState.percentage}
+                color={progressState.color}
+                thickness={progressState.thickness}
+                size={progressState.size}
+                isIndeterminate={progressState.isIndeterminate}
+              >
+                <CircularProgressLabel>{progressState.percentage}%</CircularProgressLabel>
+              </CircularProgress>
+              <Text mt={4}>
+                <Icon as={InfoIcon} mr={2} />
+                This percentage represents your likelihood based on our analysis.
+              </Text>
+            </Box>
 
+            {/* Probability for Other Occupations */}
+            <Box
+              w="full"
+              p={6}
+              bg="white"
+              borderRadius="lg"
+              boxShadow="md"
+              borderWidth="1px"
+            >
+              <Heading as="h2" size="lg" mb={4}>
+                Probability for Other Occupations
+              </Heading>
+              {data && data.probability_of_other_jobs ? (
+                <Table variant="simple" colorScheme="gray">
+                  <Thead bg="gray.200">
+                    <Tr>
+                      <Th>ANZSCO</Th>
+                      <Th>Job Title</Th>
+                      <Th>Probability (%)</Th>
+                    </Tr>
+                  </Thead>
+                  <Tbody>
+                    {highlightHighestProbability(data.probability_of_other_jobs).map(
+                      ({ key, probability, isHighest }) => (
+                        <Tr key={key} _hover={{ bg: 'gray.50' }}>
+                          <Td>{key}</Td>
+                          <Td>{getJobTitleByAnzsco(key)}</Td>
+                          <Td color={isHighest ? 'green.500' : 'inherit'}>{probability}</Td>
+                        </Tr>
+                      )
+                    )}
+                  </Tbody>
+                </Table>
+              ) : (
+                <Text>No data available for probabilities of other jobs.</Text>
+              )}
+            </Box>
 
-                        {/* University Recommendations Based on Fee */}
-                        <h2>University Recommendations Based on Fee</h2>
-                        {data && data.uni_recommendations_based_on_fee ? (
-                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                <thead>
-                                    <tr>
-                                        <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>Course</th>
-                                        <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>University</th>
-                                        <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>Fee</th>
-                                        <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>Duration (Years)</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {data.uni_recommendations_based_on_fee.map((uni, index) => (
-                                        <tr key={index}>
-                                            <td style={{ border: '1px solid black', padding: '8px' }}>{uni.course}</td>
-                                            <td style={{ border: '1px solid black', padding: '8px' }}>{uni.uni}</td>
-                                            <td style={{ border: '1px solid black', padding: '8px' }}>${uni.fee}</td>
-                                            <td style={{ border: '1px solid black', padding: '8px' }}>{uni.duration}</td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        ) : (
-                            <p>No university recommendations based on fee available.</p>
-                        )}
+            {/* Probability of Other States */}
+            <Box
+              w="full"
+              p={6}
+              bg="white"
+              borderRadius="lg"
+              boxShadow="md"
+              borderWidth="1px"
+            >
+              <Heading as="h2" size="lg" mb={4}>
+                Probability of Other States
+              </Heading>
+              {data && data.probability_of_other_states ? (
+                <Table variant="simple" colorScheme="gray">
+                  <Thead bg="gray.200">
+                    <Tr>
+                      <Th>State</Th>
+                      <Th>Probability (%)</Th>
+                    </Tr>
+                  </Thead>
+                  <Tbody>
+                    {highlightHighestProbability(data.probability_of_other_states).map(
+                      ({ key, probability, isHighest }) => (
+                        <Tr key={key} _hover={{ bg: 'gray.50' }}>
+                          <Td>{key}</Td>
+                          <Td color={isHighest ? 'green.500' : 'inherit'}>{probability}</Td>
+                        </Tr>
+                      )
+                    )}
+                  </Tbody>
+                </Table>
+              ) : (
+                <Text>No data available for probabilities of other states.</Text>
+              )}
+            </Box>
 
-                        {/* University Recommendations Based on Rank */}
-                        <h2>University Recommendations Based on Rank</h2>
-                        {data && data.uni_recommendations_based_on_rank ? (
-                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                <thead>
-                                    <tr>
-                                        <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>Course</th>
-                                        <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>University</th>
-                                        <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>Rank</th>
-                                        <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>Fee</th>
-                                        <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>Duration (Years)</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {data.uni_recommendations_based_on_rank.map((uni, index) => (
-                                        <tr key={index}>
-                                            <td style={{ border: '1px solid black', padding: '8px' }}>{uni.course}</td>
-                                            <td style={{ border: '1px solid black', padding: '8px' }}>{uni.uni}</td>
-                                            <td style={{ border: '1px solid black', padding: '8px' }}>{uni.uni_rank}</td>
-                                            <td style={{ border: '1px solid black', padding: '8px' }}>${uni.fee}</td>
-                                            <td style={{ border: '1px solid black', padding: '8px' }}>{uni.duration}</td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        ) : (
-                            <p>No university recommendations based on rank available.</p>
-                        )}
+            {/* Divider */}
+            <Divider orientation="horizontal" />
 
-                        {/*Cost of Living Annual Fee*/} 
-                        <h2>Cost of Living Annual Fee</h2> 
-                        {data && data.cost_of_living ? (
-                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                <thead>
-                                    <tr>
-                                        <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>Cost of Living</th>
-                                        <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>Annual Fee</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {Object.entries(data.cost_of_living).map(([key, value]) => {
-                                        const displayKey = key === 'min_cost' ? 'Minimum Cost' : key === 'max_cost' ? 'Maximum Cost' : key;
-                                        return (
-                                            <tr key={key}>
-                                                <td style={{ border: '1px solid black', padding: '8px' }}>{displayKey}</td>
-                                                <td style={{ border: '1px solid black', padding: '8px' }}>${value}</td>
-                                            </tr>
-                                        );
-                                    })}                                </tbody>
-                            </table>
-                        ) : (
-                            <p>No data available for cost of living annual fee.</p> 
-                        )} 
-                        
-                        
-                    </div>
-            
-            
+            {/* University Recommendations Based on Fee */}
+            <Box
+              w="full"
+              p={6}
+              bg="white"
+              borderRadius="lg"
+              boxShadow="md"
+              borderWidth="1px"
+            >
+              <Heading as="h2" size="lg" mb={4}>
+                University Recommendations Based on Fee
+              </Heading>
+              {data && data.uni_recommendations_based_on_fee ? (
+                <Table variant="simple" colorScheme="gray">
+                  <Thead bg="gray.200">
+                    <Tr>
+                      <Th>Course</Th>
+                      <Th>University</Th>
+                      <Th>Fee</Th>
+                      <Th>Duration (Years)</Th>
+                    </Tr>
+                  </Thead>
+                  <Tbody>
+                    {data.uni_recommendations_based_on_fee.map((uni, index) => (
+                      <Tr key={index} _hover={{ bg: 'gray.50' }}>
+                        <Td>{uni.course}</Td>
+                        <Td>{uni.uni}</Td>
+                        <Td>${uni.fee}</Td>
+                        <Td>{uni.duration}</Td>
+                      </Tr>
+                    ))}
+                  </Tbody>
+                </Table>
+              ) : (
+                <Text>No university recommendations based on fee available.</Text>
+              )}
+            </Box>
 
-            </div>
+            {/* University Recommendations Based on Rank */}
+            <Box
+              w="full"
+              p={6}
+              bg="white"
+              borderRadius="lg"
+              boxShadow="md"
+              borderWidth="1px"
+            >
+              <Heading as="h2" size="lg" mb={4}>
+                University Recommendations Based on Rank
+              </Heading>
+              {data && data.uni_recommendations_based_on_rank ? (
+                <Table variant="simple" colorScheme="gray">
+                  <Thead bg="gray.200">
+                    <Tr>
+                      <Th>Course</Th>
+                      <Th>University</Th>
+                      <Th>Rank</Th>
+                      <Th>Fee</Th>
+                      <Th>Duration (Years)</Th>
+                    </Tr>
+                  </Thead>
+                  <Tbody>
+                    {data.uni_recommendations_based_on_rank.map((uni, index) => (
+                      <Tr key={index} _hover={{ bg: 'gray.50' }}>
+                        <Td>{uni.course}</Td>
+                        <Td>{uni.uni}</Td>
+                        <Td>{uni.uni_rank}</Td>
+                        <Td>${uni.fee}</Td>
+                        <Td>{uni.duration}</Td>
+                      </Tr>
+                    ))}
+                  </Tbody>
+                </Table>
+              ) : (
+                <Text>No university recommendations based on rank available.</Text>
+              )}
+            </Box>
+
+            {/* Cost of Living */}
+            <Box
+              w="full"
+              p={6}
+              bg="white"
+              borderRadius="lg"
+              boxShadow="md"
+              borderWidth="1px"
+            >
+              <Heading as="h2" size="lg" mb={4}>
+                Cost of Living Annual Fee
+              </Heading>
+              {data && data.cost_of_living ? (
+                <Table variant="simple" colorScheme="gray">
+                  <Thead bg="gray.200">
+                    <Tr>
+                      <Th>Cost of Living</Th>
+                      <Th>Annual Fee</Th>
+                    </Tr>
+                  </Thead>
+                  <Tbody>
+                    {Object.entries(data.cost_of_living).map(([key, value]) => (
+                      <Tr key={key} _hover={{ bg: 'gray.50' }}>
+                        <Td>{key === 'min_cost' ? 'Minimum Cost' : key === 'max_cost' ? 'Maximum Cost' : key}</Td>
+                        <Td>${value}</Td>
+                      </Tr>
+                    ))}
+                  </Tbody>
+                </Table>
+              ) : (
+                <Text>No data available for cost of living annual fee.</Text>
+              )}
+            </Box>
             <Popup error={error} onClose={handleClosePopup} />
-            <Footer />
-        </>
-    );
+          </VStack>
+        </Box>
+        <Footer />
+      </Flex>
+    </ChakraProvider>
+  );
 };
 
 export default Dashboard;

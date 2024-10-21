@@ -6,7 +6,7 @@ import "../index.css";
 import Navbar from '../components/Navbar';
 import AdminNavbar from '../components/AdminNavbar';
 import Footer from '../components/Footer';
-import FadeInSection from '../components/fadeInSection'; // Import your new component
+import FadeInSection from '../components/fadeInSection';
 
 const About = () => {
     const navigate = useNavigate();
