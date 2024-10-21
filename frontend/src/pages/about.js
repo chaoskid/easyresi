@@ -1,27 +1,38 @@
 import React, { useEffect, useState } from 'react';
 import axios from '../axiosConfig';
 import { useNavigate } from 'react-router-dom';
-
+import Popup from '../components/Popup';
 import "../index.css";
 import Navbar from '../components/Navbar';
+import AdminNavbar from '../components/AdminNavbar';
 import Footer from '../components/Footer';
 
 
 const About = () => {
     const navigate = useNavigate();
 
+    const [error, setError] = useState('');
     // Check to see if logged in
+    const [userType, setUserType] = useState('');
+
+    const handleClosePopup = () => {
+        setError(''); // Close the popup by clearing the error message
+    };
+
+    // Admin fetchlogin (apply to all admin pages)
     const fetchLogin = async () => {
         try {
-            const response = await axios.get('/auth/login'); // Adjust the URL if needed
-            console.log(response);
-            if (response.data.type == "error") {
+            const response = await axios.get('/auth/login');
+            if (response.data.type === "error") {
+                setError('User was not logged in, redirecting to login...');
                 navigate('/login', { state: { message: "User was not logged in, redirecting to login..." } });
             }
-        } catch (err) {
-        } finally {
+            setUserType(response.data.data.user_type);
+        } catch (err) { 
+            setError('Unexpected error occured. Please contact administrator');
         }
     };
+
 
     // Fetch data when the component mounts
     useEffect(() => {
@@ -31,7 +42,7 @@ const About = () => {
 
     return (
         <>
-            <Navbar />
+            {userType === 'admin' ? <AdminNavbar /> : <Navbar />}
             <div className="about">
                 <div className="about-header">
                     <h1>About Easy Resi</h1>
@@ -123,6 +134,7 @@ const About = () => {
                     </p>
                 </div>
             </div>
+            <Popup error={error} onClose={handleClosePopup} />
             <Footer />
         </>
     );
