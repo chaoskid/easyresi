@@ -3,15 +3,12 @@ import { Box, Flex, Heading, Text, Menu, MenuButton, MenuList, MenuItem } from '
 import axios from '../axiosConfig';
 
 
-const Navbar = () => {
+const AgentNavbar = () => {
     const handleLogout = async () => {
         try {
             const response = await axios.post('/auth/logout', {});
-            sessionStorage.removeItem('user_id');
-            sessionStorage.removeItem('checking_user_id');
             console.log(response.data.message); // Log success message or handle accordingly
             window.location.href = '/login'; // Redirect to login page
-
         } catch (error) {
             console.error('Logout failed:', error);
         }
@@ -47,7 +44,7 @@ const Navbar = () => {
                         About
                     </Text>
                 </Link>
-                <Link to="/dashboard" style={{ textDecoration: 'none' }}>
+                <Link to="/agentdashboard" style={{ textDecoration: 'none' }}>
                     <Text 
                         padding="15px 20px" 
                         borderRadius="10px" 
@@ -67,17 +64,6 @@ const Navbar = () => {
                         _hover={{ bg: "#008080", borderRadius: "10px" }}
                     >
                         Statistics
-                    </Text>
-                </Link>
-                <Link to="/questionnaire" style={{ textDecoration: 'none' }}>
-                    <Text 
-                        padding="15px 20px" 
-                        borderRadius="10px" 
-                        color="#fff"
-                        transition="background-color 0.3s"
-                        _hover={{ bg: "#008080", borderRadius: "10px" }}
-                    >
-                        PR Calculator
                     </Text>
                 </Link>
 
@@ -110,4 +96,4 @@ const Navbar = () => {
     );
 }
 
-export default Navbar;
+export default AgentNavbar;

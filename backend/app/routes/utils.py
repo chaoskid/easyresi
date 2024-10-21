@@ -76,6 +76,7 @@ points_table = {
 }
 
 def get_or_update_points(profile,db,existing_entry=False):
+    user_id = profile.user_id
     age_group_score = points_table["age"][profile.age_group]
     english_proficiency_score = points_table["english_proficiency"][profile.english_proficiency]
     overseas_experience_score = points_table["overseas_experience"][profile.overseas_experience]
@@ -100,7 +101,6 @@ def get_or_update_points(profile,db,existing_entry=False):
         australian_education_score + specialist_education_score + community_lang_score + regional_area_score + marital_status_score +\
         professional_year_score + nomination_score + industry_score + sol_score
     if existing_entry:
-        existing_entry.user_id=profile.user_id,
         existing_entry.age_group_score=age_group_score,
         existing_entry.english_proficiency_score=english_proficiency_score,
         existing_entry.overseas_experience_score=overseas_experience_score,
@@ -162,10 +162,10 @@ def get_input_json(data):
         }
     return input_json
 
-def get_or_update_profile_entry(input_json,db,existing_profile=False):
+def get_or_update_profile_entry(input_json,db,input_user_id,existing_profile=False):
     # Create a new Questionnaire entry
     if existing_profile:
-        existing_profile.user_id=session['user_id'],
+        print('existing profile: ', existing_profile.user_id)
         existing_profile.visa_type = input_json['visa_type'],
         existing_profile.age_group=input_json['age_group'],
         existing_profile.english_proficiency=input_json['english_proficiency'],
@@ -189,7 +189,7 @@ def get_or_update_profile_entry(input_json,db,existing_profile=False):
         return None
     else:
         profile_entry = UserProfile(
-            user_id=session['user_id'],
+            user_id=input_user_id,
             visa_type = input_json['visa_type'],
             age_group=input_json['age_group'],
             english_proficiency=input_json['english_proficiency'],
@@ -309,11 +309,13 @@ def recommend_uni(db,profile):
     state = profile.preferred_location
     degree = profile.preferred_qualifications
     industry = profile.preferred_industry
+    print("dfhjsdfhj: ", state, degree, industry)
     # Define the SQL query
     query = "SELECT * FROM unicourse WHERE lower(state) = lower('{}') AND lower(course_type) = lower('{}') AND lower(sector) = lower('{}')".format(state,degree,industry)
 
     # Use the db engine to connect and fetch data into a pandas DataFrame
     df = pd.read_sql(query, db.engine)
+    
     
     #filtered_df = df[(df['State'] == state) & (df['Type'] == degree) & (df['Sector'] == industry)].copy()
 

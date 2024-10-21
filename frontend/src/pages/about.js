@@ -5,6 +5,8 @@ import Popup from '../components/Popup';
 import "../index.css";
 import Navbar from '../components/Navbar';
 import AdminNavbar from '../components/AdminNavbar';
+import AgentNavbar from '../components/AgentNavbar';
+import NothingNavbar from '../components/NothingNavbar';
 import Footer from '../components/Footer';
 import FadeInSection from '../components/fadeInSection'; // Import your new component
 
@@ -15,10 +17,6 @@ const About = () => {
     // Check to see if logged in
     const [userType, setUserType] = useState('');
 
-    const handleClosePopup = () => {
-        setError(''); // Close the popup by clearing the error message
-    };
-
     // Admin fetchlogin (apply to all admin pages)
     const fetchLogin = async () => {
         try {
@@ -27,12 +25,30 @@ const About = () => {
                 setError('User was not logged in, redirecting to login...');
                 navigate('/login', { state: { message: "User was not logged in, redirecting to login..." } });
             }
-            setUserType(response.data.data.user_type);
+            if (response.data.type === "success") {
+                setUserType(response.data.data.user_type);
+            }
         } catch (err) { 
             setError('Unexpected error occured. Please contact administrator');
         }
     };
 
+    const renderNavbar = () => {
+        switch (userType) {
+            case 'admin':
+                return <AdminNavbar />;
+            case 'agent':
+                return <AgentNavbar />;
+            case 'applicant':
+                return <Navbar />;
+            default:
+                return <NothingNavbar />; // Render a default or blank navbar if no user_type
+        }
+    };
+
+    const handleClosePopup = () => {
+        setError(''); // Close the popup by clearing the error message
+    };
 
     // Fetch data when the component mounts
     useEffect(() => {
@@ -42,7 +58,8 @@ const About = () => {
 
     return (
         <>
-            {userType === 'admin' ? <AdminNavbar /> : <Navbar />}
+            {/* Conditionally render the correct navbar based on user_type */}
+            {renderNavbar()}
             <div className="about">
             <FadeInSection>
                 <div className="about-header">

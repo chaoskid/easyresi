@@ -5,6 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
 import AdminNavbar  from '../components/AdminNavbar';
+import AgentNavbar from '../components/AgentNavbar';
+import NothingNavbar from '../components/NothingNavbar';
 import { ChakraProvider, Box, CircularProgress, CircularProgressLabel } from '@chakra-ui/react';
 
 const Dashboard = () => {
@@ -20,9 +22,23 @@ const Dashboard = () => {
     });
 
     const loggedInUser = sessionStorage.getItem('user_id');
+    const checkingUser = sessionStorage.getItem('checking_user_id');
 
     const [userType, setUserType] = useState('');
     const [occupations, setOccupations] = useState([]);
+
+    const renderNavbar = () => {
+        switch (userType) {
+            case 'admin':
+                return <AdminNavbar />;
+            case 'agent':
+                return <AgentNavbar />;
+            case 'applicant':
+                return <Navbar />;
+            default:
+                return <NothingNavbar />; // Render a default or blank navbar if no user_type
+        }
+    };
 
 
     const fetchLogin = async () => {
@@ -35,8 +51,6 @@ const Dashboard = () => {
             }
             if (response.data.type === "success") {
                 setUserType(response.data.data.user_type);
-                console.log('User logged in. User ID: ',response.data.data.user_id )
-                console.log('User logged in. User Type: ',response.data.data.user_type )
                 if (response.data.data.user_type === "admin") {
                     navigate('/admindashboard', { state: { message: "Admin detected" } });
                 }
@@ -47,7 +61,7 @@ const Dashboard = () => {
     };
     const fetchQuest = async () => {
         try {
-            const response = await axios.get('/api/questionnaire');
+            const response = await axios.get(`/api/questionnaire/${loggedInUser}`);
             setOccupations(response.data.data.occupations);
         } catch (err) {
             setError('Failed to load occupations. Please try again later.');
@@ -76,7 +90,9 @@ const Dashboard = () => {
 
     const fetchProbability = async () => {
         try {
-            const response = await axios.get(`/api/recommendations/${loggedInUser}`);
+            const userIdToFetch = checkingUser || loggedInUser;
+            console.log("Fetching data for user:", userIdToFetch); // Debugging log
+            const response = await axios.get(`/api/recommendations/${userIdToFetch}`);
             //const response = await axios.get(`/api/recommendations/15`);
             console.log('response.data.message',response.data.message)
             if (response.data.type === "error") {
@@ -113,7 +129,7 @@ const Dashboard = () => {
 
     return (
         <>
-            {userType === 'admin' ? <AdminNavbar /> : <Navbar />}
+            {renderNavbar()}
             <div className="dashboard">
                     <div>
                         <h1>Dashboard</h1>

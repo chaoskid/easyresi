@@ -6,6 +6,8 @@ import Footer from '../components/Footer';
 import { useNavigate } from 'react-router-dom';
 import Popup from '../components/Popup';
 import AdminNavbar from '../components/AdminNavbar';
+import AgentNavbar from '../components/AgentNavbar';
+import NothingNavbar from '../components/NothingNavbar';
 import { Box, Text, Button, Select } from '@chakra-ui/react';
 
 const UpdateAgent = () => {
@@ -14,6 +16,19 @@ const UpdateAgent = () => {
     const [formData, setFormData] = useState({});
     const [error, setError] = useState('');
     const [userType, setUserType] = useState('');
+
+    const renderNavbar = () => {
+        switch (userType) {
+            case 'admin':
+                return <AdminNavbar />;
+            case 'agent':
+                return <AgentNavbar />;
+            case 'applicant':
+                return <Navbar />;
+            default:
+                return <NothingNavbar />; // Render a default or blank navbar if no user_type
+        }
+    };
     const handleClosePopup = () => {
         setError(''); // Close the popup by clearing the error message
     };
@@ -78,7 +93,7 @@ const UpdateAgent = () => {
 
     return (
         <Box display="flex" flexDirection="column" minHeight="100vh">
-            {userType === 'admin' ? <AdminNavbar /> : userType === 'applicant' ? <Navbar /> : userType}
+            {renderNavbar()}
             <Box 
                 display="block" 
                 width="800px" 

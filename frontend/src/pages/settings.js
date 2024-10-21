@@ -6,11 +6,9 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import Footer from "../components/Footer";
 import { Box } from '@chakra-ui/react';
 import AdminNavbar from '../components/AdminNavbar';
+import AgentNavbar from '../components/AgentNavbar';
+import NothingNavbar from '../components/NothingNavbar';
 import Popup from '../components/Popup';
-
-
-
-
 
 
 
@@ -19,6 +17,36 @@ const Settings = () => {
     const [error, setError] = useState('');
 
     const [userType, setUserType] = useState('');
+
+    const renderNavbar = () => {
+        switch (userType) {
+            case 'admin':
+                return <AdminNavbar />;
+            case 'agent':
+                return <AgentNavbar />;
+            case 'applicant':
+                return <Navbar />;
+            default:
+                return <NothingNavbar />; // Render a default or blank navbar if no user_type
+        }
+    };
+    
+    const fetchLogin = async () => {
+        try {
+            const response = await axios.get('/auth/login');
+            if (response.data.type === "error") {
+                setError('User was not logged in, redirecting to login.')
+                console.log('User not logged in')
+                navigate('/login', { state: { message: "User was not logged in, redirecting to login." } });
+            }
+            if (response.data.type === "success") {
+                setUserType(response.data.data.user_type);
+            }
+        } catch (err) { 
+            setError('An unexpected error occurred. Please contact administrator');
+        }
+    };
+
     const handleClosePopup = () => {
         setError(''); // Close the popup by clearing the error message
     };
@@ -49,7 +77,7 @@ const Settings = () => {
                         if(err.status === 409) {
                             setError(err.response.data.message)}
                         else {
-                        setError('An unexpected error occurred. Please contact administrator');
+                        setError('An unexpected error occurred while submitting. Please contact administrator');
                         }
                     }
                 }  
@@ -74,8 +102,7 @@ const Settings = () => {
                     navigate('/displaysettings', { state: { message: response.message } });
                     }
                 } catch (err) {
-                    setError('Please enter new password.');
-                    console.error('Error updating data:', err);
+                    setError('An unexpected error occurred while submitting. Please contact administrator');
                 }
 
         }
@@ -86,16 +113,14 @@ const Settings = () => {
             console.log(response);
             setFormData(response.data.data);
         } catch (err) {
-            // navigate('/login', { state: { message: "Please log in" } });
-            // setError('Failed to load dashboard data. Please try again later.');
-        } finally {
-            // setLoading(false);
+            setError('An unexpected error occurred fetching user details.. Please contact administrator');
         }
     };
 
 
     useEffect(() => {
         fetchSettingsData();
+        fetchLogin();
     }, []);
 
     const [formData, setFormData] = useState({
@@ -119,7 +144,7 @@ const Settings = () => {
     return (
         <>
         <Box display="flex" flexDirection="column" minHeight="100vh">
-            {userType === 'admin' ? <AdminNavbar /> : <Navbar />}
+        {renderNavbar()}
             <div className="settings">
                 <h1>Settings</h1>
                 <p>Update your account details</p>
@@ -208,7 +233,6 @@ const Settings = () => {
                     <button type="submit" className="settings-button">Save Changes</button>
                 </form>
             </div>
-            <p>Error: {error}</p>
             <Popup error={error} onClose={handleClosePopup} />
             <Footer />
             </Box>

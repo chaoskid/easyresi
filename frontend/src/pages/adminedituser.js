@@ -5,6 +5,8 @@ import Popup from '../components/Popup';
 import Footer from "../components/Footer";
 import Navbar from '../components/Navbar';
 import AdminNavbar  from '../components/AdminNavbar';
+import AgentNavbar from '../components/AgentNavbar';
+import NothingNavbar from '../components/NothingNavbar';
 import { Button } from '@chakra-ui/react';
 
 const AdminEditUser = () => {
@@ -13,6 +15,19 @@ const AdminEditUser = () => {
     const [error, setError] = useState('');
     const editUserId = sessionStorage.getItem('edit_user_id');
     const [userType, setUserType] = useState('');
+
+    const renderNavbar = () => {
+        switch (userType) {
+            case 'admin':
+                return <AdminNavbar />;
+            case 'agent':
+                return <AgentNavbar />;
+            case 'applicant':
+                return <Navbar />;
+            default:
+                return <NothingNavbar />; // Render a default or blank navbar if no user_type
+        }
+    };
 
     const handleClosePopup = () => {
         setError(''); // Close the popup by clearing the error message
@@ -62,7 +77,7 @@ const AdminEditUser = () => {
 
     return (
         <>
-            {userType === 'admin' ? <AdminNavbar /> : <Navbar />}
+            {renderNavbar()}
             <div className="dashboard">
                     <div>
                         <h1>Edit User Information</h1>
