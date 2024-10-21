@@ -4,10 +4,10 @@ import Popup from '../components/Popup';
 import { useNavigate } from 'react-router-dom';
 import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
-import AdminNavbar  from '../components/AdminNavbar';
+import AdminNavbar from '../components/AdminNavbar';
 import AgentNavbar from '../components/AgentNavbar';
 import NothingNavbar from '../components/NothingNavbar';
-import { ChakraProvider, Box, CircularProgress, CircularProgressLabel } from '@chakra-ui/react';
+import { ChakraProvider, Box, CircularProgress, CircularProgressLabel, Button } from '@chakra-ui/react';
 
 const Dashboard = () => {
     const navigate = useNavigate();
@@ -20,12 +20,14 @@ const Dashboard = () => {
         thickness: '12px',
         size: '200px',
     });
+    const [isQuestionnaireFilled, setIsQuestionnaireFilled] = useState(null); // To store the questionnaire submission status
+    const [userType, setUserType] = useState('');
+    const [occupations, setOccupations] = useState([]);
 
     const loggedInUser = sessionStorage.getItem('user_id');
     const checkingUser = sessionStorage.getItem('checking_user_id');
-
-    const [userType, setUserType] = useState('');
-    const [occupations, setOccupations] = useState([]);
+    console.log('checkingUSer: ',checkingUser)
+    console.log('loggedInUser: ',loggedInUser)
 
     const renderNavbar = () => {
         switch (userType) {
@@ -40,13 +42,27 @@ const Dashboard = () => {
         }
     };
 
+    // Function to check if the questionnaire is filled
+    const checkQuestionnaireSubmission = async () => {
+        try {
+            
+            const userIdToFetch = checkingUser || loggedInUser;
+            const response = await axios.get(`/api/check_questionnaire_submission/${userIdToFetch}`);
+            if (response.data.type === 'success') {
+                setIsQuestionnaireFilled(true);
+            } else {
+                setIsQuestionnaireFilled(false);
+            }
+        } catch (err) {
+            setError('An error occurred while checking questionnaire submission.');
+        }
+    };
 
     const fetchLogin = async () => {
         try {
             const response = await axios.get('/auth/login');
             if (response.data.type === "error") {
-                setError('User was not logged in, redirecting to login.')
-                console.log('User not logged in')
+                setError('User was not logged in, redirecting to login.');
                 navigate('/login', { state: { message: "User was not logged in, redirecting to login." } });
             }
             if (response.data.type === "success") {
@@ -55,10 +71,11 @@ const Dashboard = () => {
                     navigate('/admindashboard', { state: { message: "Admin detected" } });
                 }
             }
-        } catch (err) { 
-            setError('An unexpected error occurred. Please contact administrator');
+        } catch (err) {
+            setError('An unexpected error occurred. Please contact administrator.');
         }
     };
+
     const fetchQuest = async () => {
         try {
             const response = await axios.get(`/api/questionnaire/${loggedInUser}`);
@@ -67,21 +84,14 @@ const Dashboard = () => {
             setError('Failed to load occupations. Please try again later.');
         }
     };
+
     const getJobTitleByAnzsco = (anzsco) => {
-        // Convert the input anzsco to a number
         const anzscoNumber = Number(anzsco);
-
-        // Check if occupations is an object
         if (occupations && typeof occupations === 'object') {
-            // Use flatMap to create a flattened array of occupations
             const allOccupations = Object.values(occupations).flatMap(category => category);
-
-            // Loop through all occupations to find the corresponding anzsco code
             for (const occupation of allOccupations) {
-                // Convert the occupation's anzsco to a number for comparison
                 if (Number(occupation.anzsco) === anzscoNumber) {
-                    //console.log(occupation.jobTitle);
-                    return occupation.occupation; // Return the job title if found
+                    return occupation.occupation;
                 }
             }
         }
@@ -91,23 +101,16 @@ const Dashboard = () => {
     const fetchProbability = async () => {
         try {
             const userIdToFetch = checkingUser || loggedInUser;
-            console.log("Fetching data for user:", userIdToFetch); // Debugging log
             const response = await axios.get(`/api/recommendations/${userIdToFetch}`);
-            //const response = await axios.get(`/api/recommendations/15`);
-            console.log('response.data.message',response.data.message)
             if (response.data.type === "error") {
-                setError('Failed to load dashboard data. Please try again later.')
-                console.log('response.data.message',response.data.message)
-                console.log('error: ',error)
-            }
-            else{
-            const percent = Math.round(response.data.data.probability_of_permanent_residency * 100) / 100;
-            setData(response.data.data);
-            updateProgress(percent, false, 'purple.400', '200px', '12px');
+                setError('Failed to load dashboard data. Please try again later.');
+            } else {
+                const percent = Math.round(response.data.data.probability_of_permanent_residency * 100) / 100;
+                setData(response.data.data);
+                updateProgress(percent, false, 'purple.400', '200px', '12px');
             }
         } catch (err) {
-            setError('Failed to load dashboard data. Please try again later.')
-            console.log('Failed to load dashboard data. Please try again later.')
+            setError('Failed to load dashboard data. Please try again later.');
             updateProgress(100, true, 'red.400', '200px', '12px');
         }
     };
@@ -120,20 +123,29 @@ const Dashboard = () => {
         setError(''); // Close the popup by clearing the error message
     };
 
-
     useEffect(() => {
         fetchLogin();
-        fetchQuest();
-        fetchProbability();
+        checkQuestionnaireSubmission(); // Check questionnaire submission status
     }, []);
+
+    useEffect(() => {
+        if (isQuestionnaireFilled) {
+            fetchQuest();
+            fetchProbability();
+        }
+    }, [isQuestionnaireFilled]);
+
+    if (isQuestionnaireFilled === null) {
+        return <p>Loading...</p>; // Show loading while checking submission status
+    }
 
     return (
         <>
             {renderNavbar()}
             <div className="dashboard">
+                {isQuestionnaireFilled ? (
                     <div>
                         <h1>Dashboard</h1>
-                        {/*Display Probability in Chakra Circular Progress*/}
                         <h2>Your Chances of Getting Permanent Residency</h2>
                         <div>
                             <ChakraProvider>
@@ -289,14 +301,17 @@ const Dashboard = () => {
                                     })}                                </tbody>
                             </table>
                         ) : (
-                            <p>No data available for cost of living annual fee.</p> 
-                        )} 
-                        
-                        
+                            <p>No university recommendations based on rank available.</p>
+                        )}
                     </div>
-            
-            
-
+                ) : (
+                    <Box minH="100vh" flex="1" display="flex" flexDirection="column" alignItems="center" justifyContent="center">
+                        <h2>Please complete the permanent residency questionnaire to get recommendations</h2>
+                        <Button colorScheme="teal" onClick={() => navigate('/questionnaire')}>
+                            Go to Questionnaire
+                        </Button>
+                    </Box>
+                )}
             </div>
             <Popup error={error} onClose={handleClosePopup} />
             <Footer />
