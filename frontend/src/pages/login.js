@@ -60,7 +60,7 @@ function Login() {
                     navigate('/', { state: { message: 'Logged in' } });
                 }
             } else {
-                setError(response.data.message);
+                setError(response.data.message); // show this on a popup - bottom right
             }
         } catch (error) {
             if(error.status === 401) {

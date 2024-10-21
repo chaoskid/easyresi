@@ -30,10 +30,13 @@ const Dashboard = () => {
             const response = await axios.get('/auth/login');
             if (response.data.type === "error") {
                 setError('User was not logged in, redirecting to login.')
+                console.log('User not logged in')
                 navigate('/login', { state: { message: "User was not logged in, redirecting to login." } });
             }
             if (response.data.type === "success") {
                 setUserType(response.data.data.user_type);
+                console.log('User logged in. User ID: ',response.data.data.user_id )
+                console.log('User logged in. User Type: ',response.data.data.user_type )
                 if (response.data.data.user_type === "admin") {
                     navigate('/admindashboard', { state: { message: "Admin detected" } });
                 }
@@ -88,6 +91,7 @@ const Dashboard = () => {
             }
         } catch (err) {
             setError('Failed to load dashboard data. Please try again later.')
+            console.log('Failed to load dashboard data. Please try again later.')
             updateProgress(100, true, 'red.400', '200px', '12px');
         }
     };
@@ -246,6 +250,33 @@ const Dashboard = () => {
                         ) : (
                             <p>No university recommendations based on rank available.</p>
                         )}
+
+                        {/*Cost of Living Annual Fee*/} 
+                        <h2>Cost of Living Annual Fee</h2> 
+                        {data && data.cost_of_living ? (
+                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                <thead>
+                                    <tr>
+                                        <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>Cost of Living</th>
+                                        <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>Annual Fee</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {Object.entries(data.cost_of_living).map(([key, value]) => {
+                                        const displayKey = key === 'min_cost' ? 'Minimum Cost' : key === 'max_cost' ? 'Maximum Cost' : key;
+                                        return (
+                                            <tr key={key}>
+                                                <td style={{ border: '1px solid black', padding: '8px' }}>{displayKey}</td>
+                                                <td style={{ border: '1px solid black', padding: '8px' }}>${value}</td>
+                                            </tr>
+                                        );
+                                    })}                                </tbody>
+                            </table>
+                        ) : (
+                            <p>No data available for cost of living annual fee.</p> 
+                        )} 
+                        
+                        
                     </div>
             
             
