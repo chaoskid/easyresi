@@ -6,6 +6,7 @@ import '../index.css';
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import AdminNavbar from '../components/AdminNavbar';
+import { Box } from '@chakra-ui/react';
 
 
 const Account = () => {
@@ -43,19 +44,20 @@ const Account = () => {
     }, []);
 
     return (
-        <>
+        <Box display="flex" flexDirection="column" minHeight="100vh">
             {userType === 'admin' ? <AdminNavbar /> : <Navbar />}
-            <div className="account">
+            <Box flex="1" display="flex" flexDirection="column" alignItems="center" justifyContent="center">
                 <h1>Account</h1>
                 <p>
                     View your account details and manage your settings here. You can update your profile, check your 
                     application status, and access personalized recommendations based on your input.
                 </p>
-            </div>
+            </Box>
             <Popup error={error} onClose={handleClosePopup} />
             <Footer />
-        </>
+        </Box>
     );
 };
 
 export default Account;
+

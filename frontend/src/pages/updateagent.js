@@ -44,7 +44,7 @@ const UpdateAgent = () => {
         try {
             const response = await axios.get('/admin/update_agents'); // API call using axios
             setData(response.data.data);
-            console.log('get-api-data',data)
+            console.log('get-api-data', data);
         } catch (error) {
             setError('An unexpected error occurred. Please contact administrator');
         }
@@ -77,59 +77,69 @@ const UpdateAgent = () => {
     }, []);
 
     return (
-        <>
-            {/* TODO: Have placeholder navigation and use ternary operator to check for it (optional) */}
+        <Box display="flex" flexDirection="column" minHeight="100vh">
             {userType === 'admin' ? <AdminNavbar /> : userType === 'applicant' ? <Navbar /> : userType}
+            <Box 
+                display="block" 
+                width="800px" 
+                mx="auto" 
+                mt={8} 
+                mb="auto" // Allow this box to take up space but not push the footer down
+                p={6} 
+                borderWidth="1px" 
+                borderRadius="lg" 
+                boxShadow="lg" 
+                bg="white" 
+                flexShrink="0" // Prevents the box from growing unnecessarily
+            >
+                <form onSubmit={handleFormSubmit}>
+                    <Text fontSize="2xl" mb={4}>Update Users to Agent</Text>
 
-            <Box maxW="800px" mx="auto" mt={8} p={6} borderWidth="1px" borderRadius="lg" boxShadow="lg" bg="white">
-            <form onSubmit={handleFormSubmit}>
-                <Text fontSize="2xl" mb={4}>Update Users to Agent</Text>
+                    {/* Dropdown for selecting statistics */}
+                    <Select
+                        placeholder="Select an agent"
+                        onChange={(e) => updateFormData("agent_id", e.target.value)}
+                        mb={4}
+                    >
+                        {data.agents && data.agents.length > 0 ? (
+                            data.agents.map(agent => (
+                                <option key={agent.user_id} value={agent.user_id}>
+                                    {`${agent.firstname} ${agent.lastname}`}
+                                </option>
+                            ))
+                        ) : (
+                            <option disabled>Loading agents...</option>
+                        )}
+                    </Select>
 
-                {/* Dropdown for selecting statistics */}
-                <Select
-                    placeholder="Select an agent"
-                    onChange={(e) => updateFormData("agent_id", e.target.value)}
-                    mb={4}
-                >
-                    {data.agents && data.agents.length > 0 ? (
-                        data.agents.map(agent => (
-                            <option key={agent.user_id} value={agent.user_id}>
-                                {`${agent.firstname} ${agent.lastname}`}
-                            </option>
-                        ))
-                    ) : (
-                        <option disabled>Loading agents...</option>
-                    )}
-                </Select>
+                    {/* Dropdown for selecting statistics */}
+                    <Select
+                        placeholder="Select a user"
+                        onChange={(e) => updateFormData("user_id", e.target.value)}
+                        mb={4}
+                    >
+                        {data.users && data.users.length > 0 ? (
+                            data.users.map(user => (
+                                <option key={user.user_id} value={user.user_id}>
+                                    {`${user.firstname} ${user.lastname}`}
+                                </option>
+                            ))
+                        ) : (
+                            <option disabled>Loading users...</option>
+                        )}
+                    </Select>
 
-                {/* Dropdown for selecting statistics */}
-                <Select
-                    placeholder="Select an user"
-                    onChange={(e) => updateFormData("user_id", e.target.value)}
-                    mb={4}
-                >
-                    {data.users && data.users.length > 0 ? (
-                        data.users.map(user => (
-                            <option key={user.user_id} value={user.user_id}>
-                                {`${user.firstname} ${user.lastname}`}
-                            </option>
-                        ))
-                    ) : (
-                        <option disabled>Loading users...</option>
-                    )}
-                </Select>
-
-                {/* Display selected statistic */}
-                <Button colorScheme="teal" type="submit">
-                    Update Agent
-                </Button>
+                    {/* Display selected statistic */}
+                    <Button colorScheme="teal" type="submit">
+                        Update Agent
+                    </Button>
                 </form>
             </Box>
-            
             <Popup error={error} onClose={handleClosePopup} />
             <Footer />
-        </>
+        </Box>
     );
 };
 
 export default UpdateAgent;
+

@@ -4,6 +4,7 @@ import Navbar from "../components/Navbar";
 import axios from '../axiosConfig';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Footer from "../components/Footer";
+import { Box } from '@chakra-ui/react';
 import AdminNavbar from '../components/AdminNavbar';
 import Popup from '../components/Popup';
 
@@ -115,10 +116,9 @@ const Settings = () => {
         console.log('Form Data: ', formData)
     };
 
-
-
     return (
         <>
+        <Box display="flex" flexDirection="column" minHeight="100vh">
             {userType === 'admin' ? <AdminNavbar /> : <Navbar />}
             <div className="settings">
                 <h1>Settings</h1>
@@ -211,6 +211,7 @@ const Settings = () => {
             <p>Error: {error}</p>
             <Popup error={error} onClose={handleClosePopup} />
             <Footer />
+            </Box>
         </>
     );
 };

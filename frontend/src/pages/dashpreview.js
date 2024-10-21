@@ -184,7 +184,6 @@ const Dashpreview = () => {
                             <p>No data available for probabilities of other states.</p>
                         )}
 
-
                         {/* University Recommendations Based on Fee */}
                         <h2>University Recommendations Based on Fee</h2>
                         {data && data.uni_recommendations_based_on_fee ? (
@@ -242,8 +241,50 @@ const Dashpreview = () => {
                         )}
                     </div>
             <br />
-            <Button colorScheme="teal" onClick={handleAccept}>Accept Changes</Button><br /><br />
-            <Button colorScheme="teal" onClick={handleRevert}>Revert</Button>
+                    
+                    <br /><br />
+                    <Box>
+                    <Button
+                    sx={{
+                        backgroundColor: '#008080',
+                        color: '#ffffff',
+                        padding: '6px 12px',
+                        fontSize: '14px',
+                        height: '35px',
+                        fontWeight: '400',
+                        borderRadius: '8px',
+                        cursor: 'pointer',
+                        transition: 'background-color 0.3s ease, transform 0.2s ease',
+                        marginRight: '10px',
+                        border: 'none',
+                        _hover: { backgroundColor: '#003366', transform: 'scale(1.05)' },
+                        _focus: { outline: 'none', boxShadow: '0 0 0 3px rgba(66, 153, 225, 0.6)' },
+                    }}
+                    onClick={handleAccept}
+                    >
+                    Accept Results
+                    </Button>
+                    <Button
+                    sx={{
+                        backgroundColor: '#008080',
+                        color: '#ffffff',
+                        padding: '6px 12px',
+                        fontSize: '14px',
+                        height: '35px',
+                        fontWeight: '400',
+                        borderRadius: '8px',
+                        cursor: 'pointer',
+                        transition: 'background-color 0.3s ease, transform 0.2s ease',
+                        marginRight: '10px',
+                        border: 'none',
+                        _hover: { backgroundColor: '#003366', transform: 'scale(1.05)' },
+                        _focus: { outline: 'none', boxShadow: '0 0 0 3px rgba(66, 153, 225, 0.6)' },
+                    }}
+                    onClick={handleRevert}
+                    >
+                    Revert
+                    </Button>
+                </Box>
             </div>
             <Popup error={error} onClose={handleClosePopup} />
             <Footer />
