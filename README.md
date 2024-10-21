@@ -36,7 +36,7 @@ EasyResi is a web application designed to predict the probability of achieving p
    
    
 2. Start the frontend:
-   - `npm start`
+   - `npm run start`
    
 3. Open your browser at `http://localhost:3000`.
    
