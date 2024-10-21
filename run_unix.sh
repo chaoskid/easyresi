@@ -6,7 +6,6 @@ OS="$(uname -s)"
 case "${OS}" in
     Linux*) os_type="Linux";;
     Darwin*) os_type="Mac";;
-    CYGWIN*|MINGW*|MSYS*) os_type="Windows";;
     *) os_type="UNKNOWN";;
 esac
 
@@ -33,16 +32,6 @@ elif [ "$os_type" = "Linux" ]; then
     gnome-terminal -- bash -c "cd backend && source env/bin/activate && python app.py; exec bash"
 
     # Start frontend in the current terminal
-    echo "Starting frontend..."
-    cd frontend
-    npm run start
-
-elif [ "$os_type" = "Windows" ]; then
-    # For Windows systems
-    echo "Starting backend in a new terminal..."
-    start cmd /k "cd backend && call env\Scripts\activate && python app.py"
-
-    # Start frontend
     echo "Starting frontend..."
     cd frontend
     npm run start
