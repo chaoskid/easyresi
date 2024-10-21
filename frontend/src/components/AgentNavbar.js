@@ -55,6 +55,17 @@ const AgentNavbar = () => {
                         Dashboard
                     </Text>
                 </Link>
+                <Link to="/statistics" style={{ textDecoration: 'none' }}>
+                    <Text 
+                        padding="15px 20px" 
+                        borderRadius="10px" 
+                        color="#fff"
+                        transition="background-color 0.3s"
+                        _hover={{ bg: "#008080", borderRadius: "10px" }}
+                    >
+                        Statistics
+                    </Text>
+                </Link>
 
                 <Menu>
                     <MenuButton 
@@ -70,7 +81,7 @@ const AgentNavbar = () => {
                             <Link to="/account" style={{ color: '#333333', textDecoration: 'none' }}>Account</Link>
                         </MenuItem>
                         <MenuItem>
-                            <Link to="/settings" style={{ color: '#333333', textDecoration: 'none' }}>Settings</Link>
+                            <Link to="/displaysettings" style={{ color: '#333333', textDecoration: 'none' }}>Settings</Link>
                         </MenuItem>
 
                         {/* To Do: "Are you sure you want to log out?" button and session/local storage clean */}

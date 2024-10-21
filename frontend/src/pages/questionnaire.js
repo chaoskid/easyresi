@@ -8,7 +8,10 @@ import { InfoIcon } from '@chakra-ui/icons';  // Import the info icon for toolti
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer'; 
 import AdminNavbar from '../components/AdminNavbar';
+import AgentNavbar from '../components/AgentNavbar';
+import NothingNavbar from '../components/NothingNavbar';
 import { useNavigate, useLocation } from 'react-router-dom';
+import Popup from '../components/Popup';
 
 const Questionnaire = () => {
     // Navigation and error
@@ -25,17 +28,41 @@ const Questionnaire = () => {
     const locationData = location.state?.data;
     const [prefillData, setPrefillData] = useState({}); 
     const [occupations, setOccupations] = useState({});
+    const [userType, setUserType] = useState('');
+
+    const renderNavbar = () => {
+        switch (userType) {
+            case 'admin':
+                return <AdminNavbar />;
+            case 'agent':
+                return <AgentNavbar />;
+            case 'applicant':
+                return <Navbar />;
+            default:
+                return <NothingNavbar />; // Render a default or blank navbar if no user_type
+        }
+    };
     
-    // Check to see if logged in
+    const handleClosePopup = () => {
+        setError(''); // Close the popup by clearing the error message
+    };
+    
     const fetchLogin = async () => {
         try {
-            const response = await axios.get('/auth/login'); // Adjust the URL if needed
-            console.log(response);
-            if (response.data.type == "error") {
-                navigate('/login', { state: { message: "User was not logged in, redirecting to login..." } });
+            const response = await axios.get('/auth/login');
+            if (response.data.type === "error") {
+                setError('User was not logged in, redirecting to login.')
+                console.log('User not logged in')
+                navigate('/login', { state: { message: "User was not logged in, redirecting to login." } });
             }
-        } catch (err) {
-        } finally {
+            if (response.data.type === "success") {
+                setUserType(response.data.data.user_type);
+                if (response.data.data.user_type === "admin") {
+                    navigate('/admindashboard', { state: { message: "Admin detected" } });
+                }
+            }
+        } catch (err) { 
+            setError('An unexpected error occurred. Please contact administrator');
         }
     };
   
@@ -47,14 +74,14 @@ const Questionnaire = () => {
                 const occupationData = response.data.data.occupations;
                 setOccupations(occupationData);
               } catch (error) {
-                console.error('Error fetching Dynamic Dropdown data:', error);
+                setError('An unexpected error occurred fetching occupations. Please contact administrator');
             }
         };
 
     // Fetch data when the component mounts
     const checkPrefill = async () => {
         if (locationData) { // If location data is available
-            console.log('Using location data:', locationData);
+            console.log('prefilling using location data:', locationData);
             setPrefillData(locationData);
             console.log(locationData)
             setFormData(locationData); // Prefill form with location data
@@ -70,7 +97,7 @@ const Questionnaire = () => {
                 setPreferredIndustry(response.data.data.prefill_data.preferredIndustry)
                 } // Prefill form with API data
             } catch (error) {
-                console.error('Error fetching prefill data:', error);
+                setError('An unexpected error occurred while prefilling. Please contact administrator');
             }
         }
     };
@@ -89,7 +116,7 @@ const Questionnaire = () => {
                 setError(response.data.message);
             }
         } catch (error) {
-            console.error('Submission error:', error);
+            setError('An unexpected error occurred submitting your response. Please contact administrator');
         }
     };
 
@@ -103,9 +130,6 @@ const Questionnaire = () => {
     };
 
     const getOccupationsForIndustry = () => {
-      console.log('Occupations inside funct: ',occupations)
-      console.log('Preferred Industry: ',preferredIndustry)
-      console.log('Occupations for preferred Industry inside funct: ',occupations[preferredIndustry])
       if (occupations && preferredIndustry) {
           return occupations[preferredIndustry] || [];
       }
@@ -116,13 +140,15 @@ const Questionnaire = () => {
         fetchLogin();
         fetchOccupations();
         checkPrefill();
+        console.log('Form Data: ',formData)
         
     }, []);
 
     return (
         <>
-            <Navbar />
-            <Box maxW="75%" mx="auto" mt={8} p={6} borderWidth="1px" borderRadius="lg" boxShadow="lg" bg="#F9FAFC" borderColor="#E2E8F0">
+            {renderNavbar()}
+            <h1 className="PR-Header">Permanent Residency Questionnaire</h1>
+            <Box maxW="75%" mx="auto" mt={8} mb={12} p={6} borderWidth="1px" borderRadius="lg" boxShadow="lg" bg="#F9FAFC" borderColor="#E2E8F0">
                 <form onSubmit={handleFormSubmit}>
                     {/* Visa Subclass Selection */}
                     <FormControl isRequired mb={4}>
@@ -180,6 +206,7 @@ const Questionnaire = () => {
                             onChange={(e) => updateFormData('englishProficiency', e.target.value)}
                             fontSize="lg" color="gray.600"
                         >
+                            <option value="">Please select an option</option>
                             <option value="competent">Competent English</option>
                             <option value="proficient">Proficient English</option>
                             <option value="superior">Superior English</option>
@@ -200,6 +227,7 @@ const Questionnaire = () => {
                             onChange={(e) => updateFormData('overseasExperience', e.target.value)}
                             fontSize="lg" color="gray.600"
                         >
+                            <option value="">Please select an option</option>
                             <option value="0">Less than 3 years</option>
                             <option value="3-5">At least 3 but less than 5 years</option>
                             <option value="5-8">At least 5 but less than 8 years</option>
@@ -221,6 +249,7 @@ const Questionnaire = () => {
                             onChange={(e) => updateFormData('australiaExperience', e.target.value)}
                             fontSize="lg" color="gray.600"
                         >
+                            <option value="">Please select an option</option>
                             <option value="0">Less than 1 year</option>
                             <option value="1-3">At least 1 but less than 3 years</option>
                             <option value="3-5">At least 3 but less than 5 years</option>
@@ -243,6 +272,7 @@ const Questionnaire = () => {
                             onChange={(e) => updateFormData('australianStudy', e.target.value)}
                             fontSize="lg" color="gray.600"
                         >
+                            <option value="">Please select an option</option>
                             <option value="yes">Yes</option>
                             <option value="no">No</option>
                         </Select>
@@ -262,6 +292,7 @@ const Questionnaire = () => {
                             onChange={(e) => updateFormData('specialistEducation', e.target.value)}
                             fontSize="lg" color="gray.600"
                         >
+                            <option value="">Please select an option</option>
                             <option value="yes">Yes</option>
                             <option value="no">No</option>
                         </Select>
@@ -281,6 +312,7 @@ const Questionnaire = () => {
                             onChange={(e) => updateFormData('education', e.target.value)}
                             fontSize="lg" color="gray.600"
                         >
+                            <option value="">Please select an option</option>
                             <option value="phd">Doctorate (PhD or a Masters Degree by Research)</option>
                             <option value="bachelor">Masters Degree by Coursework or a Bachelor’s Degree</option>
                             <option value="diploma">Diploma/Trade Qualification</option>
@@ -302,6 +334,7 @@ const Questionnaire = () => {
                             onChange={(e) => updateFormData('professionalYear', e.target.value)}
                             fontSize="lg" color="gray.600"
                         >
+                            <option value="">Please select an option</option>
                             <option value="yes">Yes</option>
                             <option value="no">No</option>
                         </Select>
@@ -361,6 +394,7 @@ const Questionnaire = () => {
                             onChange={(e) => updateFormData('statePreferred', e.target.value)}
                             fontSize="lg" color="gray.600"
                         >
+                            <option value="">Please select an option</option>
                             <option value="NSW">New South Wales</option>
                             <option value="VIC">Victoria</option>
                             <option value="QLD">Queensland</option>
@@ -389,6 +423,7 @@ const Questionnaire = () => {
                             }}
                             fontSize="lg" color="gray.600"
                         >
+                            <option value="">Please select an option</option>
                             <option value="Business">Business</option>
                             <option value="IT">IT</option>
                             <option value="Education">Education</option>
@@ -411,6 +446,7 @@ const Questionnaire = () => {
                             onChange={(e) => updateFormData('courseLevel', e.target.value)}
                             fontSize="lg" color="gray.600"
                         >
+                            <option value="">Please select an option</option>
                             <option value="postgraduate">Masters</option>
                             <option value="undergraduate">Bachelors</option>
                         </Select>
@@ -432,6 +468,7 @@ const Questionnaire = () => {
                             onChange={(e) => updateFormData('preferredOccupation', e.target.value)}
                             fontSize="lg" color="gray.600"
                         >
+                            <option value="">Please select an option</option>
                             {getOccupationsForIndustry().map((occupation) => (
                                 <option key={occupation.anzsco} value={occupation.anzsco}>
                                     {occupation.occupation}
@@ -454,6 +491,7 @@ const Questionnaire = () => {
                             onChange={(e) => updateFormData('maritalStatus', e.target.value)}
                             fontSize="lg" color="gray.600"
                         >
+                            <option value="">Please select an option</option>
                             <option value="single">Single or partner is an Australian citizen/ permanent resident</option>
                             <option value="married_skilled">Married and partner meets age, English, and skill criteria</option>
                             <option value="married_unskilled">Married and partner has competent English</option>
@@ -474,17 +512,17 @@ const Questionnaire = () => {
                             onChange={(e) => updateFormData('nomination', e.target.value)}
                             fontSize="lg" color="gray.600"
                         >
+                            <option value="">Please select an option</option>
                             <option value="yes">Yes</option>
                             <option value="no">No</option>
                         </Select>
                     </FormControl>
 
                     {/* Submit Button */}
-                    <Button mt={6} colorScheme="teal" type="submit">
-                        Preview Results
-                    </Button>
+                    <button type="submit" className='login-button'>Preview Results</button>
                 </form>
             </Box>
+            <Popup error={error} onClose={handleClosePopup} />
             <Footer />
         </>
     );

@@ -1,19 +1,37 @@
 import React, { useEffect, useState } from 'react';
 import axios from '../axiosConfig';
 import { useNavigate } from 'react-router-dom';
+import Popup from '../components/Popup';
+import Footer from "../components/Footer";
 import Navbar from '../components/Navbar';
 import AdminNavbar  from '../components/AdminNavbar';
+import AgentNavbar from '../components/AgentNavbar';
+import NothingNavbar from '../components/NothingNavbar';
 import { Button } from '@chakra-ui/react';
 
 const AdminEditUser = () => {
     const navigate = useNavigate();
-    const [welcomeMessage, setWelcomeMessage] = useState('');
     const [userData, setUserData] = useState(null);
-    const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const editUserId = sessionStorage.getItem('edit_user_id');
-
     const [userType, setUserType] = useState('');
+
+    const renderNavbar = () => {
+        switch (userType) {
+            case 'admin':
+                return <AdminNavbar />;
+            case 'agent':
+                return <AgentNavbar />;
+            case 'applicant':
+                return <Navbar />;
+            default:
+                return <NothingNavbar />; // Render a default or blank navbar if no user_type
+        }
+    };
+
+    const handleClosePopup = () => {
+        setError(''); // Close the popup by clearing the error message
+    };
 
     // Admin fetchlogin (apply to all admin pages)
     const fetchLogin = async () => {
@@ -31,24 +49,13 @@ const AdminEditUser = () => {
         } catch (err) { }
     };
 
-    const fetchDashboardData = async () => {
-        try {
-            const response = await axios.get('/api/dashboard');
-            setWelcomeMessage(response.data.message);
-        } catch (err) {
-            setError('Failed to load dashboard data. Please try again later.');
-        } finally {
-            setLoading(false);
-        }
-    };
-
     const fetchUserData = async () => {
         if (editUserId) {
             try {
                 const response = await axios.get(`/api/get_user/${editUserId}`);
                 setUserData(response.data);
             } catch (err) {
-                setError('Failed to load user data. Please try again later.');
+                setError('Failed to load user data. Please contact administrator.');
             }
         }
     };
@@ -59,28 +66,21 @@ const AdminEditUser = () => {
             console.log(response.data.message);
             navigate('/admindashboard'); // Redirect after successful update
         } catch (err) {
-            setError('Failed to update user data. Please try again later.');
+            setError('Failed to update user data. Please contact administrator.');
         }
     };
 
     useEffect(() => {
         fetchLogin();
-        fetchDashboardData();
         fetchUserData();
     }, []);
 
     return (
         <>
-            {userType === 'admin' ? <AdminNavbar /> : <Navbar />}
+            {renderNavbar()}
             <div className="dashboard">
-                {loading ? (
-                    <p>Loading...</p>
-                ) : error ? (
-                    <p style={{ color: 'red' }}>{error}</p>
-                ) : (
                     <div>
-                        <h1>Dashboard</h1>
-                        <h2>{welcomeMessage}</h2>
+                        <h1>Edit User Information</h1>
 
                         <h2>User Information</h2>
                         {userData ? (
@@ -152,8 +152,9 @@ const AdminEditUser = () => {
                             <Button colorScheme="blue" onClick={() => navigate('/admindashboard')}>Go Back</Button>
                         </div>
                     </div>
-                )}
             </div>
+            <Popup error={error} onClose={handleClosePopup} />
+            <Footer />
         </>
     );
 };

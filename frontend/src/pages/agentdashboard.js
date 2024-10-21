@@ -3,6 +3,8 @@ import axios from '../axiosConfig';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import AgentNavbar from '../components/AgentNavbar';
+import AdminNavbar from '../components/AdminNavbar';
+import NothingNavbar from '../components/NothingNavbar';
 import { Button } from '@chakra-ui/react'; // Import Button from Chakra UI
 
 const AgentDashboard = () => {
@@ -13,6 +15,19 @@ const AgentDashboard = () => {
     const [error, setError] = useState('');
 
     const [userType, setUserType] = useState('');
+
+    const renderNavbar = () => {
+        switch (userType) {
+            case 'admin':
+                return <AdminNavbar />;
+            case 'agent':
+                return <AgentNavbar />;
+            case 'applicant':
+                return <Navbar />;
+            default:
+                return <NothingNavbar />; // Render a default or blank navbar if no user_type
+        }
+    };
 
     // Admin fetchlogin (apply to all admin pages)
     const fetchLogin = async () => {
@@ -74,7 +89,7 @@ const AgentDashboard = () => {
 
     return (
         <>
-            {userType === 'agent' ? <AgentNavbar /> : <Navbar />}
+            {renderNavbar()}
             <div className="dashboard">
                 {loading ? (
                     <p>Loading...</p>

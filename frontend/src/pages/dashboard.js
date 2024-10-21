@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import axios from '../axiosConfig';
+import Popup from '../components/Popup';
 import { useNavigate } from 'react-router-dom';
 import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
 import AdminNavbar  from '../components/AdminNavbar';
+import AgentNavbar from '../components/AgentNavbar';
+import NothingNavbar from '../components/NothingNavbar';
 import { ChakraProvider, Box, CircularProgress, CircularProgressLabel } from '@chakra-ui/react';
 
 const Dashboard = () => {
     const navigate = useNavigate();
-    const [welcomeMessage, setWelcomeMessage] = useState('');
     const [data, setData] = useState(null);
-    const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [progressState, setProgressState] = useState({
         percentage: null,
@@ -26,12 +27,27 @@ const Dashboard = () => {
     const [userType, setUserType] = useState('');
     const [occupations, setOccupations] = useState([]);
 
+    const renderNavbar = () => {
+        switch (userType) {
+            case 'admin':
+                return <AdminNavbar />;
+            case 'agent':
+                return <AgentNavbar />;
+            case 'applicant':
+                return <Navbar />;
+            default:
+                return <NothingNavbar />; // Render a default or blank navbar if no user_type
+        }
+    };
+
 
     const fetchLogin = async () => {
         try {
             const response = await axios.get('/auth/login');
             if (response.data.type === "error") {
-                navigate('/login', { state: { message: "User was not logged in, redirecting to login..." } });
+                setError('User was not logged in, redirecting to login.')
+                console.log('User not logged in')
+                navigate('/login', { state: { message: "User was not logged in, redirecting to login." } });
             }
             if (response.data.type === "success") {
                 setUserType(response.data.data.user_type);
@@ -39,7 +55,9 @@ const Dashboard = () => {
                     navigate('/admindashboard', { state: { message: "Admin detected" } });
                 }
             }
-        } catch (err) { }
+        } catch (err) { 
+            setError('An unexpected error occurred. Please contact administrator');
+        }
     };
     const fetchQuest = async () => {
         try {
@@ -67,17 +85,7 @@ const Dashboard = () => {
                 }
             }
         }
-        return 'Unknown Job Title'; // Fallback if no match is found
-    };
-    const fetchDashboardData = async () => {
-        try {
-            const response = await axios.get('/api/dashboard');
-            setWelcomeMessage(response.data.message);
-        } catch (err) {
-            setError('Failed to load dashboard data. Please try again later.');
-        } finally {
-            setLoading(false);
-        }
+        return 'Unknown Job Title';
     };
 
     const fetchProbability = async () => {
@@ -85,11 +93,22 @@ const Dashboard = () => {
             const userIdToFetch = checkingUser || loggedInUser;
             console.log("Fetching data for user:", userIdToFetch); // Debugging log
             const response = await axios.get(`/api/recommendations/${userIdToFetch}`);
+            //const response = await axios.get(`/api/recommendations/15`);
+            console.log('response.data.message',response.data.message)
+            if (response.data.type === "error") {
+                setError('Failed to load dashboard data. Please try again later.')
+                console.log('response.data.message',response.data.message)
+                console.log('error: ',error)
+            }
+            else{
             const percent = Math.round(response.data.data.probability_of_permanent_residency * 100) / 100;
             setData(response.data.data);
             updateProgress(percent, false, 'purple.400', '200px', '12px');
+            }
         } catch (err) {
-            updateProgress(100, true, 'blue.400', '200px', '12px');
+            setError('Failed to load dashboard data. Please try again later.')
+            console.log('Failed to load dashboard data. Please try again later.')
+            updateProgress(100, true, 'red.400', '200px', '12px');
         }
     };
 
@@ -97,26 +116,25 @@ const Dashboard = () => {
         setProgressState({ percentage, isIndeterminate, color, size, thickness });
     };
 
+    const handleClosePopup = () => {
+        setError(''); // Close the popup by clearing the error message
+    };
+
+
     useEffect(() => {
         fetchLogin();
         fetchQuest();
-        fetchDashboardData();
         fetchProbability();
     }, []);
 
     return (
         <>
-            {userType === 'admin' ? <AdminNavbar /> : <Navbar />}
+            {renderNavbar()}
             <div className="dashboard">
-                {loading ? (
-                    <p>Loading...</p>
-                ) : error ? (
-                    <p style={{ color: 'red' }}>{error}</p>
-                ) : (
                     <div>
                         <h1>Dashboard</h1>
                         {/*Display Probability in Chakra Circular Progress*/}
-
+                        <h2>Your Chances of Getting Permanent Residency</h2>
                         <div>
                             <ChakraProvider>
                                 <Box display="flex" alignItems="center" justifyContent="center" height="200px">
@@ -139,14 +157,16 @@ const Dashboard = () => {
                                     )}
                                 </Box>
                             </ChakraProvider>
+                            <br />
                         </div>
+                        <h2>Probability for Other Occupations</h2>
                                 {data && data.probability_of_other_jobs ? (
                                     <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                         <thead>
                                             <tr>
-                                                <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>Job ID</th>
-                                                <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>Probability (%)</th>
+                                                <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>ANZSCO</th>
                                                 <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>Job Title</th>
+                                                <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>Probability (%)</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -155,8 +175,8 @@ const Dashboard = () => {
                                                 return (
                                                     <tr key={jobId}>
                                                         <td style={{ border: '1px solid black', padding: '8px' }}>{jobId}</td>
-                                                        <td style={{ border: '1px solid black', padding: '8px' }}>{probability}</td>
                                                         <td style={{ border: '1px solid black', padding: '8px' }}>{jobTitle}</td>
+                                                        <td style={{ border: '1px solid black', padding: '8px' }}>{probability}</td>
                                                     </tr>
                                                 );
                                             })}
@@ -246,9 +266,39 @@ const Dashboard = () => {
                         ) : (
                             <p>No university recommendations based on rank available.</p>
                         )}
+
+                        {/*Cost of Living Annual Fee*/} 
+                        <h2>Cost of Living Annual Fee</h2> 
+                        {data && data.cost_of_living ? (
+                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                <thead>
+                                    <tr>
+                                        <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>Cost of Living</th>
+                                        <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>Annual Fee</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {Object.entries(data.cost_of_living).map(([key, value]) => {
+                                        const displayKey = key === 'min_cost' ? 'Minimum Cost' : key === 'max_cost' ? 'Maximum Cost' : key;
+                                        return (
+                                            <tr key={key}>
+                                                <td style={{ border: '1px solid black', padding: '8px' }}>{displayKey}</td>
+                                                <td style={{ border: '1px solid black', padding: '8px' }}>${value}</td>
+                                            </tr>
+                                        );
+                                    })}                                </tbody>
+                            </table>
+                        ) : (
+                            <p>No data available for cost of living annual fee.</p> 
+                        )} 
+                        
+                        
                     </div>
-                )}
+            
+            
+
             </div>
+            <Popup error={error} onClose={handleClosePopup} />
             <Footer />
         </>
     );

@@ -14,6 +14,7 @@ import Statistics from './pages/statistics';
 import Account from './pages/account';
 import Settings from './pages/settings';
 import Updateagent from './pages/updateagent';
+import DisplaySettings from './pages/displaysettings';
 import AdminDashboard from './pages/admindashboard';
 import AdminEditUser from './pages/adminedituser';
 import AgentDashboard from './pages/agentdashboard';
@@ -34,6 +35,7 @@ function App() {
                         <Route path="/dashpreview" element={<Dashpreview />} />
                         <Route path="/statistics" element={<Statistics />} />
                         <Route path="/account" element={<Account />} />
+                        <Route path="/displaysettings" element={<DisplaySettings />} /> 
                         <Route path="/settings" element={<Settings />} />
                         <Route path="/updateagent" element={<Updateagent />} />
                         <Route path="/admindashboard" element={<AdminDashboard />} />

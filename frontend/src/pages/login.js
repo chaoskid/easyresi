@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from '../axiosConfig';
+import Popup from '../components/Popup';
 
 function Login() {
     // Constants
@@ -10,45 +11,68 @@ function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const [loginerror, setLoginerror] = useState('');
 
     const [userType, setUserType] = useState('');
+
+    const handleClosePopup = () => {
+        setError(''); // Close the popup by clearing the error message
+    };
+
+    const fetchLogin = async () => {
+        try {
+            const response = await axios.get('/auth/login');
+            if (response.data.type === "success") {
+                setUserType(response.data.data.user_type);
+                if (response.data.data.user_type === "admin") {
+                    navigate('/admindashboard', { state: { message: "Admin detected" } });
+                }
+                if (response.data.data.user_type === "applicant") {
+                    navigate('/', { state: { message: "Admin detected" } });
+                }
+                if (response.data.data.user_type === "agent") {
+                    navigate('/agentdashboard', { state: { message: "Admin detected" } });
+                }
+            }
+        } catch (err) { 
+            setError('Unable to fetch loging details. Please try again later');}
+    };
 
     // Handle form submission
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
             const response = await axios.post('/auth/login', { email, password });
-            console.log(response); // Successful response
-            console.log(response.data.data.user_type);
             setUserType(response.data.data.user_type);
-            console.log(userType);
             
             // Check if the response status is 200
             if (response.status === 200) {
                 sessionStorage.setItem('user_id', response.data.data.user_id);
-                console.log(sessionStorage.getItem('user_id'));
-
-
-                console.log("AHAHHAAHHA");
-                console.log(userType);
 
                 if (response.data.data.user_type === "admin") {
                     navigate('/admindashboard', { state: { message: 'Logged in' } });
                 }
                 else if (response.data.data.user_type === "applicant") {
-                    navigate('/dashboard', { state: { message: 'Logged in' } });
+                    navigate('/', { state: { message: 'Logged in' } });
                 }
                 else if (response.data.data.user_type === "agent") {
                     navigate('/agentdashboard', {state: {message: 'Logged in'}});
                 }
             } else {
-                setError(response.data.message);
+                setError(response.data.message); // show this on a popup - bottom right
             }
         } catch (error) {
-            setError('An error occurred');
+            if(error.status === 401) {
+                setLoginerror(error.response.data.message)}
+            else {
+            setError('Unexpected error occured. Please contact administrator');
+            }
         }
     };
 
+    useEffect(() => {
+        fetchLogin();
+    }, []);
     return (
         <div className='login'>
             <h1><strong>Easy Resi</strong></h1>
@@ -76,7 +100,7 @@ function Login() {
                             required
                         />
                     </div>
-                    {error && <div className="error">{error}</div>}
+                    {loginerror && <div className="error">{loginerror}</div>}
                     <button type="submit" className='login-button'>Login</button>
                     <button 
                         type="button" 
@@ -87,6 +111,8 @@ function Login() {
                     </button>
                 </form>
             </div>
+            
+            <Popup error={error} onClose={handleClosePopup} />
         </div>
     );
 }

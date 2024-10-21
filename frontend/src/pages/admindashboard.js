@@ -3,22 +3,42 @@ import axios from '../axiosConfig';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import AdminNavbar from '../components/AdminNavbar';
+import AgentNavbar from '../components/AgentNavbar';
+import NothingNavbar from '../components/NothingNavbar';
 import { Button } from '@chakra-ui/react'; // Import Button from Chakra UI
+import Footer from "../components/Footer";
+
+import Popup from '../components/Popup';
 
 const AdminDashboard = () => {
     const navigate = useNavigate();
-    const [welcomeMessage, setWelcomeMessage] = useState('');
     const [data, setData] = useState([]); // Ensure this is initialized as an empty array
-    const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
     const [userType, setUserType] = useState('');
 
+    const renderNavbar = () => {
+        switch (userType) {
+            case 'admin':
+                return <AdminNavbar />;
+            case 'agent':
+                return <AgentNavbar />;
+            case 'applicant':
+                return <Navbar />;
+            default:
+                return <NothingNavbar />; // Render a default or blank navbar if no user_type
+        }
+    };
+
+    const handleClosePopup = () => {
+        setError(''); // Close the popup by clearing the error message
+    };
     // Admin fetchlogin (apply to all admin pages)
     const fetchLogin = async () => {
         try {
             const response = await axios.get('/auth/login');
             if (response.data.type === "error") {
+                setError("User was not logged in, redirecting to login...")
                 navigate('/login', { state: { message: "User was not logged in, redirecting to login..." } });
             }
             if (response.data.type === "success") {
@@ -27,18 +47,9 @@ const AdminDashboard = () => {
                     navigate('/login', { state: { message: "User was not logged in as admin, redirecting to login..." } });
                 }
             }
-        } catch (err) { }
-    };
-
-    const fetchDashboardData = async () => {
-        try {
-            const response = await axios.get('/api/dashboard');
-            setWelcomeMessage(response.data.message);
         } catch (err) {
-            setError('Failed to load dashboard data. Please try again later.');
-        } finally {
-            setLoading(false);
-        }
+            setError('Unexpected error occured. Please contact administrator')
+         }
     };
 
     const fetchUsers = async () => {
@@ -48,7 +59,7 @@ const AdminDashboard = () => {
             const sortedData = response.data.sort((a, b) => a.data.user_id - b.data.user_id); // Sort by user_id
             setData(sortedData || []);  // Ensure correct path based on your API response
         } catch (err) {
-            setError('Failed to load user data. Please try again later.');
+            setError('Unexpected error occured. Please contact administrator');
         }
     };
 
@@ -70,29 +81,23 @@ const AdminDashboard = () => {
             fetchUsers(); // Refresh the user data
         } catch (err) {
             console.error('Error while deleting user:', err.response ? err.response.data : err);
-            setError('Failed to delete user. Please try again later.');
+            setError('Failed to delete user. Please contact administrator.');
         }
     };
 
     useEffect(() => {
         fetchLogin();
-        fetchDashboardData();
         fetchUsers();
     }, []);
 
     return (
         <>
-            {userType === 'admin' ? <AdminNavbar /> : <Navbar />}
+            {renderNavbar()}
             <div className="dashboard">
-                {loading ? (
-                    <p>Loading...</p>
-                ) : error ? (
-                    <p style={{ color: 'red' }}>{error}</p>
-                ) : (
                     <div>
-                        <h1>Dashboard</h1>
+                        <h1>Administrator Dashboard</h1>
                         {/* Display Users in a Table */}
-                        <h2>User Entries</h2>
+                        <h2>Users</h2>
                         {data.length > 0 ? (
                             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                 <thead>
@@ -125,8 +130,9 @@ const AdminDashboard = () => {
                             <p>No user data available.</p>
                         )}
                     </div>
-                )}
             </div>
+            <Popup error={error} onClose={handleClosePopup} />
+            <Footer />
         </>
     );
 };
