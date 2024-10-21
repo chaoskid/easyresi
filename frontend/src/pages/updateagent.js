@@ -3,11 +3,41 @@ import '../index.css';
 import axios from '../axiosConfig'; // Assuming axios is configured for API requests
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import { useNavigate } from 'react-router-dom';
+import Popup from '../components/Popup';
+import AdminNavbar from '../components/AdminNavbar';
 import { Box, Text, Button, Select } from '@chakra-ui/react';
 
 const UpdateAgent = () => {
+    const navigate = useNavigate();
     const [data, setData] = useState([]);
     const [formData, setFormData] = useState({});
+    const [error, setError] = useState('');
+    const [userType, setUserType] = useState('');
+    const handleClosePopup = () => {
+        setError(''); // Close the popup by clearing the error message
+    };
+
+
+    // Admin fetchlogin (apply to all admin pages)
+    const fetchLogin = async () => {
+        try {
+            const response = await axios.get('/auth/login');
+            if (response.data.type === "error") {
+                setError('User was not logged in, redirecting to login.')
+                navigate('/login', { state: { message: "User was not logged in, redirecting to login." } });
+            }
+            if (response.data.type === "success") {
+                setUserType(response.data.data.user_type);
+                if (response.data.data.user_type !== "admin") {
+                    setError('unauthorized Access. Please log in as administrator.')
+                    navigate('/login', { state: { message: "User was not logged in as admin, redirecting to login..." } });
+                }
+            }
+        } catch (err) { 
+            setError('An unexpected error occurred. Please contact administrator');
+        }
+    };
 
     // Fetch statistics data from the backend
     const fetchAgentsAndUsers = async () => {
@@ -16,7 +46,7 @@ const UpdateAgent = () => {
             setData(response.data.data);
             console.log('get-api-data', data);
         } catch (error) {
-            console.error('Error fetching agents and users:', error);
+            setError('An unexpected error occurred. Please contact administrator');
         }
     };
 
@@ -26,10 +56,10 @@ const UpdateAgent = () => {
             const response = await axios.post('/admin/update_agents', formData);  // API call using axios
             console.log('Success:', response.data);
             if (response.status === 200) {
-                // navigate('/dashpreview', { state: { data: response.data } });
+                navigate('/admindashboard', { state: { data: response.data } });
             }
         } catch (error) {
-            console.error('Error:', error);
+            setError('An unexpected error occurred. Please contact administrator');
         }
     };
 
@@ -43,11 +73,12 @@ const UpdateAgent = () => {
 
     useEffect(() => {
         fetchAgentsAndUsers();
+        fetchLogin();
     }, []);
 
     return (
         <Box display="flex" flexDirection="column" minHeight="100vh">
-            <Navbar />
+            {userType === 'admin' ? <AdminNavbar /> : userType === 'applicant' ? <Navbar /> : userType}
             <Box 
                 display="block" 
                 width="800px" 
@@ -104,6 +135,7 @@ const UpdateAgent = () => {
                     </Button>
                 </form>
             </Box>
+            <Popup error={error} onClose={handleClosePopup} />
             <Footer />
         </Box>
     );

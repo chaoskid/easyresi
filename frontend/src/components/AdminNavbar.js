@@ -3,7 +3,7 @@ import { Box, Flex, Heading, Text, Menu, MenuButton, MenuList, MenuItem } from '
 import axios from '../axiosConfig';
 
 
-const Navbar = () => {
+const AdminNavbar = () => {
     const handleLogout = async () => {
         try {
             const response = await axios.post('/auth/logout', {});
@@ -44,7 +44,7 @@ const Navbar = () => {
                         About
                     </Text>
                 </Link>
-                <Link to="/dashboard" style={{ textDecoration: 'none' }}>
+                <Link to="/admindashboard" style={{ textDecoration: 'none' }}>
                     <Text 
                         padding="15px 20px" 
                         borderRadius="10px" 
@@ -55,26 +55,15 @@ const Navbar = () => {
                         Dashboard
                     </Text>
                 </Link>
-                <Link to="/statistics" style={{ textDecoration: 'none' }}>
-                    <Text 
-                        padding="15px 20px" 
-                        borderRadius="10px" 
+                <Link to="/updateagent" style={{ textDecoration: 'none' }}>
+                    <Text
+                        padding="15px 20px"
+                        borderRadius="10px"
                         color="#fff"
                         transition="background-color 0.3s"
                         _hover={{ bg: "#008080", borderRadius: "10px" }}
                     >
-                        Statistics
-                    </Text>
-                </Link>
-                <Link to="/questionnaire" style={{ textDecoration: 'none' }}>
-                    <Text 
-                        padding="15px 20px" 
-                        borderRadius="10px" 
-                        color="#fff"
-                        transition="background-color 0.3s"
-                        _hover={{ bg: "#008080", borderRadius: "10px" }}
-                    >
-                        PR Calculator
+                        Manage Agents
                     </Text>
                 </Link>
 
@@ -107,4 +96,4 @@ const Navbar = () => {
     );
 }
 
-export default Navbar;
+export default AdminNavbar;

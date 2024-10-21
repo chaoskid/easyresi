@@ -1,67 +1,43 @@
 import React, { useEffect, useState } from 'react';
 import axios from '../axiosConfig';
+import Popup from '../components/Popup';
 import Navbar from '../components/Navbar';
+import AdminNavbar from '../components/AdminNavbar';
 import Footer from '../components/Footer'; 
 import { ChakraProvider, Button, Box, CircularProgress, CircularProgressLabel } from '@chakra-ui/react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 const Dashpreview = () => {
     const navigate = useNavigate();
-    // State variables for welcome message, loading status, and error handling
-    const [welcomeMessage, setWelcomeMessage] = useState('');
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
-    const [percentage, setPercentage] = useState(''); // TODO: string?
-    const [customColor, setCustomColor] = useState('');
-
-
-    const [value, setValue] = useState(0); // integer state
-
-
-
-    // Location and data
     const location = useLocation();
     const locationData = location.state?.data;
-
-
+    const [error, setError] = useState('');
     const [progressState, setProgressState] = useState({
         percentage: null,
         isIndeterminate: true,
         color: 'blue.300',
-        thickness: '12px', // Thickness of the progress bar
-        size: '200px', // Size of the progress bar
+        thickness: '12px',
+        size: '200px',
     });
+    const [data, setData] = useState(null);
+    const [occupations, setOccupations] = useState([]);
+    const [userType, setUserType] = useState('');
 
-    // Check to see if logged in
-    const fetchLogin = async () => {
-        try {
-            const response = await axios.get('/auth/login'); // Adjust the URL if needed
-            console.log(response);
-            if (response.data.type == "error") {
-                navigate('/login', { state: { message: "User was not logged in, redirecting to login..." } });
-            }
-        } catch (err) {
-        } finally {
-        }
+    const handleClosePopup = () => {
+        setError(''); // Close the popup by clearing the error message
     };
 
-    const findColor = async () => {
-        if (percentage <= 25.00) {
-            setCustomColor('red.400');
-        }
-        else if (percentage < 50.00 && percentage >= 24.00) {
-            setCustomColor('orange.400');
-        }
-        else if (percentage < 75.00 && percentage >= 49.00) {
-            setCustomColor('blue.400');
-        }
-        else if (percentage >= 75.00) {
-            setCustomColor('green.400');
-        }
-        else {
-            setCustomColor('purple.400');
-        }
-    }
+    // Check if logged in
+    const fetchLogin = async () => {
+        try {
+            const response = await axios.get('/auth/login');
+            if (response.data.type === "error") {
+                setError('User was not logged in, redirecting to login.')
+                navigate('/login', { state: { message: "User was not logged in, redirecting to login..." } });
+            }
+        } catch (err) { 
+            setError('Unable to submit your responses. Please try again later');}
+    };
 
     const updateProgress = (percentage, isIndeterminate, color, size, thickness) => {
         setProgressState({ percentage, isIndeterminate, color, size, thickness });
@@ -70,89 +46,204 @@ const Dashpreview = () => {
     const displayProbability = async () => {
         updateProgress(null, true, 'blue.300', '200px', '12px');
         try {
-            var percent = (Math.round(locationData.data.probability_of_permanent_residency * 100) / 100);
-            console.log(locationData.data.probability_of_permanent_residency);
-
+            const percent = Math.round(locationData.data.probability_of_permanent_residency * 100) / 100;
             updateProgress(percent, false, 'purple.400', '200px', '12px');
-            console.log("Location data and user id:");
-            console.log(locationData.data);
-            console.log(sessionStorage.getItem('user_id'));
-
-
+            setData(locationData.data);
         } catch (err) {
-            updateProgress(100, false, 'red.400', '200px', '12px'); // Show error state
+            setError('Unable to submit your responses. Please try again later');
+            updateProgress(100, false, 'red.400', '200px', '12px');
         }
-    }
+    };
 
     const handleAccept = async (e) => {
         e.preventDefault();
         try {
-            console.log('Success:', locationData.data.user_input_for_prefill_or_save);
-            const response = await axios.post('/api/questionnaire', locationData.data.user_input_for_prefill_or_save);  // API call using axios
+            const response = await axios.post('/api/questionnaire', locationData.data.user_input_for_prefill_or_save);
             if (response.status === 200) {
                 navigate('/dashboard');
             } else {
-                setError(response.data.message);
+                setError('Unable to submit your responses. Please try again later');
             }
         } catch (error) {
-            console.error('Error:', error);
+            setError('Unable to submit your responses. Please try again later');
         }
-    }
+    };
 
     const handleRevert = async (e) => {
         e.preventDefault();
-        navigate('/questionnaire', { state: { data: locationData.data.user_input_for_prefill_or_save } }); 
-    }
+        navigate('/questionnaire', { state: { data: locationData.data.user_input_for_prefill_or_save } });
+    };
 
+    const fetchQuest = async () => {
+        try {
+            const response = await axios.get('/api/questionnaire');
+            setOccupations(response.data.data.occupations);
+        } catch (err) {
+            setError('Failed to load occupations. Please try again later.');
+        }
+    };
+    const getJobTitleByAnzsco = (anzsco) => {
+        const anzscoNumber = Number(anzsco);
+        if (occupations && typeof occupations === 'object') {
+            const allOccupations = Object.values(occupations).flatMap(category => category);
+            for (const occupation of allOccupations) {
+                if (Number(occupation.anzsco) === anzscoNumber) {
+                    return occupation.occupation;
+                }
+            }
+        }
+        return 'Unknown Job Title';
+    };
 
-    // Fetch data when the component mounts
     useEffect(() => {
         fetchLogin();
+        fetchQuest();
         displayProbability();
     }, []);
 
-    // Render the dashboard with loading, error, and data states
     return (
         <>
-            <Navbar />
+            {userType === 'admin' ? <AdminNavbar /> : <Navbar />}
             <div className="dashboard">
-            <Box display="block" flexDirection={'column'} minHeight={'100vh'}>
-                {loading ? (
-                    <p>Loading...</p>
-                ) : error ? (
-                    <p style={{ color: 'red' }}>{error}</p>
-                ) : (
                     <div>
                         <h1>Preview Results</h1>
-                        {/*<button className="logout-button" onClick={handleLogout}>Logout</button>*/}
-                    </div>
-
-
-                )}
-                {/* TODO: Dynamic values from prediction model */}
-                {/* TODO: If indeterminate (while loading or not submitted? <CircularProgress {...progressMethod}>*/}
-                <ChakraProvider>
-
-                    <Box display="flex" alignItems="center" justifyContent="center" height="200px">
-                        {progressState.isIndeterminate ? (
-                            <CircularProgress
-                                isIndeterminate
-                                color={progressState.color}
-                                thickness={progressState.thickness}
-                                size={progressState.size}
-                            />
+                        {/*Display Probability in Chakra Circular Progress*/}
+                        
+                        <h2>Your Chances of Getting Permanent Residency</h2>
+                        <div>
+                            <ChakraProvider>
+                                <Box display="flex" alignItems="center" justifyContent="center" height="200px">
+                                    {progressState.isIndeterminate ? (
+                                        <CircularProgress
+                                            isIndeterminate
+                                            color={progressState.color}
+                                            thickness={progressState.thickness}
+                                            size={progressState.size}
+                                        />
+                                    ) : (
+                                        <CircularProgress
+                                            value={progressState.percentage}
+                                            color={progressState.color}
+                                            thickness={progressState.thickness}
+                                            size={progressState.size}
+                                        >
+                                            <CircularProgressLabel>{progressState.percentage}%</CircularProgressLabel>
+                                        </CircularProgress>
+                                    )}
+                                </Box>
+                            </ChakraProvider>
+                        </div>
+                        <h2>Probability for Other Occupations</h2>
+                        {data && data.probability_of_other_jobs ? (
+                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                <thead>
+                                    <tr>
+                                        <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>ANZCO</th>
+                                        <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>Job Title</th>
+                                        <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>Probability (%)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {Object.entries(data.probability_of_other_jobs).map(([jobId, probability]) => {
+                                        const jobTitle = getJobTitleByAnzsco(jobId); // Use the anzsco code directly
+                                        return (
+                                            <tr key={jobId}>
+                                                <td style={{ border: '1px solid black', padding: '8px' }}>{jobId}</td>
+                                                <td style={{ border: '1px solid black', padding: '8px' }}>{jobTitle}</td>
+                                                <td style={{ border: '1px solid black', padding: '8px' }}>{probability}</td>
+                                            </tr>
+                                        );
+                                    })}
+                                </tbody>
+                            </table>
                         ) : (
-                            <CircularProgress
-                                value={progressState.percentage}
-                                color={progressState.color}
-                                thickness={progressState.thickness}
-                                size={progressState.size}
-                            >
-                                <CircularProgressLabel>{progressState.percentage}%</CircularProgressLabel>
-                            </CircularProgress>
+                            <p>No data available for probabilities of other jobs.</p>
                         )}
-                    </Box>
+                        {/* Probability of Other States */}
+                        <h2>Probability of Other States</h2>
+                        {data && data.probability_of_other_states ? (
+                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                <thead>
+                                    <tr>
+                                        <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>State</th>
+                                        <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>Probability (%)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {Object.entries(data.probability_of_other_states)
+                                        .sort(([, probA], [, probB]) => probB - probA) // Sort by probability descending
+                                        .map(([state, probability]) => (
+                                            <tr key={state}>
+                                                <td style={{ border: '1px solid black', padding: '8px' }}>{state}</td>
+                                                <td style={{ border: '1px solid black', padding: '8px' }}>{probability}</td>
+                                            </tr>
+                                        ))}
+                                </tbody>
+                            </table>
+                        ) : (
+                            <p>No data available for probabilities of other states.</p>
+                        )}
+
+                        {/* University Recommendations Based on Fee */}
+                        <h2>University Recommendations Based on Fee</h2>
+                        {data && data.uni_recommendations_based_on_fee ? (
+                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                <thead>
+                                    <tr>
+                                        <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>Course</th>
+                                        <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>University</th>
+                                        <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>Fee</th>
+                                        <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>Duration (Years)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {data.uni_recommendations_based_on_fee.map((uni, index) => (
+                                        <tr key={index}>
+                                            <td style={{ border: '1px solid black', padding: '8px' }}>{uni.course}</td>
+                                            <td style={{ border: '1px solid black', padding: '8px' }}>{uni.uni}</td>
+                                            <td style={{ border: '1px solid black', padding: '8px' }}>${uni.fee}</td>
+                                            <td style={{ border: '1px solid black', padding: '8px' }}>{uni.duration}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        ) : (
+                            <p>No university recommendations based on fee available.</p>
+                        )}
+
+                        {/* University Recommendations Based on Rank */}
+                        <h2>University Recommendations Based on Rank</h2>
+                        {data && data.uni_recommendations_based_on_rank ? (
+                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                <thead>
+                                    <tr>
+                                        <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>Course</th>
+                                        <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>University</th>
+                                        <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>Rank</th>
+                                        <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>Fee</th>
+                                        <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>Duration (Years)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {data.uni_recommendations_based_on_rank.map((uni, index) => (
+                                        <tr key={index}>
+                                            <td style={{ border: '1px solid black', padding: '8px' }}>{uni.course}</td>
+                                            <td style={{ border: '1px solid black', padding: '8px' }}>{uni.uni}</td>
+                                            <td style={{ border: '1px solid black', padding: '8px' }}>{uni.uni_rank}</td>
+                                            <td style={{ border: '1px solid black', padding: '8px' }}>${uni.fee}</td>
+                                            <td style={{ border: '1px solid black', padding: '8px' }}>{uni.duration}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        ) : (
+                            <p>No university recommendations based on rank available.</p>
+                        )}
+                    </div>
+            <br />
+                    
                     <br /><br />
+                    <Box>
                     <Button
                     sx={{
                         backgroundColor: '#008080',
@@ -193,12 +284,14 @@ const Dashpreview = () => {
                     >
                     Revert
                     </Button>
-                </ChakraProvider>
-            </Box>
+                </Box>
             </div>
+            <Popup error={error} onClose={handleClosePopup} />
             <Footer />
         </>
     );
 };
 
 export default Dashpreview;
+
+
