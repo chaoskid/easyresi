@@ -52,17 +52,6 @@ const AgentDashboard = () => {
         } catch (err) { }
     };
 
-    const fetchDashboardData = async () => {
-        try {
-            const response = await axios.get('/api/dashboard');
-            setWelcomeMessage(response.data.message);
-        } catch (err) {
-            setError('Failed to load dashboard data. Please try again later.');
-        } finally {
-            setLoading(false);
-        }
-    };
-
     const fetchUsers = async () => {
         try {
             // Fetch only applicants managed by the agent
@@ -94,7 +83,6 @@ const AgentDashboard = () => {
 
     useEffect(() => {
         fetchLogin();
-        fetchDashboardData();
         fetchUsers();
     }, []);
 

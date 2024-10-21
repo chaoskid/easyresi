@@ -54,7 +54,11 @@ const Dashboard = () => {
                 setIsQuestionnaireFilled(false);
             }
         } catch (err) {
-            setError('An error occurred while checking questionnaire submission.');
+            if(err.status === 404) {
+                setError('Unable to load dashboard. Please complete the permanent residency questionnaire to get recommendations')}
+            else {
+            setError('An unexpected error occurred while fetching data. Please contact administrator');
+            }
         }
     };
 
@@ -135,9 +139,9 @@ const Dashboard = () => {
         }
     }, [isQuestionnaireFilled]);
 
-    if (isQuestionnaireFilled === null) {
-        return <p>Loading...</p>; // Show loading while checking submission status
-    }
+    //if (isQuestionnaireFilled === null) {
+    //    return <p>Loading...</p>; // Show loading while checking submission status
+    //}
 
     return (
         <>
