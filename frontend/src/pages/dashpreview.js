@@ -5,8 +5,8 @@ import Navbar from '../components/Navbar';
 import AdminNavbar from '../components/AdminNavbar';
 import AgentNavbar from '../components/AgentNavbar';
 import NothingNavbar from '../components/NothingNavbar';
-import Footer from '../components/Footer'; 
-import { ChakraProvider, Button, Box, CircularProgress, CircularProgressLabel } from '@chakra-ui/react';
+import Footer from '../components/Footer';
+import { ChakraProvider, Box, CircularProgress, CircularProgressLabel, Button, Table, Thead, Tbody, Tr, Th, Td, Heading, VStack, Text, Divider } from '@chakra-ui/react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 const Dashpreview = () => {
@@ -44,12 +44,11 @@ const Dashpreview = () => {
         setError(''); // Close the popup by clearing the error message
     };
 
-    // Check if logged in
     const fetchLogin = async () => {
         try {
             const response = await axios.get('/auth/login');
             if (response.data.type === "error") {
-                setError('User was not logged in, redirecting to login.')
+                setError('User was not logged in, redirecting to login.');
                 navigate('/login', { state: { message: "User was not logged in, redirecting to login..." } });
             }
             if (response.data.type === "success") {
@@ -58,8 +57,9 @@ const Dashpreview = () => {
                     navigate('/admindashboard', { state: { message: "Admin detected" } });
                 }
             }
-        } catch (err) { 
-            setError('Unable to submit your responses. Please try again later');}
+        } catch (err) {
+            setError('Unable to submit your responses. Please try again later.');
+        }
     };
 
     const updateProgress = (percentage, isIndeterminate, color, size, thickness) => {
@@ -73,7 +73,7 @@ const Dashpreview = () => {
             updateProgress(percent, false, 'purple.400', '200px', '12px');
             setData(locationData.data);
         } catch (err) {
-            setError('Unable to submit your responses. Please try again later');
+            setError('Unable to submit your responses. Please try again later.');
             updateProgress(100, false, 'red.400', '200px', '12px');
         }
     };
@@ -81,35 +81,27 @@ const Dashpreview = () => {
     const handleAccept = async (e) => {
         e.preventDefault();
         try {
-            // Fetch user IDs from session storage (checkingUser = client's user_id, loggedInUser = agent's user_id)
-            const userIdToFetch = checkingUser || loggedInUser; // Prefer checkingUser (client's user_id) if it exists
-    
-            // Ensure the correct user ID is present
+            const userIdToFetch = checkingUser || loggedInUser;
             if (!userIdToFetch) {
-                throw new Error('User ID is missing'); // Handle case where neither client nor agent's user_id is present
+                throw new Error('User ID is missing');
             }
-    
-            // Fetch the user's input data (prefilled or saved data from the form)
+
             const userInput = locationData?.data?.user_input_for_prefill_or_save;
             if (!userInput) {
-                setError('User input data is missing'); // Handle case where no form data is present
+                setError('User input data is missing');
             }
-    
-            // Submit the data to the backend for the correct user (client if acting on behalf of them)
+
             const response = await axios.post(`/api/questionnaire/${userIdToFetch}`, userInput);
-    
-            // If successful, navigate to the user's dashboard
+
             if (response.status === 200) {
-                navigate('/dashboard'); // Redirect to the user's dashboard after successful update
+                navigate('/dashboard');
             } else {
-                setError('Unable to submit your responses. Please try again later');
+                setError('Unable to submit your responses. Please try again later.');
             }
         } catch (error) {
-            setError('Unable to submit your responses. Please try again later');
+            setError('Unable to submit your responses. Please try again later.');
         }
     };
-    
-    
 
     const handleRevert = async (e) => {
         e.preventDefault();
@@ -125,6 +117,7 @@ const Dashpreview = () => {
             setError('Failed to load occupations. Please try again later.');
         }
     };
+
     const getJobTitleByAnzsco = (anzsco) => {
         const anzscoNumber = Number(anzsco);
         if (occupations && typeof occupations === 'object') {
@@ -138,6 +131,15 @@ const Dashpreview = () => {
         return 'Unknown Job Title';
     };
 
+    const highlightHighestProbability = (entries) => {
+        const maxProbability = Math.max(...Object.values(entries));
+        return Object.entries(entries).map(([key, probability]) => ({
+            key,
+            probability,
+            isHighest: probability === maxProbability,
+        }));
+    };
+
     useEffect(() => {
         fetchLogin();
         fetchQuest();
@@ -145,196 +147,243 @@ const Dashpreview = () => {
     }, []);
 
     return (
-        <>
+        <ChakraProvider>
             {renderNavbar()}
-            <div className="dashboard">
-                    <div>
-                        <h1>Preview Results</h1>
-                        {/*Display Probability in Chakra Circular Progress*/}
-                        
-                        <h2>Your Chances of Getting Permanent Residency</h2>
-                        <div>
-                            <ChakraProvider>
-                                <Box display="flex" alignItems="center" justifyContent="center" height="200px">
-                                    {progressState.isIndeterminate ? (
-                                        <CircularProgress
-                                            isIndeterminate
-                                            color={progressState.color}
-                                            thickness={progressState.thickness}
-                                            size={progressState.size}
-                                        />
-                                    ) : (
-                                        <CircularProgress
-                                            value={progressState.percentage}
-                                            color={progressState.color}
-                                            thickness={progressState.thickness}
-                                            size={progressState.size}
-                                        >
-                                            <CircularProgressLabel>{progressState.percentage}%</CircularProgressLabel>
-                                        </CircularProgress>
-                                    )}
-                                </Box>
-                            </ChakraProvider>
-                        </div>
-                        <h2>Probability for Other Occupations</h2>
+            <Box flex="1" py={8} px={4}>
+                <VStack spacing={8} align="start" maxW="1200px" mx="auto">
+                    <Heading as="h1" size="xl">
+                        Preview Results
+                    </Heading>
+
+                    {/* Circular Progress for Residency Probability */}
+                    <Box
+                        w="full"
+                        p={6}
+                        bg="white"
+                        borderRadius="lg"
+                        boxShadow="md"
+                        borderWidth="1px"
+                        textAlign="center"
+                    >
+                        <Heading as="h2" size="lg" mb={4}>
+                            Your Chances of Getting Permanent Residency
+                        </Heading>
+                        <CircularProgress
+                            value={progressState.percentage}
+                            color={progressState.color}
+                            thickness={progressState.thickness}
+                            size={progressState.size}
+                            isIndeterminate={progressState.isIndeterminate}
+                        >
+                            <CircularProgressLabel>{progressState.percentage}%</CircularProgressLabel>
+                        </CircularProgress>
+                    </Box>
+
+                    {/* Probability for Other Occupations */}
+                    <Box
+                        w="full"
+                        p={6}
+                        bg="white"
+                        borderRadius="lg"
+                        boxShadow="md"
+                        borderWidth="1px"
+                    >
+                        <Heading as="h2" size="lg" mb={4}>
+                            Probability for Other Occupations
+                        </Heading>
                         {data && data.probability_of_other_jobs ? (
-                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                <thead>
-                                    <tr>
-                                        <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>ANZCO</th>
-                                        <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>Job Title</th>
-                                        <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>Probability (%)</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {Object.entries(data.probability_of_other_jobs).map(([jobId, probability]) => {
-                                        const jobTitle = getJobTitleByAnzsco(jobId); // Use the anzsco code directly
-                                        return (
-                                            <tr key={jobId}>
-                                                <td style={{ border: '1px solid black', padding: '8px' }}>{jobId}</td>
-                                                <td style={{ border: '1px solid black', padding: '8px' }}>{jobTitle}</td>
-                                                <td style={{ border: '1px solid black', padding: '8px' }}>{probability}</td>
-                                            </tr>
-                                        );
-                                    })}
-                                </tbody>
-                            </table>
+                            <Table variant="simple" colorScheme="gray">
+                                <Thead bg="gray.200">
+                                    <Tr>
+                                        <Th>ANZSCO</Th>
+                                        <Th>Job Title</Th>
+                                        <Th>Probability (%)</Th>
+                                    </Tr>
+                                </Thead>
+                                <Tbody>
+                                    {highlightHighestProbability(data.probability_of_other_jobs).map(
+                                        ({ key, probability, isHighest }) => (
+                                            <Tr key={key} _hover={{ bg: 'gray.50' }}>
+                                                <Td>{key}</Td>
+                                                <Td>{getJobTitleByAnzsco(key)}</Td>
+                                                <Td color={isHighest ? 'green.500' : 'inherit'}>{probability}</Td>
+                                            </Tr>
+                                        )
+                                    )}
+                                </Tbody>
+                            </Table>
                         ) : (
-                            <p>No data available for probabilities of other jobs.</p>
+                            <Text>No data available for probabilities of other jobs.</Text>
                         )}
-                        {/* Probability of Other States */}
-                        <h2>Probability of Other States</h2>
+                    </Box>
+
+                    {/* Probability of Other States */}
+                    <Box
+                        w="full"
+                        p={6}
+                        bg="white"
+                        borderRadius="lg"
+                        boxShadow="md"
+                        borderWidth="1px"
+                    >
+                        <Heading as="h2" size="lg" mb={4}>
+                            Probability of Other States
+                        </Heading>
                         {data && data.probability_of_other_states ? (
-                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                <thead>
-                                    <tr>
-                                        <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>State</th>
-                                        <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>Probability (%)</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {Object.entries(data.probability_of_other_states)
-                                        .sort(([, probA], [, probB]) => probB - probA) // Sort by probability descending
-                                        .map(([state, probability]) => (
-                                            <tr key={state}>
-                                                <td style={{ border: '1px solid black', padding: '8px' }}>{state}</td>
-                                                <td style={{ border: '1px solid black', padding: '8px' }}>{probability}</td>
-                                            </tr>
-                                        ))}
-                                </tbody>
-                            </table>
+                            <Table variant="simple" colorScheme="gray">
+                                <Thead bg="gray.200">
+                                    <Tr>
+                                        <Th>State</Th>
+                                        <Th>Probability (%)</Th>
+                                    </Tr>
+                                </Thead>
+                                <Tbody>
+                                    {highlightHighestProbability(data.probability_of_other_states).map(
+                                        ({ key, probability, isHighest }) => (
+                                            <Tr key={key} _hover={{ bg: 'gray.50' }}>
+                                                <Td>{key}</Td>
+                                                <Td color={isHighest ? 'green.500' : 'inherit'}>{probability}</Td>
+                                            </Tr>
+                                        )
+                                    )}
+                                </Tbody>
+                            </Table>
                         ) : (
-                            <p>No data available for probabilities of other states.</p>
+                            <Text>No data available for probabilities of other states.</Text>
                         )}
+                    </Box>
 
-                        {/* University Recommendations Based on Fee */}
-                        <h2>University Recommendations Based on Fee</h2>
+                    {/* Divider */}
+                    <Divider orientation="horizontal" />
+
+                    {/* University Recommendations Based on Fee */}
+                    <Box
+                        w="full"
+                        p={6}
+                        bg="white"
+                        borderRadius="lg"
+                        boxShadow="md"
+                        borderWidth="1px"
+                    >
+                        <Heading as="h2" size="lg" mb={4}>
+                            University Recommendations Based on Fee
+                        </Heading>
                         {data && data.uni_recommendations_based_on_fee ? (
-                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                <thead>
-                                    <tr>
-                                        <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>Course</th>
-                                        <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>University</th>
-                                        <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>Fee</th>
-                                        <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>Duration (Years)</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
+                            <Table variant="simple" colorScheme="gray">
+                                <Thead bg="gray.200">
+                                    <Tr>
+                                        <Th>Course</Th>
+                                        <Th>University</Th>
+                                        <Th>Fee</Th>
+                                        <Th>Duration (Years)</Th>
+                                    </Tr>
+                                </Thead>
+                                <Tbody>
                                     {data.uni_recommendations_based_on_fee.map((uni, index) => (
-                                        <tr key={index}>
-                                            <td style={{ border: '1px solid black', padding: '8px' }}>{uni.course}</td>
-                                            <td style={{ border: '1px solid black', padding: '8px' }}>{uni.uni}</td>
-                                            <td style={{ border: '1px solid black', padding: '8px' }}>${uni.fee}</td>
-                                            <td style={{ border: '1px solid black', padding: '8px' }}>{uni.duration}</td>
-                                        </tr>
+                                        <Tr key={index} _hover={{ bg: 'gray.50' }}>
+                                            <Td>{uni.course}</Td>
+                                            <Td>{uni.uni}</Td>
+                                            <Td>${uni.fee}</Td>
+                                            <Td>{uni.duration}</Td>
+                                        </Tr>
                                     ))}
-                                </tbody>
-                            </table>
+                                </Tbody>
+                            </Table>
                         ) : (
-                            <p>No university recommendations based on fee available.</p>
+                            <Text>No university recommendations based on fee available.</Text>
                         )}
+                    </Box>
 
-                        {/* University Recommendations Based on Rank */}
-                        <h2>University Recommendations Based on Rank</h2>
+                    {/* University Recommendations Based on Rank */}
+                    <Box
+                        w="full"
+                        p={6}
+                        bg="white"
+                        borderRadius="lg"
+                        boxShadow="md"
+                        borderWidth="1px"
+                    >
+                        <Heading as="h2" size="lg" mb={4}>
+                            University Recommendations Based on Rank
+                        </Heading>
                         {data && data.uni_recommendations_based_on_rank ? (
-                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                <thead>
-                                    <tr>
-                                        <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>Course</th>
-                                        <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>University</th>
-                                        <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>Rank</th>
-                                        <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>Fee</th>
-                                        <th style={{ border: '1px solid black', padding: '8px', fontWeight: 'bold' }}>Duration (Years)</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
+                            <Table variant="simple" colorScheme="gray">
+                                <Thead bg="gray.200">
+                                    <Tr>
+                                        <Th>Course</Th>
+                                        <Th>University</Th>
+                                        <Th>Rank</Th>
+                                        <Th>Fee</Th>
+                                        <Th>Duration (Years)</Th>
+                                    </Tr>
+                                </Thead>
+                                <Tbody>
                                     {data.uni_recommendations_based_on_rank.map((uni, index) => (
-                                        <tr key={index}>
-                                            <td style={{ border: '1px solid black', padding: '8px' }}>{uni.course}</td>
-                                            <td style={{ border: '1px solid black', padding: '8px' }}>{uni.uni}</td>
-                                            <td style={{ border: '1px solid black', padding: '8px' }}>{uni.uni_rank}</td>
-                                            <td style={{ border: '1px solid black', padding: '8px' }}>${uni.fee}</td>
-                                            <td style={{ border: '1px solid black', padding: '8px' }}>{uni.duration}</td>
-                                        </tr>
+                                        <Tr key={index} _hover={{ bg: 'gray.50' }}>
+                                            <Td>{uni.course}</Td>
+                                            <Td>{uni.uni}</Td>
+                                            <Td>{uni.uni_rank}</Td>
+                                            <Td>${uni.fee}</Td>
+                                            <Td>{uni.duration}</Td>
+                                        </Tr>
                                     ))}
-                                </tbody>
-                            </table>
+                                </Tbody>
+                            </Table>
                         ) : (
-                            <p>No university recommendations based on rank available.</p>
+                            <Text>No university recommendations based on rank available.</Text>
                         )}
-                    </div>
-            <br />
-                    
-                    <br /><br />
+                    </Box>
+
+                    {/* Accept and Revert Buttons */}
                     <Box>
-                    <Button
-                    sx={{
-                        backgroundColor: '#008080',
-                        color: '#ffffff',
-                        padding: '6px 12px',
-                        fontSize: '14px',
-                        height: '35px',
-                        fontWeight: '400',
-                        borderRadius: '8px',
-                        cursor: 'pointer',
-                        transition: 'background-color 0.3s ease, transform 0.2s ease',
-                        marginRight: '10px',
-                        border: 'none',
-                        _hover: { backgroundColor: '#003366', transform: 'scale(1.05)' },
-                        _focus: { outline: 'none', boxShadow: '0 0 0 3px rgba(66, 153, 225, 0.6)' },
-                    }}
-                    onClick={handleAccept}
-                    >
-                    Accept Results
-                    </Button>
-                    <Button
-                    sx={{
-                        backgroundColor: '#008080',
-                        color: '#ffffff',
-                        padding: '6px 12px',
-                        fontSize: '14px',
-                        height: '35px',
-                        fontWeight: '400',
-                        borderRadius: '8px',
-                        cursor: 'pointer',
-                        transition: 'background-color 0.3s ease, transform 0.2s ease',
-                        marginRight: '10px',
-                        border: 'none',
-                        _hover: { backgroundColor: '#003366', transform: 'scale(1.05)' },
-                        _focus: { outline: 'none', boxShadow: '0 0 0 3px rgba(66, 153, 225, 0.6)' },
-                    }}
-                    onClick={handleRevert}
-                    >
-                    Revert
-                    </Button>
-                </Box>
-            </div>
+                        <Button
+                            sx={{
+                                backgroundColor: '#008080',
+                                color: '#ffffff',
+                                padding: '6px 12px',
+                                fontSize: '14px',
+                                height: '35px',
+                                fontWeight: '400',
+                                borderRadius: '8px',
+                                cursor: 'pointer',
+                                transition: 'background-color 0.3s ease, transform 0.2s ease',
+                                marginRight: '10px',
+                                border: 'none',
+                                _hover: { backgroundColor: '#003366', transform: 'scale(1.05)' },
+                                _focus: { outline: 'none', boxShadow: '0 0 0 3px rgba(66, 153, 225, 0.6)' },
+                            }}
+                            onClick={handleAccept}
+                        >
+                            Accept Results
+                        </Button>
+                        <Button
+                            sx={{
+                                backgroundColor: '#008080',
+                                color: '#ffffff',
+                                padding: '6px 12px',
+                                fontSize: '14px',
+                                height: '35px',
+                                fontWeight: '400',
+                                borderRadius: '8px',
+                                cursor: 'pointer',
+                                transition: 'background-color 0.3s ease, transform 0.2s ease',
+                                marginRight: '10px',
+                                border: 'none',
+                                _hover: { backgroundColor: '#003366', transform: 'scale(1.05)' },
+                                _focus: { outline: 'none', boxShadow: '0 0 0 3px rgba(66, 153, 225, 0.6)' },
+                            }}
+                            onClick={handleRevert}
+                        >
+                            Revert
+                        </Button>
+                    </Box>
+                </VStack>
+            </Box>
+
             <Popup error={error} onClose={handleClosePopup} />
             <Footer />
-        </>
+        </ChakraProvider>
     );
 };
 
 export default Dashpreview;
-
-

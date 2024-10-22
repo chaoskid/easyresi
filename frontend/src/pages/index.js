@@ -1,11 +1,46 @@
-import React from "react";
 import '../index.css';
 import HiddenNavbar from '../components/HiddenNavbar';
 import Footer from '../components/Footer';
 import { Box, SimpleGrid } from "@chakra-ui/react";
 import Tile from "../components/Tile";
+import React, { useEffect, useState } from 'react';
+import axios from '../axiosConfig';
+import { useNavigate } from 'react-router-dom';
+import "../index.css";
+import Popup from '../components/Popup';
 
 const Home = () => {
+    const navigate = useNavigate();
+
+    const [error, setError] = useState('');
+    // Check to see if logged in
+    const [userType, setUserType] = useState('');
+
+    // Admin fetchlogin (apply to all admin pages)
+    const fetchLogin = async () => {
+        try {
+            const response = await axios.get('/auth/login');
+            if (response.data.type === "error") {
+                setError('User was not logged in, redirecting to login...');
+                navigate('/login', { state: { message: "User was not logged in, redirecting to login..." } });
+            }
+            if (response.data.type === "success") {
+                setUserType(response.data.data.user_type);
+            }
+        } catch (err) { 
+            setError('Unexpected error occured. Please contact administrator');
+        }
+    };
+
+        // Fetch data when the component mounts
+        useEffect(() => {
+            fetchLogin();
+        }, []);
+
+        const handleClosePopup = () => {
+            setError(''); // Close the popup by clearing the error message
+        };
+
     return (
         <>
             <HiddenNavbar />
@@ -52,6 +87,7 @@ const Home = () => {
                     </SimpleGrid>
                 </Box>
             </div>
+            <Popup error={error} onClose={handleClosePopup} />
             <Footer />
         </>
     );

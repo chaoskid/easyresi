@@ -1,21 +1,20 @@
 import React, { useState, useEffect } from "react";
-import '../index.css';
-import Navbar from "../components/Navbar";
-import axios from '../axiosConfig';
-import { useNavigate, useLocation } from 'react-router-dom';
-import Footer from "../components/Footer";
-import { Box } from '@chakra-ui/react';
+import { Box, Button, Container, Text, Heading, VStack, FormControl, FormLabel, Input, useToast, Flex } from '@chakra-ui/react';
+import Navbar from "../components/Navbar"; // Make sure Navbar is correctly imported and styled
 import AdminNavbar from '../components/AdminNavbar';
+import Footer from "../components/Footer"; // Make sure Footer is correctly imported and styled
+import Popup from '../components/Popup';
+import axios from '../axiosConfig';
+import { useNavigate } from 'react-router-dom';
 import AgentNavbar from '../components/AgentNavbar';
 import NothingNavbar from '../components/NothingNavbar';
-import Popup from '../components/Popup';
 
 
 
 const Settings = () => {
     const navigate = useNavigate();
+    const toast = useToast();
     const [error, setError] = useState('');
-
     const [userType, setUserType] = useState('');
 
     const renderNavbar = () => {
@@ -117,7 +116,6 @@ const Settings = () => {
         }
     };
 
-
     useEffect(() => {
         fetchSettingsData();
         fetchLogin();
@@ -130,114 +128,105 @@ const Settings = () => {
         current_password: '',
         new_password: '',
         confirm_new_password: ''
-     }); 
+    });
 
-    // Update form data state
     const updateFormData = (field, value) => {
         setFormData({
             ...formData,
             [field]: value,
         });
-        console.log('Form Data: ', formData)
     };
 
     return (
         <>
-        <Box display="flex" flexDirection="column" minHeight="100vh">
-        {renderNavbar()}
-            <div className="settings">
-                <h1>Settings</h1>
-                <p>Update your account details</p>
-                <form onSubmit={handleSubmit}>
-                    <div className="form-field">
-                        <label>
-                            First Name:
-                            <input
-                                type="text"
-                                name="first_name"
-                                pattern="[a-zA-Z]*"
-                                title="Please enter a valid name"
-                                value={formData.first_name || ''}
-                                onChange={(e) => updateFormData('first_name', e.target.value)}
+            <Flex direction="column" minH="100vh">
+                {/* Navbar at the top */}
+                 {renderNavbar()}
 
-                            />
-                        </label>
-                    </div>
+                {/* Main content area */}
+                <Flex flex="1" direction="column" justify="center" align="center" py={10}>
+                    <Container maxW="container.md">
+                        <VStack spacing={6} align="start">
+                            <Heading as="h1" size="xl">Settings</Heading>
+                            <Text fontSize="lg">Update your account details</Text>
+                            <Box w="100%" bg="gray.50" p={6} borderRadius="md" boxShadow="md">
+                                <VStack spacing={4} align="start">
+                                    <FormControl>
+                                        <FormLabel>First Name</FormLabel>
+                                        <Input
+                                            type="text"
+                                            value={formData.first_name}
+                                            onChange={(e) => updateFormData('first_name', e.target.value)}
+                                            pattern="[a-zA-Z]*"
+                                            title="Please enter a valid name"
+                                        />
+                                    </FormControl>
 
-                    <div className="form-field">
-                        <label>
-                            Last Name:
-                            <input
-                                type="text"
-                                name="last_name"
-                                pattern="[a-zA-Z]*"
-                                title="Please enter a valid name"
-                                value={formData.last_name || ''}
-                                onChange={(e) => updateFormData('last_name', e.target.value)}
-                            />
-                        </label>
-                    </div>
+                                    <FormControl>
+                                        <FormLabel>Last Name</FormLabel>
+                                        <Input
+                                            type="text"
+                                            value={formData.last_name}
+                                            onChange={(e) => updateFormData('last_name', e.target.value)}
+                                            pattern="[a-zA-Z]*"
+                                            title="Please enter a valid name"
+                                        />
+                                    </FormControl>
 
-                    <div className="form-field">
-                        <label>
-                            Email:
-                            <input
-                                type="email"
-                                name="email"
-                                value={formData.email || ''}
-                                onChange={(e) => updateFormData('email', e.target.value)}
-                                pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
-                                title="Please enter a valid email address"
-                            />
-                        </label>
-                    </div>
+                                    <FormControl>
+                                        <FormLabel>Email</FormLabel>
+                                        <Input
+                                            type="email"
+                                            value={formData.email}
+                                            onChange={(e) => updateFormData('email', e.target.value)}
+                                            pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                                            title="Please enter a valid email address"
+                                        />
+                                    </FormControl>
 
-                    <div className="form-field">
-                        <label>
-                            Current Password:
-                            <input
-                                type="password"
-                                name="current_password"
-                                value={formData.current_password || ''}
-                                onChange={(e) => updateFormData('current_password', e.target.value)}
-                            />
-                        </label>
-                    </div>
+                                    <FormControl>
+                                        <FormLabel>Current Password</FormLabel>
+                                        <Input
+                                            type="password"
+                                            value={formData.current_password}
+                                            onChange={(e) => updateFormData('current_password', e.target.value)}
+                                        />
+                                    </FormControl>
 
-                    <div className="form-field">
-                        <label>
-                            New Password:
-                            <input
-                                type="password"
-                                name="new_password"
-                                value={formData.new_password || ''}
-                                onChange={(e) => updateFormData('new_password', e.target.value)}
-                            />
-                        </label>
-                    </div>
+                                    <FormControl>
+                                        <FormLabel>New Password</FormLabel>
+                                        <Input
+                                            type="password"
+                                            value={formData.new_password}
+                                            onChange={(e) => updateFormData('new_password', e.target.value)}
+                                        />
+                                    </FormControl>
 
+                                    <FormControl>
+                                        <FormLabel>Confirm New Password</FormLabel>
+                                        <Input
+                                            type="password"
+                                            value={formData.confirm_new_password}
+                                            onChange={(e) => updateFormData('confirm_new_password', e.target.value)}
+                                        />
+                                    </FormControl>
 
-                    <div className="form-field">
-                        <label>
-                            Confirm New Password:
-                            <input
-                                type="password"
-                                name="confirm_new_password"
-                                value={formData.confirm_new_password || ''}
-                                onChange={(e) => updateFormData('confirm_new_password', e.target.value)}
-                            />
-                        </label>
-                    </div>
-
-
-                    <button type="submit" className="settings-button">Save Changes</button>
-                </form>
-            </div>
-            <Popup error={error} onClose={handleClosePopup} />
-            <Footer />
-            </Box>
+                                    <Button colorScheme="teal" type="submit" onClick={handleSubmit}>
+                                        Save Changes
+                                    </Button>
+                                </VStack>
+                            </Box>
+                        </VStack>
+                        {error && <Text color="red.500">Error: {error}</Text>}
+                        <Popup error={error} onClose={handleClosePopup} />
+                    </Container>
+                </Flex>
+                {/* Footer at the bottom */}
+                <Footer />
+            </Flex>
         </>
     );
 };
 
 export default Settings;
+

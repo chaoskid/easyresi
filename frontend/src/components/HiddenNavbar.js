@@ -1,7 +1,20 @@
 import { Link } from "react-router-dom";
-import { Box, Heading } from '@chakra-ui/react';
+import { Box, Flex, Heading, Text, Menu, MenuButton, MenuList, MenuItem } from '@chakra-ui/react';
+import axios from '../axiosConfig';
+
 
 const Navbar = () => {
+    const handleLogout = async () => {
+        try {
+            const response = await axios.post('/auth/logout', {});
+            sessionStorage.clear();
+            console.log(response.data.message); // Log success message or handle accordingly
+            window.location.href = '/login'; // Redirect to login page
+
+        } catch (error) {
+            console.error('Logout failed:', error);
+        }
+    };
     return (
         <Box 
             className="navbar" 
@@ -21,6 +34,8 @@ const Navbar = () => {
             >
                 <Link to="/" style={{ textDecoration: 'none', color: '#fff', marginLeft: '15px' }}>Easy Resi</Link>
             </Heading>
+            <Flex className="links" gap="20px" align="center">
+            </Flex>
         </Box>
     );
 }

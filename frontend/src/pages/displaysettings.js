@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
-import '../index.css';
+import { Box, Button, Container, Text, Heading, VStack, useToast, Flex } from '@chakra-ui/react';
 import Navbar from "../components/Navbar";
 import AgentNavbar from '../components/AgentNavbar';
 import AdminNavbar from '../components/AdminNavbar';
 import NothingNavbar from '../components/NothingNavbar';
 import axios from '../axiosConfig';
+import Footer from "../components/Footer";
 import { useNavigate } from 'react-router-dom';
-import Footer from '../components/Footer';
-
 import Popup from '../components/Popup'; 
 
 const DisplaySettings = () => {
@@ -18,6 +17,7 @@ const DisplaySettings = () => {
     });
 
     const navigate = useNavigate();
+    const toast = useToast();
     
     const [error, setError] = useState('');const [userType, setUserType] = useState('');
 
@@ -43,6 +43,12 @@ const DisplaySettings = () => {
             const response = await axios.get('/api/profile'); // Adjust the URL if needed
             setFormData(response.data.data);
         } catch (err) {
+            toast({
+                title: "Failed to load user details.",
+                status: "error",
+                duration: 3000,
+                isClosable: true,
+            });
             setError('An unexpected error occurred fetching user details.. Please contact administrator');
         }
     };
@@ -61,6 +67,18 @@ const DisplaySettings = () => {
             setError('Unable to submit your responses. Please try again later');}
     };
 
+    const handleLogout = async () => {
+        try {
+            const response = await axios.post('/auth/logout', {});
+            sessionStorage.clear();
+            console.log(response.data.message); // Log success message or handle accordingly
+            window.location.href = '/login'; // Redirect to login page
+
+        } catch (error) {
+            console.error('Logout failed:', error);
+        }
+    };
+
     useEffect(() => {
         fetchLogin();
         fetchSettingsData();
@@ -72,17 +90,32 @@ const DisplaySettings = () => {
 
     return (
         <>
+        <div className="displaysettings">
+            <Flex direction="column" minH="100vh">
             {renderNavbar()}
-            <div className="display-settings">
-                <h1>Settings</h1>
-                <p>View your account details</p>
-                <div className="form-container">
-                
-                <label>First Name: {formData.first_name}</label>
-                <label>Last Name: {formData.last_name}</label>
-                <label>Email: {formData.email}</label>
-                <button onClick={handleEditClick} className="settings-button">Edit User Details</button>
-                </div>
+                <Flex flex="1" direction="column">
+                    <Container maxW="container.md" py={8} flex="1">
+                        <VStack spacing={6} align="start">
+                            <Heading as="h1" size="xl">Settings</Heading>
+                            <Text fontSize="lg">View your account details</Text>
+                            <Box w="100%" bg="gray.50" p={6} borderRadius="md" boxShadow="md">
+                                <VStack spacing={4} align="start">
+                                    <Text fontWeight="bold">First Name: <Text as="span" fontWeight="normal">{formData.first_name}</Text></Text>
+                                    <Text fontWeight="bold">Last Name: <Text as="span" fontWeight="normal">{formData.last_name}</Text></Text>
+                                    <Text fontWeight="bold">Email: <Text as="span" fontWeight="normal">{formData.email}</Text></Text>
+                                    <Button colorScheme="teal" onClick={handleEditClick}>
+                                        Edit User Details
+                                    </Button>
+                                    <Button colorScheme="red" onClick={handleLogout}>
+                                        Logout
+                                    </Button>
+                                </VStack>
+                            </Box>
+                        </VStack>
+                    </Container>
+                </Flex>
+                <Footer />
+            </Flex>
             </div>
             <Popup error={error} onClose={handleClosePopup} />
             <Footer />
