@@ -116,7 +116,6 @@ const Settings = () => {
         }
     };
 
-
     useEffect(() => {
         fetchSettingsData();
         fetchLogin();
@@ -137,10 +136,6 @@ const Settings = () => {
             [field]: value,
         });
     };
-
-    useEffect(() => {
-        fetchSettingsData();
-    }, []);
 
     return (
         <>

@@ -67,6 +67,18 @@ const DisplaySettings = () => {
             setError('Unable to submit your responses. Please try again later');}
     };
 
+    const handleLogout = async () => {
+        try {
+            const response = await axios.post('/auth/logout', {});
+            sessionStorage.clear();
+            console.log(response.data.message); // Log success message or handle accordingly
+            window.location.href = '/login'; // Redirect to login page
+
+        } catch (error) {
+            console.error('Logout failed:', error);
+        }
+    };
+
     useEffect(() => {
         fetchLogin();
         fetchSettingsData();
@@ -93,6 +105,9 @@ const DisplaySettings = () => {
                                     <Text fontWeight="bold">Email: <Text as="span" fontWeight="normal">{formData.email}</Text></Text>
                                     <Button colorScheme="teal" onClick={handleEditClick}>
                                         Edit User Details
+                                    </Button>
+                                    <Button colorScheme="red" onClick={handleLogout}>
+                                        Logout
                                     </Button>
                                 </VStack>
                             </Box>
