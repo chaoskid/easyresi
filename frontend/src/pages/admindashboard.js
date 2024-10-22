@@ -5,6 +5,8 @@ import Navbar from '../components/Navbar';
 import AdminNavbar from '../components/AdminNavbar';
 import { Button, Table, Thead, Tbody, Tr, Th, Td, TableContainer, Heading, Box, Text, Flex } from '@chakra-ui/react';
 import Footer from '../components/Footer';
+import AgentNavbar from '../components/AgentNavbar';
+import NothingNavbar from '../components/NothingNavbar';
 import Popup from '../components/Popup';
 
 const AdminDashboard = () => {
@@ -12,6 +14,19 @@ const AdminDashboard = () => {
     const [data, setData] = useState([]);
     const [error, setError] = useState('');
     const [userType, setUserType] = useState('');
+
+    const renderNavbar = () => {
+        switch (userType) {
+            case 'admin':
+                return <AdminNavbar />;
+            case 'agent':
+                return <AgentNavbar />;
+            case 'applicant':
+                return <Navbar />;
+            default:
+                return <NothingNavbar />; // Render a default or blank navbar if no user_type
+        }
+    };
 
     const handleClosePopup = () => {
         setError('');
@@ -66,8 +81,7 @@ const AdminDashboard = () => {
 
     return (
         <Flex direction="column" minH="100vh">
-            {userType === 'admin' ? <AdminNavbar /> : <Navbar />}
-
+            {renderNavbar()}
             <Box flex="1" px={6} py={8}>
                 <Heading as="h1" size="xl" mb={8} textAlign="center">
                     Administrator Dashboard

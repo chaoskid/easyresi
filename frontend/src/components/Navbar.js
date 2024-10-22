@@ -7,8 +7,10 @@ const Navbar = () => {
     const handleLogout = async () => {
         try {
             const response = await axios.post('/auth/logout', {});
+            sessionStorage.clear();
             console.log(response.data.message); // Log success message or handle accordingly
             window.location.href = '/login'; // Redirect to login page
+
         } catch (error) {
             console.error('Logout failed:', error);
         }

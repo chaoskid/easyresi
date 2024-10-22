@@ -17,6 +17,8 @@ import Updateagent from './pages/updateagent';
 import DisplaySettings from './pages/displaysettings';
 import AdminDashboard from './pages/admindashboard';
 import AdminEditUser from './pages/adminedituser';
+import AgentDashboard from './pages/agentdashboard';
+
 
 function App() {
     return (
@@ -38,6 +40,7 @@ function App() {
                         <Route path="/updateagent" element={<Updateagent />} />
                         <Route path="/admindashboard" element={<AdminDashboard />} />
                         <Route path="/adminedituser" element={<AdminEditUser />} />
+                        <Route path="/agentdashboard" element={<AgentDashboard />} />
                         <Route path="*" element={<Notfound />} />
                     </Routes>
                 </div>

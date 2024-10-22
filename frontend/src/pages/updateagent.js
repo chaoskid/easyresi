@@ -7,6 +7,8 @@ import { useNavigate } from 'react-router-dom';
 import Popup from '../components/Popup';
 import AdminNavbar from '../components/AdminNavbar';
 import { Box, Text, Button, Select, Heading, Flex } from '@chakra-ui/react';
+import AgentNavbar from '../components/AgentNavbar';
+import NothingNavbar from '../components/NothingNavbar';
 
 const UpdateAgent = () => {
     const navigate = useNavigate();
@@ -14,7 +16,19 @@ const UpdateAgent = () => {
     const [formData, setFormData] = useState({});
     const [error, setError] = useState('');
     const [userType, setUserType] = useState('');
-    
+
+    const renderNavbar = () => {
+        switch (userType) {
+            case 'admin':
+                return <AdminNavbar />;
+            case 'agent':
+                return <AgentNavbar />;
+            case 'applicant':
+                return <Navbar />;
+            default:
+                return <NothingNavbar />; // Render a default or blank navbar if no user_type
+        }
+    };
     const handleClosePopup = () => {
         setError(''); 
     };
@@ -72,7 +86,7 @@ const UpdateAgent = () => {
 
     return (
         <Flex direction="column" minH="100vh">
-            {userType === 'admin' ? <AdminNavbar /> : userType === 'applicant' ? <Navbar /> : null}
+            {renderNavbar()}
 
             {/* Main content box, fixed size */}
             <Flex justify="center" align="center" flex="1">

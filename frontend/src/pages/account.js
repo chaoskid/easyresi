@@ -6,6 +6,8 @@ import '../index.css';
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import AdminNavbar from '../components/AdminNavbar';
+import AgentNavbar from '../components/AgentNavbar';
+import NothingNavbar from '../components/NothingNavbar';
 import { Box } from '@chakra-ui/react';
 
 
@@ -20,6 +22,18 @@ const Account = () => {
 
     const [userType, setUserType] = useState('');
 
+    const renderNavbar = () => {
+        switch (userType) {
+            case 'admin':
+                return <AdminNavbar />;
+            case 'agent':
+                return <AgentNavbar />;
+            case 'applicant':
+                return <Navbar />;
+            default:
+                return <NothingNavbar />; // Render a default or blank navbar if no user_type
+        }
+    };
 
     // Admin fetchlogin (apply to all admin pages)
     const fetchLogin = async () => {
@@ -45,7 +59,8 @@ const Account = () => {
 
     return (
         <Box display="flex" flexDirection="column" minHeight="100vh">
-            {userType === 'admin' ? <AdminNavbar /> : <Navbar />}
+            {/* Conditionally render the correct navbar based on user_type */}
+            {renderNavbar()}
             <Box flex="1" display="flex" flexDirection="column" alignItems="center" justifyContent="center">
                 <h1>Account</h1>
                 <p>

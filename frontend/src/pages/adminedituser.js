@@ -4,8 +4,10 @@ import { useNavigate } from 'react-router-dom';
 import Popup from '../components/Popup';
 import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
-import AdminNavbar from '../components/AdminNavbar';
 import { Box, Heading, Button, Input, Select, Table, Thead, Tbody, Tr, Th, Td, Flex } from '@chakra-ui/react';
+import AdminNavbar  from '../components/AdminNavbar';
+import AgentNavbar from '../components/AgentNavbar';
+import NothingNavbar from '../components/NothingNavbar';
 
 const AdminEditUser = () => {
     const navigate = useNavigate();
@@ -13,6 +15,19 @@ const AdminEditUser = () => {
     const [error, setError] = useState('');
     const editUserId = sessionStorage.getItem('edit_user_id');
     const [userType, setUserType] = useState('');
+
+    const renderNavbar = () => {
+        switch (userType) {
+            case 'admin':
+                return <AdminNavbar />;
+            case 'agent':
+                return <AgentNavbar />;
+            case 'applicant':
+                return <Navbar />;
+            default:
+                return <NothingNavbar />; // Render a default or blank navbar if no user_type
+        }
+    };
 
     const handleClosePopup = () => {
         setError('');
@@ -61,7 +76,7 @@ const AdminEditUser = () => {
 
     return (
         <Flex direction="column" minH="100vh">
-            {userType === 'admin' ? <AdminNavbar /> : <Navbar />}
+            {renderNavbar()}
             
             <Box flex="1" p={8} maxW="900px" mx="auto">
                 <Heading as="h1" size="xl" mb={6} textAlign="center">

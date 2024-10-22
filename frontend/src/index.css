@@ -335,6 +335,7 @@
     margin: auto;
     margin-top: 20px;
     text-align: center;
+    min-height: 80vh;
 }
 
     .dashboard p {

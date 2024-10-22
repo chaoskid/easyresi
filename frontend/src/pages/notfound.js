@@ -1,13 +1,13 @@
 import { Link } from "react-router-dom";
 import '../index.css';
-import Navbar from '../components/Navbar';
+import NothingNavbar from '../components/NothingNavbar';
 import Footer from "../components/Footer";
 import { Box, Button, Heading, Text } from '@chakra-ui/react';
 
 const Notfound = () => {
     return (
         <Box display="flex" flexDirection="column" minHeight="100vh">
-            <Navbar />
+            <NothingNavbar />
             <Box flex="1" display="flex" flexDirection="column" alignItems="center" justifyContent="center">
                 <Heading as="h1" size="3xl" mb="20px" color="#333333" fontWeight="500" fontFamily="Quicksand">
                     Sorry!

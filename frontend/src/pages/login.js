@@ -22,10 +22,6 @@ function Login() {
     const fetchLogin = async () => {
         try {
             const response = await axios.get('/auth/login');
-            if (response.data.type === "error") {
-                setError('User was not logged in, redirecting to login.')
-                navigate('/login', { state: { message: "User was not logged in, redirecting to login..." } });
-            }
             if (response.data.type === "success") {
                 setUserType(response.data.data.user_type);
                 if (response.data.data.user_type === "admin") {
@@ -39,7 +35,7 @@ function Login() {
                 }
             }
         } catch (err) { 
-            setError('Unable to submit your responses. Please try again later');}
+            setError('Unable to fetch loging details. Please try again later');}
     };
 
     // Handle form submission
@@ -58,6 +54,9 @@ function Login() {
                 }
                 else if (response.data.data.user_type === "applicant") {
                     navigate('/', { state: { message: 'Logged in' } });
+                }
+                else if (response.data.data.user_type === "agent") {
+                    navigate('/agentdashboard', {state: {message: 'Logged in'}});
                 }
             } else {
                 setError(response.data.message); // show this on a popup - bottom right

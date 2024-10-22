@@ -8,13 +8,17 @@ import { InfoIcon } from '@chakra-ui/icons';  // Import the info icon for toolti
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer'; 
 import AdminNavbar from '../components/AdminNavbar';
+import AgentNavbar from '../components/AgentNavbar';
+import NothingNavbar from '../components/NothingNavbar';
 import { useNavigate, useLocation } from 'react-router-dom';
+import Popup from '../components/Popup';
 
 const Questionnaire = () => {
     // Navigation and error
     const navigate = useNavigate();
     const [error, setError] = useState('');
-
+    const loggedInUser = sessionStorage.getItem('user_id');
+    const checkingUser = sessionStorage.getItem('checking_user_id');
     // Form states
     const [formData, setFormData] = useState({});
     const [preferredIndustry, setPreferredIndustry] = useState('');
@@ -24,27 +28,53 @@ const Questionnaire = () => {
     const locationData = location.state?.data;
     const [prefillData, setPrefillData] = useState({}); 
     const [occupations, setOccupations] = useState({});
+    const [userType, setUserType] = useState('');
+
+    const renderNavbar = () => {
+        switch (userType) {
+            case 'admin':
+                return <AdminNavbar />;
+            case 'agent':
+                return <AgentNavbar />;
+            case 'applicant':
+                return <Navbar />;
+            default:
+                return <NothingNavbar />; // Render a default or blank navbar if no user_type
+        }
+    };
     
-    // Check to see if logged in
+    const handleClosePopup = () => {
+        setError(''); // Close the popup by clearing the error message
+    };
+    
     const fetchLogin = async () => {
         try {
-            const response = await axios.get('/auth/login'); // Adjust the URL if needed
-            if (response.data.type == "error") {
-                navigate('/login', { state: { message: "User was not logged in, redirecting to login..." } });
+            const response = await axios.get('/auth/login');
+            if (response.data.type === "error") {
+                setError('User was not logged in, redirecting to login.')
+                console.log('User not logged in')
+                navigate('/login', { state: { message: "User was not logged in, redirecting to login." } });
             }
-        } catch (err) {
-        } finally {
+            if (response.data.type === "success") {
+                setUserType(response.data.data.user_type);
+                if (response.data.data.user_type === "admin") {
+                    navigate('/admindashboard', { state: { message: "Admin detected" } });
+                }
+            }
+        } catch (err) { 
+            setError('An unexpected error occurred. Please contact administrator');
         }
     };
   
       // Fetch data when the component mounts
     const fetchOccupations = async () => {
             try {
-                const response = await axios.get('/api/questionnaire'); // API call for data
+                const userIdToFetch = checkingUser || loggedInUser;
+                const response = await axios.get(`/api/questionnaire/${userIdToFetch}`); // API call for data
                 const occupationData = response.data.data.occupations;
                 setOccupations(occupationData);
               } catch (error) {
-                console.error('Error fetching Dynamic Dropdown data:', error);
+                setError('An unexpected error occurred fetching occupations. Please contact administrator');
             }
         };
 
@@ -58,15 +88,16 @@ const Questionnaire = () => {
             setPreferredIndustry(locationData.preferredIndustry)
         } else {
             try {
-                const response = await axios.get('/api/questionnaire'); // API call for data
-                console.log('Prefilling using API data:', response.data.data.prefill_data);
+                const userIdToFetch = checkingUser || loggedInUser;
+                const response = await axios.get(`/api/questionnaire/${userIdToFetch}`); // API call for data
+                console.log('Using API data:', response.data.data.prefill_data);
                 if(response.data.data.prefill_data){
                 setPrefillData(response.data.data.prefill_data);
                 setFormData(response.data.data.prefill_data);
                 setPreferredIndustry(response.data.data.prefill_data.preferredIndustry)
                 } // Prefill form with API data
             } catch (error) {
-                console.error('Error fetching prefill data:', error);
+                setError('An unexpected error occurred while prefilling. Please contact administrator');
             }
         }
     };
@@ -76,15 +107,16 @@ const Questionnaire = () => {
       formData.preferredCourse = 'TBD'
         e.preventDefault();
         try {
-            const response = await axios.post('/api/preview_results', formData); // Submit form data
+            const userIdToFetch = checkingUser || loggedInUser;
+            const response = await axios.post(`/api/preview_results/${userIdToFetch}`, formData); // Submit form data
+            console.log('Success:', response.data);
             if (response.status === 200) {
                 navigate('/dashpreview', { state: { data: response.data } });
             } else {
                 setError(response.data.message);
             }
         } catch (error) {
-            alert('Submission error. Please try again.');
-            console.error('Submission error:', error);
+            setError('An unexpected error occurred submitting your response. Please contact administrator');
         }
     };
 
@@ -114,7 +146,7 @@ const Questionnaire = () => {
 
     return (
         <>
-            <Navbar />
+            {renderNavbar()}
             <h1 className="PR-Header">Permanent Residency Questionnaire</h1>
             <Box maxW="75%" mx="auto" mt={8} mb={12} p={6} borderWidth="1px" borderRadius="lg" boxShadow="lg" bg="#F9FAFC" borderColor="#E2E8F0">
                 <form onSubmit={handleFormSubmit}>
@@ -490,6 +522,7 @@ const Questionnaire = () => {
                     <button type="submit" className='login-button'>Preview Results</button>
                 </form>
             </Box>
+            <Popup error={error} onClose={handleClosePopup} />
             <Footer />
         </>
     );

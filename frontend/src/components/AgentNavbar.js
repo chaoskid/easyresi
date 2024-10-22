@@ -3,7 +3,7 @@ import { Box, Flex, Heading, Text, Menu, MenuButton, MenuList, MenuItem } from '
 import axios from '../axiosConfig';
 
 
-const AdminNavbar = () => {
+const AgentNavbar = () => {
     const handleLogout = async () => {
         try {
             const response = await axios.post('/auth/logout', {});
@@ -44,7 +44,7 @@ const AdminNavbar = () => {
                         About
                     </Text>
                 </Link>
-                <Link to="/admindashboard" style={{ textDecoration: 'none' }}>
+                <Link to="/agentdashboard" style={{ textDecoration: 'none' }}>
                     <Text 
                         padding="15px 20px" 
                         borderRadius="10px" 
@@ -55,15 +55,15 @@ const AdminNavbar = () => {
                         Dashboard
                     </Text>
                 </Link>
-                <Link to="/updateagent" style={{ textDecoration: 'none' }}>
-                    <Text
-                        padding="15px 20px"
-                        borderRadius="10px"
+                <Link to="/statistics" style={{ textDecoration: 'none' }}>
+                    <Text 
+                        padding="15px 20px" 
+                        borderRadius="10px" 
                         color="#fff"
                         transition="background-color 0.3s"
                         _hover={{ bg: "#008080", borderRadius: "10px" }}
                     >
-                        Manage Agents
+                        Statistics
                     </Text>
                 </Link>
 
@@ -96,4 +96,4 @@ const AdminNavbar = () => {
     );
 }
 
-export default AdminNavbar;
+export default AgentNavbar;

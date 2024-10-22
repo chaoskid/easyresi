@@ -21,50 +21,60 @@ def Dashboard():
     return jsonify({'message': 'Welcome to the Dashboard {}!'.format(user.first_name)})
 
 # Create a new questionnaire entry
-@api.route('/questionnaire', methods=['POST','GET'])
+@api.route('/questionnaire/<int:input_user_id>', methods=['POST', 'GET'])
 @login_required
-def create_questionnaire():
+def create_questionnaire(input_user_id):
     if request.method == 'GET':
         try:
             ques_data = get_ques_data(db)
-            print("ques data");
-            print(ques_data)
-            existing_profile_entry = db.session.query(UserProfile).filter_by(user_id=session['user_id']).first()
+            print('user id requested: ', input_user_id)
+            existing_profile_entry = db.session.query(UserProfile).filter_by(user_id=input_user_id).first()
+            print('existing profile entry: ', existing_profile_entry)
             if existing_profile_entry:
-                prefill_data=prefill_ques(existing_profile_entry)
+                prefill_data = prefill_ques(existing_profile_entry)
             else:
                 prefill_data = None
 
             return jsonify({
-                            'type':'success',
-                            'message': 'occupations fetched successfully!', 
-                            'data':{'occupations':ques_data, 'prefill_data':prefill_data}}), 201
+                'type': 'success',
+                'message': 'occupations fetched successfully!',
+                'data': {'occupations': ques_data, 'prefill_data': prefill_data}
+            }), 201
         except Exception as e:
-                print(e)
-                return jsonify({'type':'error','message': 'An internal error occured.\n {}'.format(e)}), 500
-    
+            print(e)
+            return jsonify({'type': 'error', 'message': 'An internal error occured.\n {}'.format(e)}), 500
+
     if request.method == 'POST':
         data = request.get_json()  # Receive JSON data from the front-end
+        print('data: ', data)
         input_json = get_input_json(data)
-        profile_entry = get_or_update_profile_entry(input_json,db)
+        print('input json : ', input_json)
+        profile_entry = get_or_update_profile_entry(input_json, db,input_user_id)
+        print("input_user_id: ", input_user_id)
         try:
-            existing_profile_entry = db.session.query(UserProfile).filter_by(user_id=session['user_id']).first()
+            existing_profile_entry = db.session.query(UserProfile).filter_by(user_id=input_user_id).first()
+
+            # Check if the profile exists before accessing its attributes
             if existing_profile_entry:
-                get_or_update_profile_entry(input_json,db,existing_profile_entry)
+                print('existing_profile_entry.user_id', existing_profile_entry.user_id)
+                get_or_update_profile_entry(input_json, db, input_user_id,existing_profile_entry)
             else:
                 db.session.add(profile_entry)
                 db.session.commit()
-            existing_score_entry = db.session.query(UserScore).filter_by(user_id=session['user_id']).first()
+
+            existing_score_entry = db.session.query(UserScore).filter_by(user_id=input_user_id).first()
             if existing_score_entry:
-                get_or_update_points(profile_entry,db,existing_score_entry)
+                get_or_update_points(profile_entry, db, existing_score_entry)
             else:
-                user_score_entry = get_or_update_points(profile_entry,db)
+                user_score_entry = get_or_update_points(profile_entry, db)
                 db.session.add(user_score_entry)
                 db.session.commit()
-            return jsonify({'type':'success','message': 'Questionnaire and points submitted and successfully!'}), 200
+
+            return jsonify({'type': 'success', 'message': 'Questionnaire and points submitted successfully!'}), 200
+
         except Exception as e:
             print(e)
-            return jsonify({'type':'error','message': 'An internal error occured.\n {}'.format(e)}), 500
+            return jsonify({'type': 'error', 'message': 'An internal error occured.\n {}'.format(e)}), 500
 
 # Retrieve a specific questionnaire by ID
 @api.route('/userprofile', methods=['GET'])
@@ -99,44 +109,101 @@ def userprofile():
     except Exception as e:
         return jsonify({'type':'error','message': 'An internal error occured.\n {}'.format(e)}), 500
 
-# preview results
-@api.route('/preview_results', methods=['POST','GET'])
+@api.route('/preview_results/<int:input_user_id>', methods=['POST', 'GET'])
 @login_required
-def preview_results():
+def preview_results(input_user_id):
     if request.method == 'POST':
         data = request.get_json()
-        input_json = get_input_json(data)
-        profile_entry = get_or_update_profile_entry(input_json,db)
+        print('Received data:', data)
+        
         try:
-            with open('app/models/resipro', 'rb') as f:
-                model = pickle.load(f)
-            user_score_entry = get_or_update_points(profile_entry,db)
-            model_inputdf=generate_model_input(profile_entry,user_score_entry)
-            pr_prob = get_pr_prob(model,model_inputdf)
-            prob_for_other_states=get_pr_prob_for_states(profile_entry,model_inputdf,model)
-            prob_for_other_occupations = get_pr_prob_for_jobs(model,model_inputdf,db,profile_entry)
-            uni_recommendations=recommend_uni(db,profile_entry)
+            # Debug logging for get_input_json
+            input_json = get_input_json(data)
+            print('input_json:', input_json)
+
+            # Debug logging for profile_entry
+            profile_entry = get_or_update_profile_entry(input_json, db,input_user_id)
+            print('profile_entry:', profile_entry)
+
+            # Load the model with error handling
+            try:
+                with open('app/models/resipro', 'rb') as f:
+                    model = pickle.load(f)
+                print("Model loaded successfully")
+            except Exception as e:
+                print(f"Error loading model: {e}")
+                return jsonify({'type': 'error', 'message': 'Failed to load model'}), 500
+
+            # Get or update user score entry with debug logging
+            user_score_entry = get_or_update_points(profile_entry, db)
+            print('user_score_entry:', user_score_entry)
+
+            # Generate model input with debug logging
+            model_inputdf = generate_model_input(profile_entry, user_score_entry)
+            print('model_inputdf:', model_inputdf)
+
+            # Calculate PR probability with debug logging
+            pr_prob = get_pr_prob(model, model_inputdf)
+            print('pr_prob:', pr_prob)
+
+            # Get PR probabilities for other states and occupations
+            prob_for_other_states = get_pr_prob_for_states(profile_entry, model_inputdf, model)
+            prob_for_other_occupations = get_pr_prob_for_jobs(model, model_inputdf, db, profile_entry)
+            print('Other states prob:', prob_for_other_states)
+            print('Other jobs prob:', prob_for_other_occupations)
+
+            # Get university recommendations
+            uni_recommendations = recommend_uni(db, profile_entry)
+            print('University recommendations:', uni_recommendations)
+
             return jsonify({
-                'type' : 'success',
+                'type': 'success',
                 'message': 'Permanent residency recommendations calculated successfully',
-                'data' : {
-                        'probability_of_permanent_residency': pr_prob,
-                        'probability_of_other_states':prob_for_other_states,
-                        'probability_of_other_jobs':prob_for_other_occupations,
-                        'uni_recommendations_based_on_fee':uni_recommendations["by_fee"],
-                        'uni_recommendations_based_on_rank':uni_recommendations["by_rank"],
-                        'user_input_for_prefill_or_save':data # Questionairre Data
-                    }
-                }), 200
+                'data': {
+                    'probability_of_permanent_residency': pr_prob,
+                    'probability_of_other_states': prob_for_other_states,
+                    'probability_of_other_jobs': prob_for_other_occupations,
+                    'uni_recommendations_based_on_fee': uni_recommendations["by_fee"],
+                    'uni_recommendations_based_on_rank': uni_recommendations["by_rank"],
+                    'user_input_for_prefill_or_save': data  # Questionnaire Data
+                }
+            }), 200
         except Exception as e:
-            print(e)
-            return jsonify({'type':'error','message': 'An internal error occured.\n {}'.format(e)}), 500
+            # Detailed error logging
+            print(f"An error occurred: {e}")
+            import traceback
+            print(traceback.format_exc())
+            return jsonify({'type': 'error', 'message': f'An internal error occurred.\n {e}'}), 500
+
+@api.route('/check_questionnaire_submission/<int:input_user_id>', methods=['GET'])
+@login_required
+def check_questionnaire_submission(input_user_id):
+    try:
+        
+        scores = db.session.query(UserScore).filter_by(user_id=input_user_id).first()
+        if scores:
+            return jsonify({
+                    'type' : 'success',
+                    'message': 'PR questionnaire already filled',
+                    'data' : {}
+                    })
+        else:
+            return jsonify({
+                    'type' : 'error',
+                    'message': 'PR questionnaire not filled',
+                    'data' : {}
+                    })
+
+    except Exception as e:
+        print(e)
+        return jsonify({'type':'error','message': 'An internal error occured.\n {}'.format(e)}), 500
 
 @api.route('/recommendations/<int:input_user_id>', methods=['GET'])
 @login_required
 def recommendations(input_user_id):
     try:
         profile = db.session.query(UserProfile).filter_by(user_id=input_user_id).first()
+        print("profile: ", profile)
         scores = db.session.query(UserScore).filter_by(user_id=input_user_id).first()
         with open('app/models/resipro', 'rb') as f:
             model = pickle.load(f)
@@ -314,3 +381,27 @@ def update_user(user_id):
     except Exception as e:
         db.session.rollback()  # Rollback in case of error
         return jsonify({'type': 'error', 'message': f'An internal error occurred. {str(e)}'}), 500
+    
+@api.route('/agent_applicants', methods=['GET'])
+@login_required
+def get_applicants():
+    try:
+        agent_id = session['user_id']
+        # Fetch all entries from users
+        entries = db.session.query(User).filter_by(managed_by = agent_id).all()   # Fetch all records
+        print(entries)
+        if (entries):
+            return jsonify([{
+                'type' : 'success',
+                'message': 'User detail retreived successfully',
+                'data' : {
+                        'user_id':entry.user_id,
+                        'first_name':entry.first_name,
+                        'last_name':entry.last_name,
+                        'email': entry.email,
+                    }
+                }for entry in entries])
+        else:
+            return jsonify({'type':'error','message': 'No records found'}), 404
+    except Exception as e:
+        return jsonify({'type':'error','message': 'An internal error occured.\n {}'.format(e)}), 500

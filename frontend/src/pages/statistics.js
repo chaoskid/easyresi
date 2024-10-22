@@ -7,6 +7,8 @@ import Footer from '../components/Footer';
 import FadeInSection from '../components/fadeInSection'; // Import your new component
 import { Box, Text, Button, Select } from '@chakra-ui/react';
 import AdminNavbar from '../components/AdminNavbar';
+import AgentNavbar from '../components/AgentNavbar';
+import NothingNavbar from '../components/NothingNavbar';
 import Popup from '../components/Popup';
 
 
@@ -19,18 +21,40 @@ const Statistics = () => {
     const handleClosePopup = () => {
         setError(''); // Close the popup by clearing the error message
     };
-    // Check to see if logged in
+    
+    const [userType, setUserType] = useState('');
+
+    const renderNavbar = () => {
+        switch (userType) {
+            case 'admin':
+                return <AdminNavbar />;
+            case 'agent':
+                return <AgentNavbar />;
+            case 'applicant':
+                return <Navbar />;
+            default:
+                return <NothingNavbar />; // Render a default or blank navbar if no user_type
+        }
+    };
+
+
     const fetchLogin = async () => {
         try {
-            const response = await axios.get('/auth/login'); // Adjust the URL if needed
-            console.log(response);
-            if (response.data.type == "error") {
+            const response = await axios.get('/auth/login');
+            if (response.data.type === "error") {
                 setError('User was not logged in, redirecting to login.')
+                console.log('User not logged in')
                 navigate('/login', { state: { message: "User was not logged in, redirecting to login." } });
             }
-        } catch (err) {
+            if (response.data.type === "success") {
+                setUserType(response.data.data.user_type);
+                if (response.data.data.user_type === "admin") {
+                    navigate('/admindashboard', { state: { message: "Admin detected" } });
+                }
+            }
+        } catch (err) { 
             setError('An unexpected error occurred. Please contact administrator');
-        } 
+        }
     };
 
     // Fetch statistics data from the backend
@@ -50,7 +74,7 @@ const Statistics = () => {
 
     return (
         <>
-            <Navbar />
+            {renderNavbar()}
             <div className="about">
                 <FadeInSection>
                     <div className="about-header">

@@ -3,7 +3,9 @@ import axios from '../axiosConfig';
 import Popup from '../components/Popup';
 import Navbar from '../components/Navbar';
 import AdminNavbar from '../components/AdminNavbar';
-import Footer from '../components/Footer'; 
+import AgentNavbar from '../components/AgentNavbar';
+import NothingNavbar from '../components/NothingNavbar';
+import Footer from '../components/Footer';
 import { ChakraProvider, Box, CircularProgress, CircularProgressLabel, Button, Table, Thead, Tbody, Tr, Th, Td, Heading, VStack, Text, Divider } from '@chakra-ui/react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -11,6 +13,8 @@ const Dashpreview = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const locationData = location.state?.data;
+    const loggedInUser = sessionStorage.getItem('user_id');
+    const checkingUser = sessionStorage.getItem('checking_user_id');
     const [error, setError] = useState('');
     const [progressState, setProgressState] = useState({
         percentage: null,
@@ -23,6 +27,19 @@ const Dashpreview = () => {
     const [occupations, setOccupations] = useState([]);
     const [userType, setUserType] = useState('');
 
+    const renderNavbar = () => {
+        switch (userType) {
+            case 'admin':
+                return <AdminNavbar />;
+            case 'agent':
+                return <AgentNavbar />;
+            case 'applicant':
+                return <Navbar />;
+            default:
+                return <NothingNavbar />; // Render a default or blank navbar if no user_type
+        }
+    };
+
     const handleClosePopup = () => {
         setError(''); // Close the popup by clearing the error message
     };
@@ -34,8 +51,15 @@ const Dashpreview = () => {
                 setError('User was not logged in, redirecting to login.');
                 navigate('/login', { state: { message: "User was not logged in, redirecting to login..." } });
             }
-        } catch (err) { 
-            setError('Unable to submit your responses. Please try again later');}
+            if (response.data.type === "success") {
+                setUserType(response.data.data.user_type);
+                if (response.data.data.user_type === "admin") {
+                    navigate('/admindashboard', { state: { message: "Admin detected" } });
+                }
+            }
+        } catch (err) {
+            setError('Unable to submit your responses. Please try again later.');
+        }
     };
 
     const updateProgress = (percentage, isIndeterminate, color, size, thickness) => {
@@ -49,7 +73,7 @@ const Dashpreview = () => {
             updateProgress(percent, false, 'purple.400', '200px', '12px');
             setData(locationData.data);
         } catch (err) {
-            setError('Unable to submit your responses. Please try again later');
+            setError('Unable to submit your responses. Please try again later.');
             updateProgress(100, false, 'red.400', '200px', '12px');
         }
     };
@@ -57,14 +81,25 @@ const Dashpreview = () => {
     const handleAccept = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('/api/questionnaire', locationData.data.user_input_for_prefill_or_save);
+            const userIdToFetch = checkingUser || loggedInUser;
+            if (!userIdToFetch) {
+                throw new Error('User ID is missing');
+            }
+
+            const userInput = locationData?.data?.user_input_for_prefill_or_save;
+            if (!userInput) {
+                setError('User input data is missing');
+            }
+
+            const response = await axios.post(`/api/questionnaire/${userIdToFetch}`, userInput);
+
             if (response.status === 200) {
                 navigate('/dashboard');
             } else {
-                setError('Unable to submit your responses. Please try again later');
+                setError('Unable to submit your responses. Please try again later.');
             }
         } catch (error) {
-            setError('Unable to submit your responses. Please try again later');
+            setError('Unable to submit your responses. Please try again later.');
         }
     };
 
@@ -75,7 +110,8 @@ const Dashpreview = () => {
 
     const fetchQuest = async () => {
         try {
-            const response = await axios.get('/api/questionnaire');
+            const userIdToFetch = checkingUser || loggedInUser;
+            const response = await axios.get(`/api/questionnaire/${userIdToFetch}`);
             setOccupations(response.data.data.occupations);
         } catch (err) {
             setError('Failed to load occupations. Please try again later.');
@@ -112,7 +148,7 @@ const Dashpreview = () => {
 
     return (
         <ChakraProvider>
-            {userType === 'admin' ? <AdminNavbar /> : <Navbar />}
+            {renderNavbar()}
             <Box flex="1" py={8} px={4}>
                 <VStack spacing={8} align="start" maxW="1200px" mx="auto">
                     <Heading as="h1" size="xl">
